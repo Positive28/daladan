@@ -139,7 +139,7 @@ export const RegisterPage = () => {
             />
           </div>
           {(errors.firstName || errors.lastName) && (
-            <p className="text-sm text-amber-700">{errors.firstName?.message || errors.lastName?.message}</p>
+            <p className="text-sm text-daladan-accentDark">{errors.firstName?.message || errors.lastName?.message}</p>
           )}
           <div className="grid gap-3 md:grid-cols-2">
             <select
@@ -168,7 +168,7 @@ export const RegisterPage = () => {
             </select>
           </div>
           {(errors.regionId || errors.cityId) && (
-            <p className="text-sm text-amber-700">{errors.regionId?.message || errors.cityId?.message}</p>
+            <p className="text-sm text-daladan-accentDark">{errors.regionId?.message || errors.cityId?.message}</p>
           )}
           <input
             {...formRegister('email', {
@@ -180,7 +180,7 @@ export const RegisterPage = () => {
             placeholder="Email (ixtiyoriy)"
             className="w-full rounded-2xl border border-slate-300 px-4 py-3 outline-none"
           />
-          {errors.email && <p className="text-sm text-amber-700">{errors.email.message}</p>}
+          {errors.email && <p className="text-sm text-daladan-accentDark">{errors.email.message}</p>}
           <input
             {...formRegister('telegram')}
             autoComplete="off"
@@ -201,7 +201,7 @@ export const RegisterPage = () => {
               />
             )}
           />
-          {errors.phone && <p className="text-sm text-amber-700">{errors.phone.message}</p>}
+          {errors.phone && <p className="text-sm text-daladan-accentDark">{errors.phone.message}</p>}
 
           <div className="relative">
             <input
@@ -242,7 +242,7 @@ export const RegisterPage = () => {
             </button>
           </div>
           {(errors.password || errors.confirmPassword) && (
-            <p className="text-sm text-amber-700">{errors.password?.message || errors.confirmPassword?.message}</p>
+            <p className="text-sm text-daladan-accentDark">{errors.password?.message || errors.confirmPassword?.message}</p>
           )}
 
           <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 select-none">
@@ -255,7 +255,7 @@ export const RegisterPage = () => {
             />
             <span>Foydalanish shartlari va maxfiylik siyosatiga roziman.</span>
           </label>
-          {errors.consent && <p className="text-sm text-amber-700">{errors.consent.message}</p>}
+          {errors.consent && <p className="text-sm text-daladan-accentDark">{errors.consent.message}</p>}
 
           <button
             disabled={!isValid || isSubmitting || isLoadingRegions}
@@ -264,7 +264,7 @@ export const RegisterPage = () => {
             {isSubmitting ? 'Kutilmoqda...' : 'Davom etish'}
           </button>
         </form>
-        {apiError && <p className="mt-3 text-base text-amber-700">{apiError}</p>}
+        {apiError && <p className="mt-3 text-base text-daladan-accentDark">{apiError}</p>}
         <p className="mt-5 text-lg text-slate-700">
           Hisobingiz bormi?{' '}
           <Link to="/login" className="font-semibold text-daladan-primary">

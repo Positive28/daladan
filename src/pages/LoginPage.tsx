@@ -64,7 +64,7 @@ export const LoginPage = () => {
           </button>
         </form>
 
-        {error && <p className="mt-3 text-base text-amber-700">{error}</p>}
+        {error && <p className="mt-3 text-base text-daladan-accentDark">{error}</p>}
         <p className="mt-5 text-lg text-slate-700">
           Hisobingiz yo&apos;qmi?{' '}
           <Link to="/register" className="font-semibold text-daladan-primary">

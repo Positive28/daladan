@@ -137,7 +137,7 @@ export const MarketplacePage = () => {
             type="button"
             onClick={() => selectCategory('Barchasi')}
             className={`mb-3 w-full rounded-lg px-3 py-2 text-left text-sm ${
-              selectedCategory === 'Barchasi' ? 'bg-blue-100 text-blue-700' : 'bg-slate-100'
+              selectedCategory === 'Barchasi' ? 'bg-daladan-primary/10 text-daladan-primary' : 'bg-slate-100'
             }`}
           >
             Barchasi
@@ -163,7 +163,7 @@ export const MarketplacePage = () => {
                     onClick={() => selectCategory(category.label)}
                     className={`w-full rounded-lg px-2 py-2 text-left text-sm font-medium ${
                       selectedCategory === category.label
-                        ? 'bg-blue-50 text-blue-600'
+                        ? 'bg-daladan-primary/10 text-daladan-primary'
                         : 'text-slate-700 hover:bg-slate-50'
                     }`}
                   >
@@ -179,7 +179,7 @@ export const MarketplacePage = () => {
                         onClick={() => selectCategory(sub.label)}
                         className={`mt-1 block w-full rounded-lg px-2 py-1.5 text-left text-sm ${
                           selectedCategory === sub.label
-                            ? 'bg-blue-100 font-medium text-blue-700'
+                            ? 'bg-daladan-primary/10 font-medium text-daladan-primary'
                             : 'text-slate-600 hover:bg-slate-50'
                         }`}
                       >
@@ -261,7 +261,7 @@ export const MarketplacePage = () => {
                 onClick={() => setCurrentPage(page)}
                 className={`h-9 w-9 rounded-lg border text-sm font-semibold ${
                   page === safePage
-                    ? 'border-blue-500 bg-blue-500 text-white'
+                    ? 'border-daladan-primary bg-daladan-primary text-white'
                     : 'border-slate-200 bg-white text-slate-700'
                 }`}
               >

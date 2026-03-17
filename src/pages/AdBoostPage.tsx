@@ -42,13 +42,13 @@ export const AdBoostPage = () => {
               type="button"
               onClick={() => setSelectedPlanId(plan.id)}
               className={`rounded-2xl border p-4 text-left ${
-                isActive ? 'border-daladan-primary bg-green-50' : 'border-slate-200'
+                isActive ? 'border-daladan-primary bg-daladan-primary/10' : 'border-slate-200'
               }`}
             >
               <div className="flex items-center justify-between">
                 <p className="text-lg font-semibold text-slate-900">{plan.name}</p>
                 {plan.badge && (
-                  <span className="rounded-full bg-amber-100 px-2 py-1 text-xs text-amber-700">
+                  <span className="rounded-full bg-daladan-accent px-2 py-1 text-xs text-daladan-accentDark">
                     {plan.badge}
                   </span>
                 )}
@@ -62,7 +62,7 @@ export const AdBoostPage = () => {
         })}
       </div>
 
-      <div className="rounded-2xl bg-slate-900 p-4 text-white">
+      <div className="rounded-2xl bg-daladan-primary p-4 text-white">
         <p className="text-sm text-slate-300">To&apos;lov tafsilotlari</p>
         <p className="mt-2 text-lg font-semibold">{selectedPlan?.name ?? '-'}</p>
         <p className="text-2xl font-bold">
@@ -70,7 +70,7 @@ export const AdBoostPage = () => {
         </p>
         <button
           type="button"
-          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-daladan-primary px-4 py-2 text-sm font-medium text-white"
         >
           <CheckCircle2 size={16} />
           To&apos;lovni tasdiqlash

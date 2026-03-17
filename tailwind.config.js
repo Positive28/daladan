@@ -6,8 +6,10 @@ export default {
       colors: {
         daladan: {
           primary: '#2f6d3f',
-          accent: '#f59e0b',
-          soft: '#f4f8f4',
+          accent: '#ffde82',
+          accentMuted: '#caa74e',
+          accentDark: '#907319',
+          soft: '#f0fdf2',
           ink: '#1f2937',
         },
       },

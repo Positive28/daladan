@@ -59,14 +59,14 @@ export const SiteHeader = () => {
             <button
               type="button"
               onClick={() => navigate('/profile')}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-green-100 text-daladan-primary"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-daladan-primary/10 text-daladan-primary"
             >
               <User size={18} />
             </button>
             <button
               type="button"
               onClick={logout}
-              className="rounded-xl bg-slate-900 px-3 py-2 text-sm text-white"
+              className="rounded-xl bg-daladan-primary px-3 py-2 text-sm text-white"
             >
               Chiqish
             </button>

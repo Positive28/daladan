@@ -7,7 +7,7 @@ body {
   font-family: Geomanist, sans-serif;
   font-size: 18px;
   line-height: 1.6;
-  background: #f7faf7;
+  background: #f0fdf2;
   color: #1f2937;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -32,6 +32,6 @@ input:focus-visible,
 select:focus-visible,
 textarea:focus-visible,
 a:focus-visible {
-  outline: 3px solid #3b82f6;
+  outline: 3px solid rgb(47 109 63);
   outline-offset: 2px;
 }

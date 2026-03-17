@@ -36,21 +36,21 @@ export const ItemDetailsPage = () => {
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
         <div className="flex flex-wrap gap-2 text-[11px] font-semibold">
           {listing.isTopSale && (
-            <span className="rounded-md bg-amber-300 px-2 py-1 text-amber-950">TOP SOTUV</span>
+            <span className="rounded-md bg-daladan-accent px-2 py-1 text-daladan-accentDark">TOP SOTUV</span>
           )}
           {listing.isFresh && (
-            <span className="rounded-md bg-emerald-100 px-2 py-1 text-emerald-700">Yangi hosil</span>
+            <span className="rounded-md bg-daladan-primary/10 px-2 py-1 text-daladan-primary">Yangi hosil</span>
           )}
         </div>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-5xl font-semibold leading-tight text-slate-900">{listing.title}</h1>
-            <p className="mt-2 flex items-center gap-1 text-sm text-blue-500">
+            <p className="mt-2 flex items-center gap-1 text-sm text-daladan-primary">
               <MapPin size={15} />
               {listing.location}
             </p>
           </div>
-          <p className="text-right text-5xl font-bold text-blue-500">
+          <p className="text-right text-5xl font-bold text-daladan-primary">
             {listing.price.toLocaleString('en-US')}
             <span className="block text-2xl font-semibold text-slate-700">{listing.unit}</span>
           </p>
@@ -66,7 +66,7 @@ export const ItemDetailsPage = () => {
               Mavjud miqdor
             </p>
             <p className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <Bike size={18} className="text-blue-500" />
+              <Bike size={18} className="text-daladan-primary" />
               500 kg dan ortiq
             </p>
           </div>
@@ -75,7 +75,7 @@ export const ItemDetailsPage = () => {
               Yetkazib berish
             </p>
             <p className="flex items-center gap-2 text-lg font-semibold text-slate-900">
-              <Truck size={18} className="text-blue-500" />
+              <Truck size={18} className="text-daladan-primary" />
               Viloyat bo&apos;ylab mavjud
             </p>
           </div>
@@ -91,7 +91,7 @@ export const ItemDetailsPage = () => {
               {canSeePhone ? listing.phone : 'Telefon raqami uchun kirish talab qilinadi'}
             </p>
           </div>
-          <p className="inline-flex items-center gap-1 text-lg font-semibold text-amber-500">
+          <p className="inline-flex items-center gap-1 text-lg font-semibold text-daladan-accentDark">
             <Star size={18} fill="currentColor" />
             4.9
           </p>
@@ -108,7 +108,7 @@ export const ItemDetailsPage = () => {
             }
             window.location.href = `tel:${listing.phone}`
           }}
-          className="rounded-xl bg-blue-500 px-4 py-3 text-base font-semibold text-white"
+          className="rounded-xl bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
         >
           <Phone size={16} className="mr-2 inline" />
           Sotuvchi bilan bog&apos;lanish
@@ -122,7 +122,7 @@ export const ItemDetailsPage = () => {
             }
             navigate('/profile')
           }}
-          className="rounded-xl bg-slate-900 px-4 py-3 text-base font-semibold text-white"
+          className="rounded-xl bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
         >
           <MessageCircle size={16} className="mr-2 inline" />
           Xabar yuborish
@@ -140,7 +140,7 @@ export const ItemDetailsPage = () => {
             window.open('https://t.me/', '_blank', 'noopener,noreferrer')
           }}
           className={`rounded-xl px-4 py-3 text-base font-semibold ${
-            canTelegramMessage ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'
+            canTelegramMessage ? 'bg-daladan-primary text-white' : 'bg-slate-200 text-slate-500'
           }`}
         >
           <Send size={16} className="mr-2 inline" />
@@ -160,7 +160,7 @@ export const ItemDetailsPage = () => {
               <img src={item.image} alt={item.title} className="h-32 w-full object-cover" />
               <div className="p-3">
                 <p className="line-clamp-1 font-semibold text-slate-900">{item.title}</p>
-                <p className="text-sm font-semibold text-blue-500">{item.price.toLocaleString('en-US')} so&apos;m</p>
+                <p className="text-sm font-semibold text-daladan-primary">{item.price.toLocaleString('en-US')} so&apos;m</p>
               </div>
             </Link>
           ))}

@@ -16,7 +16,7 @@ export const SiteFooter = () => {
         <div>
           <p className="font-semibold text-slate-900">Bog&apos;lanish</p>
           <p className="mt-2">
-            <a href="tel:+998936567890" className="font-medium text-blue-600 hover:underline">
+            <a href="tel:+998936567890" className="font-medium text-daladan-primary hover:underline">
               +998 93 656 78 90
             </a>
           </p>
@@ -28,7 +28,7 @@ export const SiteFooter = () => {
           href="https://softwhere.uz"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-semibold text-blue-600 hover:underline"
+          className="font-semibold text-daladan-primary hover:underline"
         >
           softwhere.uz
         </a>{' '}
