@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: Geomanist, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  background: #f7faf7;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: Geomanist, sans-serif;
+  font-size: 1rem;
+}
+
+input,
+select,
+textarea {
+  min-height: 44px;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
