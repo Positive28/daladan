@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
+import { ApiError } from '../services/apiClient'
 import { authService } from '../services'
 import type { AuthUser } from '../services/contracts'
 
@@ -18,6 +19,7 @@ type AuthMethod = 'password' | 'otp'
 
 interface AuthContextValue {
   user: AuthUser | null
+  isAuthLoading: boolean
   authMethod: AuthMethod
   loginWithPassword: (phone: string, password: string) => Promise<void>
   register: (payload: RegisterPayload) => Promise<void>
@@ -26,6 +28,17 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 const AUTH_STORAGE_KEY = 'daladan.auth'
+
+const readStoredToken = () => {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY)
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { token?: unknown }
+    return typeof parsed.token === 'string' && parsed.token.trim() ? parsed.token : null
+  } catch {
+    return null
+  }
+}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(() => {
@@ -39,6 +52,40 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   })
   const [authMethod, setAuthMethod] = useState<AuthMethod>('password')
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(() => Boolean(readStoredToken()))
+
+  useEffect(() => {
+    const token = readStoredToken()
+    if (!token) {
+      setIsAuthLoading(false)
+      return
+    }
+
+    let isMounted = true
+
+    const syncUser = async () => {
+      try {
+        const me = await authService.getMe()
+        if (!isMounted) return
+        setUser(me)
+      } catch (error) {
+        if (!isMounted) return
+        if (error instanceof ApiError && (error.status === 401 || error.status === 403)) {
+          setUser(null)
+          localStorage.removeItem(AUTH_STORAGE_KEY)
+        }
+      } finally {
+        if (!isMounted) return
+        setAuthMethod('password')
+        setIsAuthLoading(false)
+      }
+    }
+
+    void syncUser()
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   const persistSession = (nextUser: AuthUser, token?: string) => {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: nextUser, token }))
@@ -81,7 +128,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.removeItem(AUTH_STORAGE_KEY)
   }
 
-  return <AuthContext.Provider value={{ user, authMethod, loginWithPassword, register, logout }}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider value={{ user, isAuthLoading, authMethod, loginWithPassword, register, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => {

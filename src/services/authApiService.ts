@@ -12,6 +12,8 @@ import type {
 const asRecord = (value: unknown): Record<string, unknown> =>
   value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
 
+const isNonEmptyRecord = (value: Record<string, unknown>) => Object.keys(value).length > 0
+
 const asArray = (value: unknown): Record<string, unknown>[] =>
   Array.isArray(value)
     ? value.filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
@@ -58,11 +60,16 @@ const mapCity = (item: Record<string, unknown>): CityOption => ({
 
 const mapAuthUser = (payload: unknown, fallback: { phone: string; fullName: string }): AuthUser => {
   const data = asRecord(payload)
+  const regionObj = asRecord(data.region)
+  const cityObj = asRecord(data.city)
   const fname = getString(data, 'fname', 'first_name')
   const lname = getString(data, 'lname', 'last_name')
   const fullName = getString(data, 'full_name', 'fullName') || `${fname} ${lname}`.trim() || fallback.fullName
   const phone = getString(data, 'phone') || fallback.phone
-  const region = getString(data, 'region_name', 'region') || 'Uzbekistan'
+  const regionName =
+    getString(regionObj, 'name_uz', 'name_oz', 'name') || getString(data, 'region_name', 'region')
+  const cityName = getString(cityObj, 'name_uz', 'name_oz', 'name')
+  const region = [regionName, cityName].filter(Boolean).join(', ') || 'Uzbekistan'
 
   return {
     fullName,
@@ -75,7 +82,8 @@ const mapAuthUser = (payload: unknown, fallback: { phone: string; fullName: stri
 const mapAuthResult = (payload: unknown, fallback: { phone: string; fullName: string }): AuthResult => {
   const root = asRecord(payload)
   const data = asRecord(root.data)
-  const userBlock = root.user ?? data.user ?? data
+  const userBlock =
+    [asRecord(root.user), asRecord(data.user), data, root].find((candidate) => isNonEmptyRecord(candidate)) ?? {}
   const token =
     getString(root, 'token', 'access_token', 'jwt') ||
     getString(data, 'token', 'access_token', 'jwt') ||
@@ -109,6 +117,19 @@ export const authApiService: AuthService = {
     return mapAuthResult(response, {
       phone: payload.phone,
       fullName: `${payload.fname} ${payload.lname}`.trim(),
+    })
+  },
+
+  async getMe() {
+    const response = await requestJson<unknown>('/profile')
+    const root = asRecord(response)
+    const data = asRecord(root.data)
+    const userBlock =
+      [asRecord(root.user), asRecord(data.user), data, root].find((candidate) => isNonEmptyRecord(candidate)) ?? {}
+
+    return mapAuthUser(userBlock, {
+      phone: '',
+      fullName: 'Foydalanuvchi',
     })
   },
 

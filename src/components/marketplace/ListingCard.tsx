@@ -26,7 +26,7 @@ export const ListingCard = ({
   }
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
       <div className="relative">
         <img src={listing.image} alt={listing.title} className="h-44 w-full object-cover" />
         <div className="absolute left-3 top-3 flex flex-wrap gap-2 text-[10px] font-semibold">
@@ -45,7 +45,9 @@ export const ListingCard = ({
           type="button"
           onClick={onFavoriteClick}
           className={`absolute right-3 top-3 inline-flex h-8 w-8 items-center justify-center rounded-full ${
-            favorite ? 'bg-daladan-accent text-daladan-accentDark' : 'bg-white/95 text-slate-600'
+            favorite
+              ? 'bg-daladan-accent text-daladan-accentDark'
+              : 'bg-white/95 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
           }`}
         >
           <Heart size={16} fill={favorite ? 'currentColor' : 'none'} />
@@ -53,9 +55,9 @@ export const ListingCard = ({
       </div>
 
       <div className="space-y-2.5 p-4">
-        <h3 className="line-clamp-2 text-lg font-semibold text-slate-900">{listing.title}</h3>
-        <p className="line-clamp-2 text-sm text-slate-500">{listing.description}</p>
-        <p className="flex items-center gap-1 text-sm text-slate-500">
+        <h3 className="line-clamp-2 text-lg font-semibold text-slate-900 dark:text-slate-100">{listing.title}</h3>
+        <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400">{listing.description}</p>
+        <p className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
           <MapPin size={14} />
           {listing.location}
         </p>

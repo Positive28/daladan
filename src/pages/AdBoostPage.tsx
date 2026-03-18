@@ -25,10 +25,10 @@ export const AdBoostPage = () => {
   )
 
   return (
-    <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-      <div className="border-b border-slate-200 pb-4">
-        <h1 className="text-2xl font-semibold text-slate-900">E&apos;lonni reklama qilish</h1>
-        <p className="mt-1 text-sm text-slate-600">
+    <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <div className="border-b border-slate-200 pb-4 dark:border-slate-700">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">E&apos;lonni reklama qilish</h1>
+        <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
           Sotuvni oshirish uchun tarif tanlang: <span className="font-medium">{listing?.title}</span>
         </p>
       </div>
@@ -42,11 +42,13 @@ export const AdBoostPage = () => {
               type="button"
               onClick={() => setSelectedPlanId(plan.id)}
               className={`rounded-2xl border p-4 text-left ${
-                isActive ? 'border-daladan-primary bg-daladan-primary/10' : 'border-slate-200'
+                isActive
+                  ? 'border-daladan-primary bg-daladan-primary/10'
+                  : 'border-slate-200 dark:border-slate-700 dark:bg-slate-800'
               }`}
             >
               <div className="flex items-center justify-between">
-                <p className="text-lg font-semibold text-slate-900">{plan.name}</p>
+                <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{plan.name}</p>
                 {plan.badge && (
                   <span className="rounded-full bg-daladan-accent px-2 py-1 text-xs text-daladan-accentDark">
                     {plan.badge}
@@ -56,14 +58,14 @@ export const AdBoostPage = () => {
               <p className="mt-2 text-xl font-bold text-daladan-primary">
                 {plan.price.toLocaleString('en-US')} so&apos;m
               </p>
-              <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
+              <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{plan.description}</p>
             </button>
           )
         })}
       </div>
 
       <div className="rounded-2xl bg-daladan-primary p-4 text-white">
-        <p className="text-sm text-slate-300">To&apos;lov tafsilotlari</p>
+        <p className="text-sm text-slate-100/80">To&apos;lov tafsilotlari</p>
         <p className="mt-2 text-lg font-semibold">{selectedPlan?.name ?? '-'}</p>
         <p className="text-2xl font-bold">
           {selectedPlan ? `${selectedPlan.price.toLocaleString('en-US')} so'm` : '0 so‘m'}

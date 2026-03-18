@@ -17,6 +17,17 @@ const getApiBaseUrl = () => {
   return envUrl || DEFAULT_API_BASE_URL
 }
 
+const getAuthToken = () => {
+  try {
+    const raw = localStorage.getItem('daladan.auth')
+    if (!raw) return null
+    const parsed = JSON.parse(raw) as { token?: unknown }
+    return typeof parsed.token === 'string' && parsed.token.trim() ? parsed.token : null
+  } catch {
+    return null
+  }
+}
+
 const toMessage = (status: number, data: unknown) => {
   if (typeof data === 'string' && data.trim()) return data
   if (data && typeof data === 'object') {
@@ -31,10 +42,15 @@ const toMessage = (status: number, data: unknown) => {
 
 export const requestJson = async <T>(path: string, init?: RequestInit): Promise<T> => {
   const baseUrl = getApiBaseUrl()
+  const token = getAuthToken()
+  const hasAuthorizationHeader =
+    Boolean(init?.headers) && Object.keys(new Headers(init?.headers)).some((key) => key.toLowerCase() === 'authorization')
+
   const response = await fetch(`${baseUrl}${path}`, {
     ...init,
     headers: {
       'Content-Type': 'application/json',
+      ...(!hasAuthorizationHeader && token ? { Authorization: `Bearer ${token}` } : {}),
       ...(init?.headers ?? {}),
     },
   })
