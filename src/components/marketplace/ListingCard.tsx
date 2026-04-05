@@ -1,5 +1,7 @@
 import { Heart, MapPin } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import type { KeyboardEvent, MouseEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useFavorites } from '../../state/FavoritesContext'
 import type { Listing } from '../../types/marketplace'
 
@@ -14,10 +16,17 @@ export const ListingCard = ({
   canFavorite,
   onFavoriteBlocked,
 }: ListingCardProps) => {
+  const navigate = useNavigate()
   const { isFavorite, toggleFavorite } = useFavorites()
   const favorite = isFavorite(listing.id)
+  const itemPath = `/item/${listing.id}`
 
-  const onFavoriteClick = () => {
+  const openItem = () => {
+    navigate(itemPath)
+  }
+
+  const onFavoriteClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation()
     if (!canFavorite) {
       onFavoriteBlocked()
       return
@@ -25,8 +34,21 @@ export const ListingCard = ({
     toggleFavorite(listing.id)
   }
 
+  const onCardKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault()
+      openItem()
+    }
+  }
+
   return (
-    <article className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+    <article
+      role="link"
+      tabIndex={0}
+      onClick={openItem}
+      onKeyDown={onCardKeyDown}
+      className="cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900"
+    >
       <div className="relative">
         <img src={listing.image} alt={listing.title} className="h-44 w-full object-cover" />
         <div className="absolute left-3 top-3 flex flex-wrap gap-2 text-[10px] font-semibold">
@@ -66,7 +88,8 @@ export const ListingCard = ({
         </p>
         <div className="flex gap-2">
           <Link
-            to={`/item/${listing.id}`}
+            to={itemPath}
+            onClick={(event) => event.stopPropagation()}
             className="flex-1 rounded-xl bg-daladan-primary px-3 py-2 text-center text-sm font-semibold text-white"
           >
             Bog&apos;lanish
