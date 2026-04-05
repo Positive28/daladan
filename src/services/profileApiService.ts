@@ -33,28 +33,32 @@ const mapProfile = (payload: unknown): Profile => {
   }
 }
 
+const fetchProfile = async () => {
+  const response = await requestJson<unknown>('/profile')
+  return mapProfile(response)
+}
+
 export const profileApiService: ProfileService = {
   async getProfile() {
-    const response = await requestJson<unknown>('/profile')
-    return mapProfile(response)
+    return fetchProfile()
   },
 
   async updateProfile(payload: UpdateProfilePayload) {
-    const response = await requestJson<unknown>('/profile', {
+    await requestJson<unknown>('/profile', {
       method: 'PUT',
       body: JSON.stringify(payload),
     })
-    return mapProfile(response)
+    return fetchProfile()
   },
 
   async updateAvatar(file: File) {
     const body = new FormData()
     body.append('avatar', file)
-    const response = await requestJson<unknown>('/profile/avatar', {
+    await requestJson<unknown>('/profile/avatar', {
       method: 'POST',
       body,
     })
-    return mapProfile(response)
+    return fetchProfile()
   },
 
   async updatePassword(payload: UpdatePasswordPayload) {

@@ -71,15 +71,15 @@ export const ProfilePage = () => {
       try {
         const data = await profileService.getProfile()
         if (!isMounted) return
-        const sourceFullName = user?.fullName ?? data.fullName ?? ''
+        const sourceFullName = data.fullName || user?.fullName || ''
         const [firstName, ...rest] = sourceFullName.trim().split(' ').filter(Boolean)
         setEditableProfile({
           firstName: firstName || '',
           lastName: rest.join(' '),
           avatarUrl: data.avatarUrl ?? '',
           aboutMe: data.bio || '',
-          phone: formatUzPhoneInput(user?.phone || data.phone || ''),
-          region: user?.region || data.region || '',
+          phone: formatUzPhoneInput(data.phone || user?.phone || ''),
+          region: data.region || user?.region || '',
         })
       } catch (error) {
         if (!isMounted) return
@@ -109,13 +109,13 @@ export const ProfilePage = () => {
     setProfileMessage('')
     setIsSavingProfile(true)
     try {
-      const updatedProfile = await profileService.updateProfile({
+      let updatedProfile = await profileService.updateProfile({
         fname: editableProfile.firstName.trim() || undefined,
         lname: editableProfile.lastName.trim() || undefined,
       })
 
       if (avatarFile) {
-        await profileService.updateAvatar(avatarFile)
+        updatedProfile = await profileService.updateAvatar(avatarFile)
         setAvatarFile(null)
       }
 
@@ -125,6 +125,8 @@ export const ProfilePage = () => {
         ...prev,
         firstName: firstName || prev.firstName,
         lastName: rest.join(' ') || prev.lastName,
+        avatarUrl: updatedProfile.avatarUrl || prev.avatarUrl,
+        aboutMe: updatedProfile.bio || prev.aboutMe,
         phone: formatUzPhoneInput(updatedProfile.phone || prev.phone),
         region: updatedProfile.region || prev.region,
       }))
