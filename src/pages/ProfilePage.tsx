@@ -6,6 +6,7 @@ import {
   MessageSquare,
   Pencil,
   RefreshCw,
+  Trash2,
   Wallet,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
@@ -29,6 +30,20 @@ export const ProfilePage = () => {
   const [myListings, setMyListings] = useState<Listing[]>([])
   const [activeTab, setActiveTab] = useState<ProfileTab>('profile')
   const [isEditingProfile, setIsEditingProfile] = useState(false)
+  const [isPasswordEditorOpen, setIsPasswordEditorOpen] = useState(false)
+  const [profileError, setProfileError] = useState('')
+  const [profileMessage, setProfileMessage] = useState('')
+  const [isSavingProfile, setIsSavingProfile] = useState(false)
+  const [adsError, setAdsError] = useState('')
+  const [avatarFile, setAvatarFile] = useState<File | null>(null)
+  const [passwordFields, setPasswordFields] = useState({
+    current: '',
+    next: '',
+    confirmation: '',
+  })
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordMessage, setPasswordMessage] = useState('')
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false)
   const [editableProfile, setEditableProfile] = useState<EditableProfile>({
     firstName: '',
     lastName: '',
@@ -39,20 +54,45 @@ export const ProfilePage = () => {
   })
   const { user } = useAuth()
 
+  const loadProfileAds = async () => {
+    try {
+      setAdsError('')
+      const ads = await marketplaceService.getProfileAds(15)
+      setMyListings(ads)
+    } catch (error) {
+      setAdsError(error instanceof Error ? error.message : "E'lonlarni yuklab bo'lmadi")
+    }
+  }
+
   useEffect(() => {
-    profileService.getProfile().then((data) => {
-      const sourceFullName = user?.fullName ?? data.fullName ?? ''
-      const [firstName, ...rest] = sourceFullName.trim().split(' ').filter(Boolean)
-      setEditableProfile({
-        firstName: firstName || '',
-        lastName: rest.join(' '),
-        avatarUrl: '',
-        aboutMe: data.bio || '',
-        phone: formatUzPhoneInput(user?.phone || data.phone || ''),
-        region: user?.region || data.region || '',
-      })
-    })
-    marketplaceService.getListings().then((items) => setMyListings(items.slice(0, 2)))
+    let isMounted = true
+
+    const load = async () => {
+      try {
+        const data = await profileService.getProfile()
+        if (!isMounted) return
+        const sourceFullName = user?.fullName ?? data.fullName ?? ''
+        const [firstName, ...rest] = sourceFullName.trim().split(' ').filter(Boolean)
+        setEditableProfile({
+          firstName: firstName || '',
+          lastName: rest.join(' '),
+          avatarUrl: data.avatarUrl ?? '',
+          aboutMe: data.bio || '',
+          phone: formatUzPhoneInput(user?.phone || data.phone || ''),
+          region: user?.region || data.region || '',
+        })
+      } catch (error) {
+        if (!isMounted) return
+        setProfileError(error instanceof Error ? error.message : "Profilni yuklab bo'lmadi")
+      }
+
+      await loadProfileAds()
+    }
+
+    void load()
+    return () => {
+      isMounted = false
+    }
   }, [user])
 
   const fullName = `${editableProfile.firstName} ${editableProfile.lastName}`.trim()
@@ -62,6 +102,102 @@ export const ProfilePage = () => {
       ...prev,
       [field]: value,
     }))
+  }
+
+  const handleSaveProfile = async () => {
+    setProfileError('')
+    setProfileMessage('')
+    setIsSavingProfile(true)
+    try {
+      const updatedProfile = await profileService.updateProfile({
+        fname: editableProfile.firstName.trim() || undefined,
+        lname: editableProfile.lastName.trim() || undefined,
+      })
+
+      if (avatarFile) {
+        await profileService.updateAvatar(avatarFile)
+        setAvatarFile(null)
+      }
+
+      const sourceFullName = updatedProfile.fullName || fullName
+      const [firstName, ...rest] = sourceFullName.trim().split(' ').filter(Boolean)
+      setEditableProfile((prev) => ({
+        ...prev,
+        firstName: firstName || prev.firstName,
+        lastName: rest.join(' ') || prev.lastName,
+        phone: formatUzPhoneInput(updatedProfile.phone || prev.phone),
+        region: updatedProfile.region || prev.region,
+      }))
+      setIsEditingProfile(false)
+      setProfileMessage("Profil muvaffaqiyatli yangilandi")
+    } catch (error) {
+      setProfileError(error instanceof Error ? error.message : "Profilni yangilab bo'lmadi")
+    } finally {
+      setIsSavingProfile(false)
+    }
+  }
+
+  const handleDeleteAd = async (listing: Listing) => {
+    const adId = Number(listing.id)
+    if (!adId || Number.isNaN(adId)) {
+      setAdsError("E'lon ID noto'g'ri, o'chirib bo'lmadi")
+      return
+    }
+    if (!window.confirm("Ushbu e'lonni o'chirmoqchimisiz?")) return
+    try {
+      setAdsError('')
+      await marketplaceService.deleteProfileAd(adId)
+      await loadProfileAds()
+    } catch (error) {
+      setAdsError(error instanceof Error ? error.message : "E'lonni o'chirib bo'lmadi")
+    }
+  }
+
+  const handleRefreshAd = async (listing: Listing) => {
+    const adId = Number(listing.id)
+    if (!adId || Number.isNaN(adId)) {
+      setAdsError("E'lon ID noto'g'ri, yangilab bo'lmadi")
+      return
+    }
+    try {
+      setAdsError('')
+      await marketplaceService.updateProfileAd(adId, {
+        title: listing.title,
+        description: listing.description,
+      })
+      await loadProfileAds()
+    } catch (error) {
+      setAdsError(error instanceof Error ? error.message : "E'lonni yangilab bo'lmadi")
+    }
+  }
+
+  const handlePasswordUpdate = async () => {
+    setPasswordError('')
+    setPasswordMessage('')
+    if (!passwordFields.current.trim() || !passwordFields.next.trim() || !passwordFields.confirmation.trim()) {
+      setPasswordError("Parol maydonlarini to'liq kiriting")
+      return
+    }
+    if (passwordFields.next !== passwordFields.confirmation) {
+      setPasswordError('Yangi parollar bir xil emas')
+      return
+    }
+
+    setIsUpdatingPassword(true)
+    try {
+      await profileService.updatePassword({
+        current_password: passwordFields.current.trim(),
+        new_password: passwordFields.next.trim(),
+        new_password_confirmation: passwordFields.confirmation.trim(),
+      })
+      setPasswordFields({ current: '', next: '', confirmation: '' })
+      setIsPasswordEditorOpen(false)
+      setPasswordMessage("Parol muvaffaqiyatli yangilandi")
+    } catch (error) {
+      setPasswordError(error instanceof Error ? error.message : "Parolni yangilab bo'lmadi")
+    } finally {
+      setIsUpdatingPassword(false)
+    }
   }
 
   const renderAdsSection = () => (
@@ -81,6 +217,7 @@ export const ProfilePage = () => {
             </button>
           </div>
         </div>
+        {adsError ? <p className="mb-3 text-sm text-daladan-accentDark">{adsError}</p> : null}
         <div className="space-y-3">
           {myListings.map((listing, index) => (
             <div
@@ -113,15 +250,18 @@ export const ProfilePage = () => {
                     </span>
                   </div>
 
-                  <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto]">
+                  <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]">
                     <Link
                       to={`/item/${listing.id}`}
                       className="rounded-xl bg-daladan-primary px-4 py-2 text-center text-sm font-semibold text-white"
                     >
                       E&apos;lonni ko&apos;tarish
                     </Link>
-                    <Link
-                      to={`/ad-boost/${listing.id}`}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void handleRefreshAd(listing)
+                      }}
                       className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${
                         index === 0
                           ? 'bg-daladan-accentMuted text-daladan-accentDark'
@@ -129,12 +269,24 @@ export const ProfilePage = () => {
                       }`}
                     >
                       {index === 0 ? 'Top Sotuv' : 'Yangilash'}
-                    </Link>
+                    </button>
                     <button
                       type="button"
+                      onClick={() => {
+                        void handleRefreshAd(listing)
+                      }}
                       className="rounded-xl bg-slate-100 px-3 py-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
                     >
                       <RefreshCw size={14} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        void handleDeleteAd(listing)
+                      }}
+                      className="rounded-xl bg-slate-100 px-3 py-2 text-daladan-accentDark dark:bg-slate-800"
+                    >
+                      <Trash2 size={14} />
                     </button>
                   </div>
                 </div>
@@ -255,6 +407,7 @@ export const ProfilePage = () => {
                     </button>
                     <button
                       type="button"
+                      onClick={() => setIsPasswordEditorOpen((prev) => !prev)}
                       className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                     >
                       Parolni o&apos;zgartirish
@@ -263,6 +416,50 @@ export const ProfilePage = () => {
                 </div>
               </div>
             </div>
+            {profileMessage ? <p className="text-sm text-daladan-primary">{profileMessage}</p> : null}
+            {profileError ? <p className="text-sm text-daladan-accentDark">{profileError}</p> : null}
+            {passwordMessage ? <p className="text-sm text-daladan-primary">{passwordMessage}</p> : null}
+            {isPasswordEditorOpen ? (
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+                <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Parolni o&apos;zgartirish</h3>
+                <div className="grid gap-3 md:grid-cols-3">
+                  <input
+                    type="password"
+                    value={passwordFields.current}
+                    onChange={(event) => setPasswordFields((prev) => ({ ...prev, current: event.target.value }))}
+                    placeholder="Joriy parol"
+                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                  />
+                  <input
+                    type="password"
+                    value={passwordFields.next}
+                    onChange={(event) => setPasswordFields((prev) => ({ ...prev, next: event.target.value }))}
+                    placeholder="Yangi parol"
+                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                  />
+                  <input
+                    type="password"
+                    value={passwordFields.confirmation}
+                    onChange={(event) => setPasswordFields((prev) => ({ ...prev, confirmation: event.target.value }))}
+                    placeholder="Yangi parol tasdig&apos;i"
+                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                  />
+                </div>
+                {passwordError ? <p className="mt-3 text-sm text-daladan-accentDark">{passwordError}</p> : null}
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      void handlePasswordUpdate()
+                    }}
+                    disabled={isUpdatingPassword}
+                    className="rounded-xl bg-daladan-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-70"
+                  >
+                    {isUpdatingPassword ? 'Yangilanmoqda...' : 'Parolni saqlash'}
+                  </button>
+                </div>
+              </div>
+            ) : null}
             {isEditingProfile ? (
               <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
                 <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Profil ma&apos;lumotlari</h3>
@@ -298,6 +495,12 @@ export const ProfilePage = () => {
                     placeholder="Avatar URL"
                     className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
                   />
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => setAvatarFile(event.target.files?.[0] ?? null)}
+                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
+                  />
                   <textarea
                     value={editableProfile.aboutMe}
                     onChange={(event) => onProfileFieldChange('aboutMe', event.target.value)}
@@ -308,10 +511,13 @@ export const ProfilePage = () => {
                 <div className="mt-4 flex justify-end gap-2">
                   <button
                     type="button"
-                    onClick={() => setIsEditingProfile(false)}
+                    onClick={() => {
+                      void handleSaveProfile()
+                    }}
+                    disabled={isSavingProfile}
                     className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                   >
-                    Saqlash
+                    {isSavingProfile ? 'Saqlanmoqda...' : 'Saqlash'}
                   </button>
                 </div>
               </div>

@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react'
-import { ApiError } from '../services/apiClient'
+import { ApiError, AUTH_STORAGE_KEY, getStoredAuthToken } from '../services/apiClient'
 import { authService } from '../services'
-import type { AuthUser } from '../services/contracts'
+import type { AuthResult, AuthUser } from '../services/contracts'
 
 interface RegisterPayload {
   fname: string
@@ -27,18 +27,6 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
-const AUTH_STORAGE_KEY = 'daladan.auth'
-
-const readStoredToken = () => {
-  try {
-    const raw = localStorage.getItem(AUTH_STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as { token?: unknown }
-    return typeof parsed.token === 'string' && parsed.token.trim() ? parsed.token : null
-  } catch {
-    return null
-  }
-}
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AuthUser | null>(() => {
@@ -52,10 +40,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   })
   const [authMethod, setAuthMethod] = useState<AuthMethod>('password')
-  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(() => Boolean(readStoredToken()))
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(() => Boolean(getStoredAuthToken()))
 
   useEffect(() => {
-    const token = readStoredToken()
+    const token = getStoredAuthToken()
     if (!token) {
       setIsAuthLoading(false)
       return
@@ -92,11 +80,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: nextUser, token }))
   }
 
+  const syncUserAfterAuth = async (result: AuthResult) => {
+    let nextUser = result.user
+    if (result.token) {
+      // Persist token first so profile/me request uses latest credentials.
+      persistSession(nextUser, result.token)
+      try {
+        nextUser = await authService.getMe()
+      } catch {
+        // Keep login/register payload user when profile fetch fails.
+      }
+    }
+
+    setUser(nextUser)
+    persistSession(nextUser, result.token)
+  }
+
   const loginWithPassword = async (phone: string, password: string) => {
     const result = await authService.login({ phone, password })
-    setUser(result.user)
     setAuthMethod('password')
-    persistSession(result.user, result.token)
+    await syncUserAfterAuth(result)
   }
 
   const register = async (payload: RegisterPayload) => {
@@ -113,9 +116,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       },
       'password',
     )
-    setUser(result.user)
     setAuthMethod('password')
-    persistSession(result.user, result.token)
+    await syncUserAfterAuth(result)
   }
 
   const logout = async () => {

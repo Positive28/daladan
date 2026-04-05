@@ -14,9 +14,9 @@ export const ItemDetailsPage = () => {
 
   useEffect(() => {
     if (!id) return
-    marketplaceService.getListingById(id).then(setListing)
+    marketplaceService.getPublicAdById(id).then(setListing)
     marketplaceService
-      .getListings()
+      .getPublicAds({ perPage: 100 })
       .then((items) => setRelatedListings(items.filter((item) => item.id !== id).slice(0, 3)))
   }, [id])
 

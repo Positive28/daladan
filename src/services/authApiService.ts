@@ -1,4 +1,12 @@
 import { requestJson } from './apiClient'
+import {
+  asRecord,
+  extractCollection,
+  getNumber,
+  getString,
+  isNonEmptyRecord,
+  type UnknownRecord,
+} from './apiMappers'
 import type {
   AuthResult,
   AuthService,
@@ -9,50 +17,12 @@ import type {
   RegisterRequest,
 } from './contracts'
 
-const asRecord = (value: unknown): Record<string, unknown> =>
-  value && typeof value === 'object' ? (value as Record<string, unknown>) : {}
-
-const isNonEmptyRecord = (value: Record<string, unknown>) => Object.keys(value).length > 0
-
-const asArray = (value: unknown): Record<string, unknown>[] =>
-  Array.isArray(value)
-    ? value.filter((item): item is Record<string, unknown> => !!item && typeof item === 'object')
-    : []
-
-const extractCollection = (value: unknown): Record<string, unknown>[] => {
-  const direct = asArray(value)
-  if (direct.length > 0) return direct
-
-  const root = asRecord(value)
-  return asArray(root.data)
-}
-
-const getNumber = (obj: Record<string, unknown>, ...keys: string[]) => {
-  for (const key of keys) {
-    const value = obj[key]
-    if (typeof value === 'number') return value
-    if (typeof value === 'string') {
-      const parsed = Number(value)
-      if (!Number.isNaN(parsed)) return parsed
-    }
-  }
-  return 0
-}
-
-const getString = (obj: Record<string, unknown>, ...keys: string[]) => {
-  for (const key of keys) {
-    const value = obj[key]
-    if (typeof value === 'string') return value
-  }
-  return ''
-}
-
-const mapRegion = (item: Record<string, unknown>): RegionOption => ({
+const mapRegion = (item: UnknownRecord): RegionOption => ({
   id: getNumber(item, 'id', 'region_id'),
   name: getString(item, 'name_uz', 'name_oz', 'name', 'title', 'region_name'),
 })
 
-const mapCity = (item: Record<string, unknown>): CityOption => ({
+const mapCity = (item: UnknownRecord): CityOption => ({
   id: getNumber(item, 'id', 'city_id'),
   name: getString(item, 'name_uz', 'name_oz', 'name', 'title', 'city_name'),
   region_id: getNumber(item, 'region_id') || undefined,
@@ -146,6 +116,15 @@ export const authApiService: AuthService = {
 
   async logout() {
     await requestJson<unknown>('/logout', { method: 'POST' })
+  },
+
+  async refresh() {
+    const response = await requestJson<unknown>('/refresh', {
+      method: 'POST',
+    })
+    const root = asRecord(response)
+    const data = asRecord(root.data)
+    return getString(root, 'token', 'access_token', 'jwt') || getString(data, 'token', 'access_token', 'jwt') || undefined
   },
 }
 

@@ -5,10 +5,20 @@ import type {
   Listing,
   Profile,
   ProfileAd,
+  PublicAdsFilters,
   SubcategoryOption,
+  UpdatePasswordPayload,
+  UpdateProfileAdPayload,
+  UpdateProfilePayload,
 } from '../types/marketplace'
 
 export interface MarketplaceService {
+  getPublicAds(filters?: PublicAdsFilters): Promise<Listing[]>
+  getPublicAdById(id: string | number): Promise<Listing | undefined>
+  getProfileAds(perPage?: number): Promise<Listing[]>
+  getProfileAdById(adId: number): Promise<Listing | undefined>
+  updateProfileAd(adId: number, payload: UpdateProfileAdPayload): Promise<ProfileAd>
+  deleteProfileAd(adId: number): Promise<void>
   getListings(): Promise<Listing[]>
   getListingById(id: string): Promise<Listing | undefined>
   getBoostPlans(): Promise<BoostPlan[]>
@@ -19,6 +29,9 @@ export interface MarketplaceService {
 
 export interface ProfileService {
   getProfile(): Promise<Profile>
+  updateProfile(payload: UpdateProfilePayload): Promise<Profile>
+  updateAvatar(file: File): Promise<Profile>
+  updatePassword(payload: UpdatePasswordPayload): Promise<void>
 }
 
 export interface RegionOption {
@@ -64,6 +77,7 @@ export interface AuthService {
   login(payload: LoginRequest): Promise<AuthResult>
   register(payload: RegisterRequest, authType?: 'password' | 'telegram'): Promise<AuthResult>
   getMe(): Promise<AuthUser>
+  refresh(): Promise<string | undefined>
   getRegions(): Promise<RegionOption[]>
   getCities(regionId?: number): Promise<CityOption[]>
   logout(): Promise<void>

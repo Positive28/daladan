@@ -9,7 +9,7 @@ export const FavoritesPage = () => {
   const { favoriteIds } = useFavorites()
 
   useEffect(() => {
-    marketplaceService.getListings().then(setListings)
+    marketplaceService.getPublicAds({ perPage: 100 }).then(setListings)
   }, [])
 
   const favoriteListings = listings.filter((listing) => favoriteIds.includes(listing.id))

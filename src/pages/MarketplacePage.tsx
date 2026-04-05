@@ -67,7 +67,7 @@ export const MarketplacePage = () => {
   const searchQuery = (searchParams.get('q') ?? '').trim().toLowerCase()
 
   useEffect(() => {
-    marketplaceService.getListings().then(setListings)
+    marketplaceService.getPublicAds({ perPage: 100 }).then(setListings)
   }, [])
 
   const matchedCategories =

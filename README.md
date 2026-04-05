@@ -35,10 +35,17 @@ Base URL:
 https://api.daladan.uz/api/v1
 ```
 
-Implemented auth endpoints:
+Implemented auth/session endpoints:
 
 - `POST /register?auth_type=password`
 - `POST /login`
+- `POST /logout`
+- `POST /refresh`
+- `GET /profile` (used as canonical current-user profile/me source)
+
+Not used by design:
+
+- `GET /get-me` (frontend relies on `GET /profile` for current-user data)
 
 Register payload fields used by frontend:
 
@@ -65,3 +72,35 @@ Endpoints used for registration form selections:
 - `GET /resources/cities?region_id={region_id}`
 
 The registration form loads regions first, then loads cities for the selected region.
+
+## API Integration Smoke Checklist
+
+Public endpoints:
+
+- [ ] `GET /public/ads` renders marketplace cards
+- [ ] `GET /public/ads/{id}` renders item details
+- [ ] `GET /resources/regions`
+- [ ] `GET /resources/cities?region_id={id}`
+- [ ] `GET /resources/categories`
+- [ ] `GET /resources/subcategories?category_id={id}`
+
+Authenticated endpoints:
+
+- [ ] `POST /login` and user session persists
+- [ ] `POST /refresh` refreshes token on expired access token (automatic retry path)
+- [ ] `POST /logout` clears local session and server session
+- [ ] `GET /profile` returns current user profile after login/register and on app bootstrap
+
+Profile endpoints:
+
+- [ ] `PUT /profile` saves first/last name changes from profile edit
+- [ ] `POST /profile/avatar` updates avatar via file upload
+- [ ] `PUT /profile/password` updates password with current/new/confirmation
+
+Profile ads endpoints:
+
+- [ ] `GET /profile/ads` loads \"My ads\" section
+- [ ] `POST /profile/ads` creates new ad from \"Yangi e'lon\"
+- [ ] `GET /profile/ads/{ad}` works for ad detail fetch
+- [ ] `POST|PUT|PATCH /profile/ads/{ad}` updates existing ad
+- [ ] `DELETE /profile/ads/{ad}` removes ad and refreshes list
