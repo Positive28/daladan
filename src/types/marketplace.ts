@@ -19,6 +19,10 @@ export interface Listing {
   quantity?: string
   deliveryInfo?: string
   image: string
+  /** All gallery image URLs when the API returns multiple media items */
+  images?: string[]
+  /** Raw ad status from API, e.g. active, expired */
+  status?: string
 }
 
 export interface Profile {

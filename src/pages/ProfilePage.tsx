@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
+  ChevronLeft,
+  ChevronRight,
   CreditCard,
   Eye,
   Heart,
@@ -16,6 +18,7 @@ import { useAuth } from '../state/AuthContext'
 import type { Listing } from '../types/marketplace'
 import { formatUzPhoneInput } from '../utils/phone'
 import { formatPrice } from '../utils/price'
+import { ImageLightbox } from '../components/ui/ImageLightbox'
 
 type ProfileTab = 'profile' | 'ads' | 'messages' | 'payments'
 
@@ -57,6 +60,8 @@ export const ProfilePage = () => {
   const { user, logout } = useAuth()
   const navigate = useNavigate()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [adGalleryIndex, setAdGalleryIndex] = useState<Record<string, number>>({})
+  const [imagePreview, setImagePreview] = useState<{ urls: string[]; index: number } | null>(null)
 
   const loadProfileAds = async () => {
     try {
@@ -100,6 +105,34 @@ export const ProfilePage = () => {
   }, [user])
 
   const fullName = `${editableProfile.firstName} ${editableProfile.lastName}`.trim()
+
+  const getAdSlides = (listing: Listing) =>
+    listing.images && listing.images.length > 0 ? listing.images : [listing.image]
+
+  const adStatusPresentation = (status?: string) => {
+    const s = (status || '').toLowerCase()
+    if (s === 'active') {
+      return { label: 'FAOL', className: 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-400' }
+    }
+    if (s === 'expired') {
+      return { label: "MUDDATI O'TGAN", className: 'bg-sky-500/15 text-sky-800 dark:text-sky-300' }
+    }
+    if (s === 'draft') {
+      return { label: 'QORALAMA', className: 'bg-amber-500/15 text-amber-900 dark:text-amber-300' }
+    }
+    if (s === 'paused' || s === 'inactive') {
+      return { label: "TO'XTATILGAN", className: 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }
+    }
+    if (status?.trim()) {
+      return {
+        label: status.toUpperCase(),
+        className: 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
+      }
+    }
+    return { label: '—', className: 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300' }
+  }
+
+  const isActiveAd = (listing: Listing) => (listing.status || '').toLowerCase() === 'active'
 
   const handleLogout = async () => {
     const confirmed = window.confirm('Hisobdan chiqmoqchimisiz?')
@@ -237,81 +270,164 @@ export const ProfilePage = () => {
         </div>
         {adsError ? <p className="mb-3 text-sm text-daladan-accentDark">{adsError}</p> : null}
         <div className="space-y-3">
-          {myListings.map((listing, index) => (
-            <div
-              key={listing.id}
-              className="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-4"
-            >
-              <div className="flex flex-col gap-3 md:flex-row">
-                <img
-                  src={listing.image}
-                  alt={listing.title}
-                  className="h-28 w-full rounded-xl object-cover md:w-48"
+          {myListings.map((listing) => {
+            const slides = getAdSlides(listing)
+            const slideIdx = adGalleryIndex[listing.id] ?? 0
+            const safeIdx = slides.length ? slideIdx % slides.length : 0
+            const status = adStatusPresentation(listing.status)
+            const active = isActiveAd(listing)
+            return (
+              <div
+                key={listing.id}
+                className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-4"
+              >
+                <Link
+                  to={`/item/${listing.id}`}
+                  className="absolute inset-0 z-0 rounded-2xl"
+                  aria-label={`${listing.title} — batafsil`}
                 />
-                <div className="flex-1">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{listing.title}</p>
-                      <p className="text-sm text-slate-500 dark:text-slate-400">
-                        Narxi: {formatPrice(listing.price)} {listing.unit} • Joylashuv:{' '}
-                        {listing.location}
-                      </p>
-                    </div>
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-semibold ${
-                        index === 0
-                          ? 'bg-daladan-primary/10 text-daladan-primary'
-                          : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                      }`}
+                <div className="relative z-10 flex flex-col gap-3 md:flex-row pointer-events-none">
+                  <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-xl md:h-auto md:w-48 md:min-h-[7rem] pointer-events-auto">
+                    <button
+                      type="button"
+                      onClick={() => setImagePreview({ urls: slides, index: safeIdx })}
+                      className="relative block h-full w-full min-h-[7rem]"
                     >
-                      {index === 0 ? 'FAOL' : "MUDDATI O'TGAN"}
-                    </span>
+                      <img
+                        src={slides[safeIdx]}
+                        alt={listing.title}
+                        className="h-full w-full object-cover"
+                      />
+                    </button>
+                    {slides.length > 1 ? (
+                      <>
+                        <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
+                          {slides.map((_, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              aria-label={`Rasm ${i + 1}`}
+                              className={`h-1.5 rounded-full transition-all ${
+                                i === safeIdx ? 'w-4 bg-white' : 'w-1.5 bg-white/55'
+                              }`}
+                              onClick={(e) => {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                setAdGalleryIndex((prev) => ({ ...prev, [listing.id]: i }))
+                              }}
+                            />
+                          ))}
+                        </div>
+                        <button
+                          type="button"
+                          aria-label="Oldingi rasm"
+                          className="absolute left-1 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-1 text-white hover:bg-black/65"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setAdGalleryIndex((prev) => ({
+                              ...prev,
+                              [listing.id]: ((prev[listing.id] ?? 0) - 1 + slides.length) % slides.length,
+                            }))
+                          }}
+                        >
+                          <ChevronLeft size={18} />
+                        </button>
+                        <button
+                          type="button"
+                          aria-label="Keyingi rasm"
+                          className="absolute right-1 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/50 p-1 text-white hover:bg-black/65"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setAdGalleryIndex((prev) => ({
+                              ...prev,
+                              [listing.id]: ((prev[listing.id] ?? 0) + 1) % slides.length,
+                            }))
+                          }}
+                        >
+                          <ChevronRight size={18} />
+                        </button>
+                      </>
+                    ) : null}
                   </div>
+                  <div className="flex min-w-0 flex-1 flex-col">
+                    <div className="flex items-start justify-between gap-3 pointer-events-none">
+                      <div className="min-w-0">
+                        <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{listing.title}</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          Narxi: {formatPrice(listing.price)} {listing.unit} • Joylashuv: {listing.location}
+                        </p>
+                      </div>
+                      <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${status.className}`}>
+                        {status.label}
+                      </span>
+                    </div>
 
-                  <div className="mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto]">
-                    <Link
-                      to={`/item/${listing.id}`}
-                      className="rounded-xl bg-daladan-primary px-4 py-2 text-center text-sm font-semibold text-white"
-                    >
-                      E&apos;lonni ko&apos;tarish
-                    </Link>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        void handleRefreshAd(listing)
-                      }}
-                      className={`rounded-xl px-4 py-2 text-center text-sm font-semibold ${
-                        index === 0
-                          ? 'bg-daladan-accentMuted text-daladan-accentDark'
-                          : 'bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-300'
-                      }`}
-                    >
-                      {index === 0 ? 'Top Sotuv' : 'Yangilash'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        void handleRefreshAd(listing)
-                      }}
-                      className="rounded-xl bg-slate-100 px-3 py-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
-                    >
-                      <RefreshCw size={14} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        void handleDeleteAd(listing)
-                      }}
-                      className="rounded-xl bg-slate-100 px-3 py-2 text-daladan-accentDark dark:bg-slate-800"
-                    >
-                      <Trash2 size={14} />
-                    </button>
+                    <div className="relative z-20 mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto] pointer-events-auto">
+                      <Link
+                        to={`/ad-boost/${listing.id}?plan=boosted`}
+                        className="rounded-xl bg-daladan-primary px-4 py-2 text-center text-sm font-semibold text-white"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        E&apos;lonni ko&apos;tarish
+                      </Link>
+                      {active ? (
+                        <Link
+                          to={`/ad-boost/${listing.id}?plan=top-sale`}
+                          className="rounded-xl bg-daladan-accentMuted px-4 py-2 text-center text-sm font-semibold text-daladan-accentDark"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Top Sotuv
+                        </Link>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            void handleRefreshAd(listing)
+                          }}
+                          className="rounded-xl bg-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                        >
+                          Yangilash
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void handleRefreshAd(listing)
+                        }}
+                        className="rounded-xl bg-slate-100 px-3 py-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
+                      >
+                        <RefreshCw size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          void handleDeleteAd(listing)
+                        }}
+                        className="rounded-xl bg-slate-100 px-3 py-2 text-daladan-accentDark dark:bg-slate-800"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
+        <ImageLightbox
+          open={imagePreview !== null}
+          urls={imagePreview?.urls ?? []}
+          index={imagePreview?.index ?? 0}
+          onClose={() => setImagePreview(null)}
+          onNavigate={(nextIndex) =>
+            setImagePreview((prev) => (prev ? { ...prev, index: nextIndex } : null))
+          }
+        />
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">

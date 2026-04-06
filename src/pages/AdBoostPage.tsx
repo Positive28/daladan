@@ -1,12 +1,13 @@
 import { CheckCircle2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { marketplaceService } from '../services'
 import type { BoostPlan, Listing } from '../types/marketplace'
 import { formatPrice } from '../utils/price'
 
 export const AdBoostPage = () => {
   const { id } = useParams()
+  const [searchParams] = useSearchParams()
   const [listing, setListing] = useState<Listing>()
   const [plans, setPlans] = useState<BoostPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string>()
@@ -19,6 +20,13 @@ export const AdBoostPage = () => {
       setSelectedPlanId(items[0]?.id)
     })
   }, [id])
+
+  const planFromQuery = searchParams.get('plan')
+  useEffect(() => {
+    if (!planFromQuery || plans.length === 0) return
+    const match = plans.find((p) => p.id === planFromQuery)
+    if (match) setSelectedPlanId(match.id)
+  }, [planFromQuery, plans])
 
   const selectedPlan = useMemo(
     () => plans.find((plan) => plan.id === selectedPlanId),

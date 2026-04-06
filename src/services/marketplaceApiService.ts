@@ -39,17 +39,35 @@ const getIdString = (item: UnknownRecord) => {
   return getString(item, 'id', 'ad_id')
 }
 
-const getMediaUrl = (media: unknown) => {
-  if (!Array.isArray(media)) return ''
+const normalizeMediaUrl = (url: string) => url.replace(/([^:]\/)\/+/g, '$1')
+
+const getMediaUrls = (media: unknown): string[] => {
+  if (!Array.isArray(media)) return []
+  const out: string[] = []
   for (const rawItem of media) {
     if (typeof rawItem === 'string' && rawItem.trim()) {
-      return rawItem.replace(/([^:]\/)\/+/g, '$1')
+      out.push(normalizeMediaUrl(rawItem.trim()))
+      continue
     }
     const item = asRecord(rawItem)
     const url = getString(item, 'url', 'path', 'src', 'full_url', 'original_url', 'thumbnail', 'thumb', 'preview_url')
-    if (url) return url.replace(/([^:]\/)\/+/g, '$1')
+    if (url) out.push(normalizeMediaUrl(url))
   }
-  return ''
+  return out
+}
+
+const uniqueLocationParts = (parts: string[]) => {
+  const seen = new Set<string>()
+  const next: string[] = []
+  for (const raw of parts) {
+    const p = raw.trim()
+    if (!p) continue
+    const key = p.toLowerCase()
+    if (seen.has(key)) continue
+    seen.add(key)
+    next.push(p)
+  }
+  return next
 }
 
 const toDisplayQuantity = (value: unknown) => {
@@ -86,6 +104,7 @@ const mapListing = (item: UnknownRecord): Listing => {
     getString(ownerCityObj, 'name_uz', 'name_oz', 'name') ||
     getString(item, 'city_name', 'city')
   const districtName = getString(item, 'district')
+  const locationExtra = getString(item, 'location')
   const rawUnit = getString(item, 'unit')
   const quantityValue = toDisplayQuantity(item.quantity)
   const sellerName =
@@ -97,10 +116,11 @@ const mapListing = (item: UnknownRecord): Listing => {
   const deliveryInfo = deliveryInfoRaw || (hasDeliveryFlag ? (getBoolean(item, 'delivery_available') ? 'Mavjud' : "Mavjud emas") : '')
   const unit = rawUnit ? `so'm / ${rawUnit}` : "so'm"
   const quantity = [quantityValue, rawUnit].filter(Boolean).join(' ').trim()
+  const mediaUrls = [...getMediaUrls(item.media), ...getMediaUrls(item.media_list)]
+  const ownerMediaUrls = getMediaUrls(ownerObj.media)
+  const mergedImages = [...new Set([...mediaUrls, ...ownerMediaUrls].filter(Boolean))]
   const imageUrl =
-    getMediaUrl(item.media) ||
-    getMediaUrl(item.media_list) ||
-    getMediaUrl(ownerObj.media) ||
+    mergedImages[0] ||
     getString(item, 'image', 'image_url', 'photo')
 
   return {
@@ -109,7 +129,8 @@ const mapListing = (item: UnknownRecord): Listing => {
     category: subcategoryName || categoryName || 'Kategoriya',
     categoryPath: [categoryName, subcategoryName].filter(Boolean),
     kind: getString(item, 'kind', 'type') === 'service' ? 'service' : 'item',
-    location: [regionName, cityName, districtName, getString(item, 'location')].filter(Boolean).join(', ') || 'Noma\'lum hudud',
+    location:
+      uniqueLocationParts([regionName, cityName, districtName, locationExtra].filter(Boolean)).join(', ') || "Noma'lum hudud",
     price: getNumber(item, 'price', 'amount'),
     unit,
     isTopSale: getBoolean(item, 'is_top_sale', 'top_sale', 'is_top'),
@@ -122,6 +143,8 @@ const mapListing = (item: UnknownRecord): Listing => {
     quantity: quantity || undefined,
     deliveryInfo: deliveryInfo || undefined,
     image: imageUrl || '/daladan-logo-full-transparent.png',
+    images: mergedImages.length > 0 ? mergedImages : undefined,
+    status: getString(item, 'status') || undefined,
   }
 }
 
