@@ -1,0 +1,49 @@
+---
+description: General code quality — types, errors, React, a11y, maintainability
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Code quality
+
+Complements ESLint + TypeScript: intent, UX, and reviewability where tooling is silent.
+
+## Types and APIs
+
+- **Explicit types** at boundaries (exports, props, public hooks). Avoid `any`; use `unknown` + narrowing or generics.
+- **Narrow** unions at usage sites (`if`, `switch`, guards) instead of non-null assertions (`!`) unless truly invariant.
+
+## Errors and edge cases
+
+- Do not **swallow** errors: empty `catch` blocks and ignored promise rejections are not acceptable unless documented why (e.g. fire-and-forget telemetry).
+- User-facing flows should surface **actionable** feedback (message, disabled state, retry) where failures matter.
+- Handle **loading / empty / error** states for async UI; avoid infinite spinners with no fallback.
+
+## React
+
+- Follow **rules of hooks** (hooks only at top level of React functions; stable dependency arrays).
+- **Keys** in lists: stable ids, not array index when order changes.
+- Avoid **derived state** duplicated in `useState` when it can be computed from props/state.
+- Use `useMemo` / `useCallback` when there is clear churn or evidence; avoid premature optimization.
+
+## Accessibility (basics)
+
+- Interactive elements: **keyboard** operable where appropriate; **focus** visible.
+- Images: **alt** text when informative; decorative images `alt=""` or equivalent.
+- Forms: **labels** associated with inputs (`htmlFor` / `aria-labelledby`).
+
+## Maintainability
+
+- **Names** reflect behavior and domain, not implementation detail only.
+- **Dead code**: remove unused imports, variables, and commented-out blocks left from experiments.
+- **Diff discipline**: solve the task at hand; avoid unrelated refactors in the same change.
+
+```tsx
+// ❌ Unstable list keys; swallowing errors
+items.map((_, i) => <Row key={i} />);
+try { await load(); } catch { /* silent */ }
+
+// ✅ Stable keys; log or surface failure
+items.map((item) => <Row key={item.id} />);
+try { await load(); } catch (e) { console.error(e); setError('Could not load.'); }
+```

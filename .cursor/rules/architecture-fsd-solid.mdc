@@ -1,0 +1,47 @@
+---
+description: Feature-Sliced Design (FSD) and SOLID for application code
+globs: src/**/*.{ts,tsx}
+alwaysApply: false
+---
+
+# Architecture: FSD + SOLID
+
+Follow [Feature-Sliced Design](https://feature-sliced.design/) and SOLID under `src/`. Prefer incremental alignment with FSD over big-bang rewrites.
+
+## Layers (dependency flows down only)
+
+| Layer | Maps to | Role |
+|-------|---------|------|
+| App | `main.tsx`, `App.tsx`, providers | Composition, routing shell |
+| Pages | `pages/` | Screens; compose widgets/features; thin logic |
+| Widgets | `components/*` | Composite UI blocks |
+| Features | `features/<name>/` when a slice grows | User flows: UI + local state + calls into entities/shared |
+| Entities | `types/`, domain models | Types and domain shape; no UI |
+| Shared | `utils/`, `services/`, `state/`, `data/` | API clients, helpers, cross-cutting state |
+
+**Imports:** Shared → no pages/widgets/features. Entities → shared only. Features → entities + shared. Pages → features, widgets, entities, shared. App → anything.
+
+**Slices:** Group by capability (e.g. marketplace, auth), not only by file type. Colocate cohesive UI + model + API usage when it belongs together.
+
+## SOLID (short)
+
+- **S** — Split fat pages into hooks/components; one domain per service module.
+- **O** — Extend via composition and new modules; use `data/` config where it fits.
+- **L** — Types and `services/` mappers stay consistent with API contracts.
+- **I** — Small props and service surfaces; avoid oversized context objects.
+- **D** — Pages/components use typed `services/` and hooks, not scattered raw `fetch`.
+
+## Examples
+
+```tsx
+// ❌ Page inlines fetch + JSON mapping
+// ✅ Page uses services/ or a feature hook; types from types/
+
+// ❌ utils/ imports a page
+// ✅ Page imports utils/
+
+// ❌ Shared component imports page-specific types
+// ✅ Page passes data; shared stays generic
+```
+
+If a dependency points “up” the stack, **move logic down** (extract to shared/entities/feature) instead.
