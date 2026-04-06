@@ -81,7 +81,6 @@ Implemented auth/session endpoints:
 - `POST /register?auth_type=password`
 - `POST /login`
 - `POST /logout`
-- `POST /refresh`
 - `GET /profile` (used as canonical current-user profile/me source)
 
 Not used by design:
@@ -128,7 +127,6 @@ Public endpoints:
 Authenticated endpoints:
 
 - [ ] `POST /login` and user session persists
-- [ ] `POST /refresh` refreshes token on expired access token (automatic retry path)
 - [ ] `POST /logout` clears local session and server session
 - [ ] `GET /profile` returns current user profile after login/register and on app bootstrap
 

@@ -22,6 +22,48 @@ import {
 } from './apiMappers'
 import type { MarketplaceService } from './contracts'
 
+/**
+ * Create form uses Uzbek labels; API expects a string unit (backend rule: length > 3).
+ * Values use readable English tokens / snake_case (min 4 characters each).
+ */
+const UI_TO_API_UNIT: Record<string, string> = {
+  kg: 'kilogram',
+  gramm: 'gram',
+  tonna: 'tonne',
+  litr: 'liter',
+  millilitr: 'milliliter',
+  dona: 'piece',
+  juft: 'pair',
+  quti: 'crate',
+  qop: 'sack',
+  savat: 'basket',
+  banka: 'bottle',
+  "bog'lam": 'bundle',
+  paqir: 'pack',
+  metr: 'meter',
+  santimetr: 'centimeter',
+  m2: 'square_meter',
+  m3: 'cubic_meter',
+  sotix: 'sotix',
+  gektar: 'hectare',
+  bosh: 'generic',
+  "to'plam": 'set_pack',
+  karobka: 'carton',
+  paket: 'packet',
+}
+
+const mapUiUnitToApi = (raw: string) => {
+  const t = raw.trim()
+  if (!t) return t
+  const lower = t.toLowerCase()
+  return (
+    UI_TO_API_UNIT[t] ??
+    UI_TO_API_UNIT[lower] ??
+    Object.entries(UI_TO_API_UNIT).find(([key]) => key.toLowerCase() === lower)?.[1] ??
+    t
+  )
+}
+
 const mapCategory = (item: UnknownRecord): CategoryOption => ({
   id: getNumber(item, 'id', 'category_id'),
   name: getString(item, 'name_uz', 'name_oz', 'name', 'title'),
@@ -199,7 +241,9 @@ const toBasePayload = (payload: CreateProfileAdPayload | UpdateProfileAdPayload)
   assign('price', payload.price)
   assign('quantity', payload.quantity)
   assign('quantity_description', payload.quantity_description)
-  assign('unit', payload.unit)
+  if (typeof payload.unit === 'string' && payload.unit.trim()) {
+    assign('unit', mapUiUnitToApi(payload.unit))
+  }
   assign('delivery_available', payload.delivery_available)
   assign('delivery_info', payload.delivery_info)
   if (Array.isArray(payload.media)) {
@@ -221,6 +265,11 @@ const createMultipartBody = (payload: CreateProfileAdPayload | UpdateProfileAdPa
     body.append(key, String(value))
   }
 
+  const appendBool = (key: string, value: boolean | undefined) => {
+    if (value === undefined) return
+    body.append(key, value ? '1' : '0')
+  }
+
   append('category_id', payload.category_id)
   append('subcategory_id', payload.subcategory_id)
   append('region_id', payload.region_id)
@@ -231,8 +280,10 @@ const createMultipartBody = (payload: CreateProfileAdPayload | UpdateProfileAdPa
   append('price', payload.price)
   append('quantity', payload.quantity)
   append('quantity_description', payload.quantity_description)
-  append('unit', payload.unit)
-  append('delivery_available', payload.delivery_available)
+  if (typeof payload.unit === 'string' && payload.unit.trim()) {
+    append('unit', mapUiUnitToApi(payload.unit))
+  }
+  appendBool('delivery_available', payload.delivery_available)
   append('delivery_info', payload.delivery_info)
 
   ;(payload.media ?? []).forEach((url) => {

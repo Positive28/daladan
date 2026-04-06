@@ -93,7 +93,6 @@ export interface AuthService {
   login(payload: LoginRequest): Promise<AuthResult>
   register(payload: RegisterRequest, authType?: 'password' | 'telegram'): Promise<AuthResult>
   getMe(): Promise<AuthUser>
-  refresh(): Promise<string | undefined>
   getRegions(): Promise<RegionOption[]>
   getCities(regionId?: number): Promise<CityOption[]>
   logout(): Promise<void>

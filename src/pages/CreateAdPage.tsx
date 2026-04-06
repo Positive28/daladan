@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { PhotoUploadGrid } from '../components/marketplace/PhotoUploadGrid'
+import { ApiError } from '../services/apiClient'
 import { aiService, authService, marketplaceService, profileService } from '../services'
 import type { CityOption, RegionOption } from '../services/contracts'
 import { useAuth } from '../state/AuthContext'
@@ -66,7 +67,7 @@ const createEmptyPhotoSlots = () => Array.from({ length: PHOTO_UPLOAD_SLOT_COUNT
 
 export const CreateAdPage = () => {
   const navigate = useNavigate()
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
   const [photoSlots, setPhotoSlots] = useState(createEmptyPhotoSlots)
   const [categories, setCategories] = useState<CategoryOption[]>([])
   const [subcategories, setSubcategories] = useState<SubcategoryOption[]>([])
@@ -424,6 +425,7 @@ export const CreateAdPage = () => {
         title: values.title.trim(),
         description: values.description.trim(),
         price: parsedPrice,
+        quantity: 1,
         unit: values.unit.trim(),
         delivery_available: values.deliveryAvailable,
         delivery_info: values.deliveryAvailable ? 'Mavjud' : "Mavjud emas",
@@ -432,6 +434,15 @@ export const CreateAdPage = () => {
       })
       navigate('/profile')
     } catch (submissionError) {
+      if (submissionError instanceof ApiError && submissionError.status === 401) {
+        try {
+          await logout()
+        } catch {
+          // Session cleared in logout; ignore secondary errors.
+        }
+        navigate('/login', { replace: true })
+        return
+      }
       setError(submissionError instanceof Error ? submissionError.message : "E'lon yaratishda xatolik yuz berdi")
     }
   }

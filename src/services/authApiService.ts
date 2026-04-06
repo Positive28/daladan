@@ -114,12 +114,5 @@ export const authApiService: AuthService = {
   async logout() {
     await requestJson<unknown>('/logout', { method: 'POST' })
   },
-
-  async refresh() {
-    const response = await requestJson<unknown>('/refresh', {
-      method: 'POST',
-    })
-    return extractAuthToken(response) ?? undefined
-  },
 }
 
