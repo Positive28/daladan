@@ -324,14 +324,15 @@ export const MarketplacePage = () => {
             <p className="text-sm text-slate-500 dark:text-slate-400">Jami: {filtered.length} ta e&apos;lon topildi</p>
           </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="columns-1 [column-gap:1rem] sm:columns-2 xl:columns-3">
           {pageItems.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              listing={listing}
-              canFavorite={Boolean(user)}
-              onFavoriteBlocked={redirectToLogin}
-            />
+            <div key={listing.id} className="mb-4 break-inside-avoid">
+              <ListingCard
+                listing={listing}
+                canFavorite={Boolean(user)}
+                onFavoriteBlocked={redirectToLogin}
+              />
+            </div>
           ))}
         </div>
         {filtered.length === 0 ? (

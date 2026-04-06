@@ -28,14 +28,15 @@ export const FavoritesPage = () => {
           Hozircha sevimli e&apos;lonlar yo&apos;q.
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="columns-1 [column-gap:1rem] sm:columns-2 xl:columns-3">
           {favoriteListings.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              listing={listing}
-              canFavorite
-              onFavoriteBlocked={() => undefined}
-            />
+            <div key={listing.id} className="mb-4 break-inside-avoid">
+              <ListingCard
+                listing={listing}
+                canFavorite
+                onFavoriteBlocked={() => undefined}
+              />
+            </div>
           ))}
         </div>
       )}

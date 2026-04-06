@@ -57,8 +57,14 @@ export const ListingCard = ({
       onKeyDown={onCardKeyDown}
       className="cursor-pointer overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900"
     >
-      <div className="relative">
-        <img src={listing.image} alt={listing.title} onError={onImageError} className="h-44 w-full object-cover" />
+      <div className="relative bg-slate-100 dark:bg-slate-800">
+        <img
+          src={listing.image}
+          alt={listing.title}
+          onError={onImageError}
+          className="mx-auto block h-auto max-h-[min(70vh,560px)] w-full max-w-full object-contain"
+          loading="lazy"
+        />
         <div className="absolute left-3 top-3 flex flex-wrap gap-2 text-[10px] font-semibold">
           {listing.isTopSale && (
             <span className="rounded-md bg-daladan-accent px-2 py-1 text-daladan-accentDark">
