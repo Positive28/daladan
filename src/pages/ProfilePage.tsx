@@ -3,13 +3,14 @@ import {
   CreditCard,
   Eye,
   Heart,
+  LogOut,
   MessageSquare,
   Pencil,
   RefreshCw,
   Trash2,
   Wallet,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { marketplaceService, profileService } from '../services'
 import { useAuth } from '../state/AuthContext'
 import type { Listing } from '../types/marketplace'
@@ -53,7 +54,9 @@ export const ProfilePage = () => {
     phone: '',
     region: '',
   })
-  const { user } = useAuth()
+  const { user, logout } = useAuth()
+  const navigate = useNavigate()
+  const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const loadProfileAds = async () => {
     try {
@@ -97,6 +100,18 @@ export const ProfilePage = () => {
   }, [user])
 
   const fullName = `${editableProfile.firstName} ${editableProfile.lastName}`.trim()
+
+  const handleLogout = async () => {
+    const confirmed = window.confirm('Hisobdan chiqmoqchimisiz?')
+    if (!confirmed) return
+    setIsLoggingOut(true)
+    try {
+      navigate('/', { replace: true })
+      await logout()
+    } finally {
+      setIsLoggingOut(false)
+    }
+  }
 
   const onProfileFieldChange = (field: keyof EditableProfile, value: string) => {
     setEditableProfile((prev) => ({
@@ -374,6 +389,17 @@ export const ProfilePage = () => {
           >
             <Wallet size={16} />
             To&apos;lovlar
+          </button>
+        </div>
+        <div className="mt-4 border-t border-slate-200 pt-3 dark:border-slate-700">
+          <button
+            type="button"
+            onClick={() => void handleLogout()}
+            disabled={isLoggingOut}
+            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:text-slate-300 dark:hover:bg-slate-800"
+          >
+            <LogOut size={16} />
+            {isLoggingOut ? 'Chiqilmoqda...' : 'Chiqish'}
           </button>
         </div>
       </aside>

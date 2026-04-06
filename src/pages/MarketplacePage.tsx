@@ -199,7 +199,12 @@ export const MarketplacePage = () => {
   }
 
   const selectCategory = (label: string) => {
-    setSelectedCategory(label)
+    setSelectedCategory((prev) => {
+      if (label !== 'Barchasi' && prev === label) {
+        return 'Barchasi'
+      }
+      return label
+    })
     setCurrentPage(1)
   }
 

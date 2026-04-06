@@ -1,13 +1,11 @@
 import { Heart, Moon, Search, Sun, User } from 'lucide-react'
-import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../state/AuthContext'
 import { useTheme } from '../../state/ThemeContext'
 
 export const SiteHeader = () => {
-  const { user, logout } = useAuth()
+  const { user } = useAuth()
   const { theme, toggleTheme } = useTheme()
-  const [isLoggingOut, setIsLoggingOut] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const currentQuery = new URLSearchParams(location.search).get('q') ?? ''
@@ -33,20 +31,6 @@ export const SiteHeader = () => {
       },
       { replace: true },
     )
-  }
-
-  const onLogout = async () => {
-    const confirmed = window.confirm('Hisobdan chiqmoqchimisiz?')
-    if (!confirmed) return
-
-    setIsLoggingOut(true)
-    try {
-      // Leave protected routes first to avoid redirecting to /login after user state is cleared.
-      navigate('/', { replace: true })
-      await logout()
-    } finally {
-      setIsLoggingOut(false)
-    }
   }
 
   return (
@@ -85,22 +69,21 @@ export const SiteHeader = () => {
           <Heart size={18} />
         </button>
         {user ? (
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 items-center gap-2">
             <button
               type="button"
               onClick={() => navigate('/profile')}
               className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-daladan-primary/10 text-daladan-primary"
+              aria-label="Profil"
             >
               <User size={18} />
             </button>
-            <button
-              type="button"
-              onClick={() => void onLogout()}
-              disabled={isLoggingOut}
-              className="rounded-xl bg-daladan-primary px-3 py-2 text-sm text-white disabled:cursor-not-allowed disabled:opacity-70"
+            <Link
+              to="/profile/ads/new"
+              className="rounded-xl bg-daladan-primary px-2.5 py-2 text-center text-sm font-medium text-white sm:px-3"
             >
-              {isLoggingOut ? 'Chiqilmoqda...' : 'Chiqish'}
-            </button>
+              reklama ornatish
+            </Link>
           </div>
         ) : (
           <button
