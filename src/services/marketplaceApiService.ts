@@ -126,7 +126,8 @@ const toDisplayQuantity = (value: unknown) => {
   return ''
 }
 
-const mapListing = (item: UnknownRecord): Listing => {
+/** Shared by admin user ads list; maps API ad rows to marketplace `Listing`. */
+export const mapListing = (item: UnknownRecord): Listing => {
   const categoryObj = asRecord(item.category)
   const subcategoryObj = asRecord(item.subcategory)
   const regionObj = asRecord(item.region)

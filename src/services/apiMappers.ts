@@ -15,14 +15,28 @@ export const extractCollection = (value: unknown): UnknownRecord[] => {
   if (direct.length > 0) return direct
 
   const root = asRecord(value)
-  const topLevelCandidates = [root.data, root.items, root.results, root.rows]
+  const topLevelCandidates = [
+    root.data,
+    root.items,
+    root.results,
+    root.rows,
+    root.categories,
+    root.subcategories,
+  ]
   for (const candidate of topLevelCandidates) {
     const list = asArray(candidate)
     if (list.length > 0) return list
   }
 
   const nested = asRecord(root.data)
-  const nestedCandidates = [nested.data, nested.items, nested.results, nested.rows]
+  const nestedCandidates = [
+    nested.data,
+    nested.items,
+    nested.results,
+    nested.rows,
+    nested.categories,
+    nested.subcategories,
+  ]
   for (const candidate of nestedCandidates) {
     const list = asArray(candidate)
     if (list.length > 0) return list

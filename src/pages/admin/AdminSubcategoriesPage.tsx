@@ -1,181 +1,37 @@
-import { useCallback, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { ApiError } from '../../services/apiClient'
-import { adminApiService } from '../../services'
-import type { AdminCategory, AdminSubcategory, AdminSubcategoryPayload } from '../../types/admin'
-import { slugifyFromName } from '../../utils/slugifyAdmin'
 import { AdminModal } from '../../components/admin/AdminModal'
 import { AdminPagination } from '../../components/admin/AdminPagination'
-
-type FormValues = {
-  category_id: string
-  name: string
-  slug: string
-  sort_order: string
-  is_active: boolean
-}
-
-const emptyForm: FormValues = {
-  category_id: '',
-  name: '',
-  slug: '',
-  sort_order: '',
-  is_active: true,
-}
-
-const toPayload = (values: FormValues): AdminSubcategoryPayload => {
-  const sortRaw = values.sort_order.trim()
-  const sortNum = sortRaw === '' ? null : Number(sortRaw)
-  return {
-    category_id: Number(values.category_id),
-    name: values.name.trim(),
-    slug: values.slug.trim(),
-    sort_order: sortNum === null || Number.isNaN(sortNum) ? null : sortNum,
-    is_active: values.is_active,
-  }
-}
-
-const rowToForm = (s: AdminSubcategory): FormValues => ({
-  category_id: String(s.category_id),
-  name: s.name,
-  slug: s.slug,
-  sort_order: s.sort_order === null ? '' : String(s.sort_order),
-  is_active: s.is_active,
-})
+import { useAdminSubcategoriesPage } from '../../features/admin-subcategories'
 
 export const AdminSubcategoriesPage = () => {
-  const [rows, setRows] = useState<AdminSubcategory[]>([])
-  const [categories, setCategories] = useState<AdminCategory[]>([])
-  const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(15)
-  const [lastPage, setLastPage] = useState(1)
-  const [total, setTotal] = useState(0)
-  const [filterCategoryId, setFilterCategoryId] = useState<string>('all')
-  const [filterActive, setFilterActive] = useState<'all' | 'true' | 'false'>('all')
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-  const [forbidden, setForbidden] = useState(false)
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [slugManual, setSlugManual] = useState(false)
-  const [saving, setSaving] = useState(false)
-
-  const { register, handleSubmit, reset, watch, setValue } = useForm<FormValues>({ defaultValues: emptyForm })
-  const nameWatch = watch('name')
-  const slugRegister = register('slug', { required: true })
-
-  const loadCategories = useCallback(async () => {
-    try {
-      const res = await adminApiService.listCategories({ per_page: 100, page: 1 })
-      setCategories(res.items)
-    } catch {
-      setCategories([])
-    }
-  }, [])
-
-  useEffect(() => {
-    void loadCategories()
-  }, [loadCategories])
-
-  const load = useCallback(async () => {
-    setError('')
-    setForbidden(false)
-    setLoading(true)
-    try {
-      const res = await adminApiService.listSubcategories({
-        per_page: perPage,
-        page,
-        category_id: filterCategoryId === 'all' ? undefined : Number(filterCategoryId),
-        is_active: filterActive === 'all' ? undefined : filterActive === 'true',
-      })
-      setRows(res.items)
-      setLastPage(res.lastPage)
-      setTotal(res.total)
-    } catch (e) {
-      if (e instanceof ApiError && e.status === 403) setForbidden(true)
-      setError(e instanceof Error ? e.message : 'Yuklashda xatolik')
-      setRows([])
-    } finally {
-      setLoading(false)
-    }
-  }, [page, perPage, filterCategoryId, filterActive])
-
-  useEffect(() => {
-    void load()
-  }, [load])
-
-  useEffect(() => {
-    if (!modalOpen || slugManual || editingId !== null) return
-    setValue('slug', slugifyFromName(nameWatch), { shouldValidate: false })
-  }, [nameWatch, modalOpen, slugManual, editingId, setValue])
-
-  const openCreate = () => {
-    setEditingId(null)
-    setSlugManual(false)
-    reset(emptyForm)
-    setModalOpen(true)
-  }
-
-  const openEdit = async (id: number) => {
-    setSlugManual(true)
-    setEditingId(id)
-    setError('')
-    try {
-      const s = await adminApiService.getSubcategory(id)
-      reset(rowToForm(s))
-      setModalOpen(true)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Yuklashda xatolik')
-    }
-  }
-
-  const closeModal = () => {
-    setModalOpen(false)
-    setEditingId(null)
-  }
-
-  const onSubmit = async (values: FormValues) => {
-    if (!values.category_id) {
-      setError('Kategoriya tanlang')
-      return
-    }
-    setSaving(true)
-    setError('')
-    try {
-      const payload = toPayload(values)
-      if (editingId === null) {
-        await adminApiService.createSubcategory(payload)
-      } else {
-        await adminApiService.updateSubcategory(editingId, payload)
-      }
-      closeModal()
-      await load()
-    } catch (e) {
-      if (e instanceof ApiError && e.status === 403) setForbidden(true)
-      setError(e instanceof Error ? e.message : 'Saqlashda xatolik')
-    } finally {
-      setSaving(false)
-    }
-  }
-
-  const onDelete = (id: number) => {
-    if (!window.confirm('Bu subkategoriyani o‘chirishni tasdiqlaysizmi?')) return
-    void (async () => {
-      setError('')
-      try {
-        await adminApiService.deleteSubcategory(id)
-        await load()
-      } catch (e) {
-        if (e instanceof ApiError && e.status === 403) setForbidden(true)
-        setError(e instanceof Error ? e.message : 'O‘chirishda xatolik')
-      }
-    })()
-  }
-
-  const onPerPageChange = (n: number) => {
-    setPerPage(n)
-    setPage(1)
-  }
+  const {
+    rows,
+    categories,
+    page,
+    setPage,
+    perPage,
+    lastPage,
+    total,
+    filterCategoryId,
+    setFilterCategoryId,
+    filterActive,
+    setFilterActive,
+    loading,
+    error,
+    forbidden,
+    modalOpen,
+    editingId,
+    setSlugManual,
+    saving,
+    register,
+    handleSubmit,
+    slugRegister,
+    openCreate,
+    openEdit,
+    closeModal,
+    onSubmit,
+    onDelete,
+    onPerPageChange,
+  } = useAdminSubcategoriesPage()
 
   return (
     <>

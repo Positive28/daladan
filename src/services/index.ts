@@ -1,5 +1,5 @@
 import type { AIService, AuthService, MarketplaceService, ProfileService } from './contracts'
-import { adminApiService } from './adminApiService'
+import { adminApiService } from './admin'
 import { aiApiService } from './aiApiService'
 import { authApiService } from './authApiService'
 import { marketplaceApiService } from './marketplaceApiService'
