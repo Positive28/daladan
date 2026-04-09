@@ -4,7 +4,7 @@ import type { AdminUserFormValues } from '../model/userForm'
 
 export type AdminUserFormFieldsProps = {
   register: UseFormRegister<AdminUserFormValues>
-  regionIdRegister: UseFormRegisterReturn<'region_id', AdminUserFormValues>
+  regionIdRegister: UseFormRegisterReturn<'region_id'>
   regionWatch: string
   setValue: UseFormSetValue<AdminUserFormValues>
   regions: RegionOption[]
