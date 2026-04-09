@@ -1,20 +1,30 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Moon, Sun } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../state/AuthContext'
 import { useTheme } from '../state/ThemeContext'
 import { formatUzPhoneInput, isUzPhoneComplete, normalizeUzPhone } from '../utils/phone'
 
-export const LoginPage = () => {
+type LoginPageProps = {
+  variant?: 'site' | 'admin'
+}
+
+export const LoginPage = ({ variant = 'site' }: LoginPageProps) => {
   const { theme, toggleTheme } = useTheme()
   const [phone, setPhone] = useState(formatUzPhoneInput(''))
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { loginWithPassword } = useAuth()
+  const { loginWithPassword, user, isAuthLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: string } | null)?.from ?? '/'
+
+  useEffect(() => {
+    if (!isAuthLoading && user) {
+      navigate(from, { replace: true })
+    }
+  }, [isAuthLoading, user, navigate, from])
 
   const submitPassword = async (event: FormEvent) => {
     event.preventDefault()
@@ -52,8 +62,14 @@ export const LoginPage = () => {
         <Link to="/" className="mb-6 flex justify-center">
           <img src="/daladan-logo-full-transparent.png" alt="Daladan" className="h-14 object-contain" />
         </Link>
-        <h1 className="text-4xl font-semibold text-slate-900 dark:text-slate-100">Kirish</h1>
-        <p className="mt-2 text-base text-slate-600 dark:text-slate-400">Telefon raqamingiz orqali hisobga kiring.</p>
+        <h1 className="text-4xl font-semibold text-slate-900 dark:text-slate-100">
+          {variant === 'admin' ? 'Admin paneliga kirish' : 'Kirish'}
+        </h1>
+        <p className="mt-2 text-base text-slate-600 dark:text-slate-400">
+          {variant === 'admin'
+            ? 'Admin akkauntingiz bilan tizimga kiring.'
+            : 'Telefon raqamingiz orqali hisobga kiring.'}
+        </p>
         <form className="mt-5 space-y-3" onSubmit={submitPassword}>
           <input
             value={phone}
@@ -76,12 +92,14 @@ export const LoginPage = () => {
         </form>
 
         {error && <p className="mt-3 text-base text-daladan-accentDark">{error}</p>}
-        <p className="mt-5 text-lg text-slate-700 dark:text-slate-300">
-          Hisobingiz yo&apos;qmi?{' '}
-          <Link to="/register" className="font-semibold text-daladan-primary">
-            Ro&apos;yxatdan o&apos;tish
-          </Link>
-        </p>
+        {variant === 'site' ? (
+          <p className="mt-5 text-lg text-slate-700 dark:text-slate-300">
+            Hisobingiz yo&apos;qmi?{' '}
+            <Link to="/register" className="font-semibold text-daladan-primary">
+              Ro&apos;yxatdan o&apos;tish
+            </Link>
+          </p>
+        ) : null}
       </div>
     </div>
   )

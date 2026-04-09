@@ -96,6 +96,7 @@ const toMessage = (status: number, data: unknown) => {
     if (validation) return validation
   }
   if (status === 401) return "Telefon raqam yoki parol noto'g'ri"
+  if (status === 403) return "Bu amalni bajarish uchun ruxsat yo'q"
   if (status === 422) return "Kiritilgan ma'lumotlarda xatolik bor"
   return 'So\'rovni bajarib bo\'lmadi'
 }

@@ -9,8 +9,14 @@ import { CreateAdPage } from './pages/CreateAdPage'
 import { MarketplacePage } from './pages/MarketplacePage'
 import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
+import { AdminAppRoutes } from './routes/AdminAppRoutes'
+import { isAdminApp } from './utils/adminHost'
 
 function App() {
+  if (isAdminApp()) {
+    return <AdminAppRoutes />
+  }
+
   return (
     <Routes>
       <Route element={<SiteLayout />}>

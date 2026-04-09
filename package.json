@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vercel pull --yes --environment=development && vite",
     "dev:vite": "vite",
+    "admin:dev": "vercel pull --yes --environment=development && vite --mode admin",
+    "admin:dev:vite": "vite --mode admin",
     "build": "tsc -b && vite build",
+    "build:admin": "tsc -b && vite build --mode admin-production",
+    "build:site": "tsc -b && vite build --mode site",
     "lint": "eslint .",
     "preview": "vite preview"
   },
