@@ -50,7 +50,7 @@ export const SiteHeader = () => {
             value={currentQuery}
             onChange={(event) => updateSearch(event.target.value)}
             className="w-full bg-transparent text-sm text-slate-900 outline-none dark:text-slate-100"
-            placeholder="qotoq bormi qidirib"
+            placeholder="Yozing, tushib qolmasin — har ikkalamiz qidiramiz"
           />
         </label>
         <button
