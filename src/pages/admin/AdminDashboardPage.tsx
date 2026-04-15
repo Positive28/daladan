@@ -34,7 +34,7 @@ export const AdminDashboardPage = () => {
           <li key={to}>
             <Link
               to={to}
-              className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-900"
+              className="flex h-full flex-col rounded-ui border border-slate-200 bg-white p-5 shadow-sm transition-shadow hover:shadow-md dark:border-slate-700 dark:bg-slate-900"
             >
               <Icon className="mb-3 text-daladan-primary" size={28} aria-hidden />
               <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</span>

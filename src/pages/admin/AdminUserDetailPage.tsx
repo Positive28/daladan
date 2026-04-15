@@ -55,13 +55,13 @@ export const AdminUserDetailPage = () => {
       </div>
 
       {forbidden ? (
-        <div className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
+        <div className="mb-4 rounded-ui border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
           Sizda admin huquqi yo‘q yoki sessiya tugagan.
         </div>
       ) : null}
 
       {error ? (
-        <div className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-100">
+        <div className="mb-4 rounded-ui border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-100">
           {error}
         </div>
       ) : null}
@@ -83,13 +83,13 @@ export const AdminUserDetailPage = () => {
             <button
               type="button"
               onClick={onDelete}
-              className="shrink-0 rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/30"
+              className="shrink-0 rounded-ui border border-red-200 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-950/30"
             >
               Foydalanuvchini o‘chirish
             </button>
           </div>
 
-          <section className="mb-10 rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+          <section className="mb-10 rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Profilni tahrirlash</h2>
             <form id="admin-user-detail-form" className="mt-4 space-y-4" onSubmit={handleSubmit(onSubmit)}>
               <AdminUserFormFields
@@ -105,7 +105,7 @@ export const AdminUserDetailPage = () => {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="rounded-xl bg-daladan-primary px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
+                  className="rounded-ui bg-daladan-primary px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-60"
                 >
                   {saving ? 'Saqlanmoqda...' : 'O‘zgarishlarni saqlash'}
                 </button>
@@ -115,7 +115,7 @@ export const AdminUserDetailPage = () => {
 
           <section>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">E‘lonlar</h2>
-            <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+            <div className="mt-4 overflow-x-auto rounded-ui border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
               <table className="min-w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50">

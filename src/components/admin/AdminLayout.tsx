@@ -6,7 +6,7 @@ import { useTheme } from '../../state/ThemeContext'
 
 const navClass = ({ isActive }: { isActive: boolean }) =>
   [
-    'flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors',
+    'flex items-center gap-3 rounded-ui px-3 py-2.5 text-sm font-medium transition-colors',
     isActive
       ? 'bg-daladan-primary text-white'
       : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800',
@@ -90,7 +90,7 @@ export const AdminLayout = ({ children }: { children?: ReactNode }) => {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 lg:hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-ui border border-slate-200 bg-white text-slate-700 lg:hidden dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                 onClick={() => setMobileOpen(true)}
                 aria-label="Menyuni ochish"
               >
@@ -111,7 +111,7 @@ export const AdminLayout = ({ children }: { children?: ReactNode }) => {
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                className="inline-flex h-10 w-10 items-center justify-center rounded-ui border border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                 aria-label={theme === 'dark' ? "Yorug' rejim" : "Qorong'i rejim"}
               >
                 {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
@@ -119,7 +119,7 @@ export const AdminLayout = ({ children }: { children?: ReactNode }) => {
               <button
                 type="button"
                 onClick={() => void logout()}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                className="inline-flex items-center gap-1.5 rounded-ui border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
               >
                 <LogOut size={16} aria-hidden />
                 Chiqish

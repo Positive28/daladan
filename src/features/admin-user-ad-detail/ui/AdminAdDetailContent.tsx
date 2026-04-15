@@ -34,7 +34,7 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       </p>
     </header>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Asosiy</h2>
       <dl className="mt-2">
         <DetailRow label="ID">{ad.id}</DetailRow>
@@ -50,7 +50,7 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       </dl>
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Narx va miqdor</h2>
       <dl className="mt-2">
         <DetailRow label="price">{fmtPrice(ad)}</DetailRow>
@@ -59,7 +59,7 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       </dl>
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Joylashuv</h2>
       <dl className="mt-2">
         <DetailRow label="region_id">{ad.region_id}</DetailRow>
@@ -68,7 +68,7 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       </dl>
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Kategoriya</h2>
       <dl className="mt-2">
         <DetailRow label="category_id">{ad.category_id}</DetailRow>
@@ -82,19 +82,19 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       </dl>
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Tavsif</h2>
       <p className="mt-3 whitespace-pre-wrap text-sm text-slate-800 dark:text-slate-200">{ad.description || '—'}</p>
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">media_list</h2>
       {ad.media_list.length === 0 ? (
         <p className="mt-2 text-sm text-slate-500">Bo‘sh</p>
       ) : (
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ad.media_list.map((m) => (
-            <li key={m.id} className="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+            <li key={m.id} className="overflow-hidden rounded-ui border border-slate-200 dark:border-slate-700">
               {m.url ? (
                 <a href={m.url} target="_blank" rel="noopener noreferrer" className="block">
                   <img src={m.url} alt="" className="h-48 w-full object-cover" />
@@ -114,9 +114,9 @@ export const AdminAdDetailContent = ({ ad, user }: AdminAdDetailContentProps) =>
       )}
     </section>
 
-    <section className="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+    <section className="rounded-ui border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">media (to‘liq JSON)</h2>
-      <pre className="mt-3 max-h-[480px] overflow-auto rounded-xl bg-slate-950 p-4 text-xs text-slate-100">
+      <pre className="mt-3 max-h-[480px] overflow-auto rounded-ui bg-slate-950 p-4 text-xs text-slate-100">
         {JSON.stringify(ad.media, null, 2)}
       </pre>
     </section>

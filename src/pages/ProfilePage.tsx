@@ -279,15 +279,15 @@ export const ProfilePage = () => {
             return (
               <div
                 key={listing.id}
-                className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-4"
+                className="relative overflow-hidden rounded-ui border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-4"
               >
                 <Link
                   to={`/item/${listing.id}`}
-                  className="absolute inset-0 z-0 rounded-2xl"
+                  className="absolute inset-0 z-0 rounded-ui"
                   aria-label={`${listing.title} — batafsil`}
                 />
                 <div className="relative z-10 flex flex-col gap-3 md:flex-row pointer-events-none">
-                  <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-xl md:h-auto md:w-48 md:min-h-[7rem] pointer-events-auto">
+                  <div className="relative h-28 w-full shrink-0 overflow-hidden rounded-ui md:h-auto md:w-48 md:min-h-[7rem] pointer-events-auto">
                     <button
                       type="button"
                       onClick={() => setImagePreview({ urls: slides, index: safeIdx })}
@@ -367,7 +367,7 @@ export const ProfilePage = () => {
                     <div className="relative z-20 mt-4 grid gap-2 sm:grid-cols-[1fr_1fr_auto_auto] pointer-events-auto">
                       <Link
                         to={`/ad-boost/${listing.id}?plan=boosted`}
-                        className="rounded-xl bg-daladan-primary px-4 py-2 text-center text-sm font-semibold text-white"
+                        className="rounded-ui bg-daladan-primary px-4 py-2 text-center text-sm font-semibold text-white"
                         onClick={(e) => e.stopPropagation()}
                       >
                         E&apos;lonni ko&apos;tarish
@@ -375,7 +375,7 @@ export const ProfilePage = () => {
                       {active ? (
                         <Link
                           to={`/ad-boost/${listing.id}?plan=top-sale`}
-                          className="rounded-xl bg-daladan-accentMuted px-4 py-2 text-center text-sm font-semibold text-daladan-accentDark"
+                          className="rounded-ui bg-daladan-accentMuted px-4 py-2 text-center text-sm font-semibold text-daladan-accentDark"
                           onClick={(e) => e.stopPropagation()}
                         >
                           Top Sotuv
@@ -387,7 +387,7 @@ export const ProfilePage = () => {
                             e.stopPropagation()
                             void handleRefreshAd(listing)
                           }}
-                          className="rounded-xl bg-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200"
+                          className="rounded-ui bg-slate-200 px-4 py-2 text-center text-sm font-semibold text-slate-700 dark:bg-slate-700 dark:text-slate-200"
                         >
                           Yangilash
                         </button>
@@ -398,7 +398,7 @@ export const ProfilePage = () => {
                           e.stopPropagation()
                           void handleRefreshAd(listing)
                         }}
-                        className="rounded-xl bg-slate-100 px-3 py-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
+                        className="rounded-ui bg-slate-100 px-3 py-2 text-slate-500 dark:bg-slate-800 dark:text-slate-300"
                       >
                         <RefreshCw size={14} />
                       </button>
@@ -408,7 +408,7 @@ export const ProfilePage = () => {
                           e.stopPropagation()
                           void handleDeleteAd(listing)
                         }}
-                        className="rounded-xl bg-slate-100 px-3 py-2 text-daladan-accentDark dark:bg-slate-800"
+                        className="rounded-ui bg-slate-100 px-3 py-2 text-daladan-accentDark dark:bg-slate-800"
                       >
                         <Trash2 size={14} />
                       </button>
@@ -431,21 +431,21 @@ export const ProfilePage = () => {
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <Eye size={16} />
             Ko&apos;rishlar soni
           </p>
           <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">1,240</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <Heart size={16} />
             Saqlanganlar
           </p>
           <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">45</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <CreditCard size={16} />
             Hisob balansi
@@ -458,7 +458,7 @@ export const ProfilePage = () => {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
-      <aside className="h-fit rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <aside className="h-fit rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="space-y-1 text-sm">
           <button
             type="button"
@@ -523,7 +523,7 @@ export const ProfilePage = () => {
       <section className="space-y-5">
         {activeTab === 'profile' && (
           <>
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+            <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
               <div className="flex flex-col gap-5 md:flex-row md:items-center">
                 <div className="flex h-24 w-24 items-center justify-center rounded-full bg-daladan-accent text-2xl font-bold text-daladan-accentDark">
                   {editableProfile.avatarUrl ? (
@@ -545,7 +545,7 @@ export const ProfilePage = () => {
                     <button
                       type="button"
                       onClick={() => setIsEditingProfile((prev) => !prev)}
-                      className="inline-flex items-center gap-2 rounded-xl bg-daladan-primary px-4 py-2 text-sm font-semibold text-white"
+                      className="inline-flex items-center gap-2 rounded-ui bg-daladan-primary px-4 py-2 text-sm font-semibold text-white"
                     >
                       <Pencil size={14} />
                       {isEditingProfile ? 'Yopish' : 'Tahrirlash'}
@@ -553,7 +553,7 @@ export const ProfilePage = () => {
                     <button
                       type="button"
                       onClick={() => setIsPasswordEditorOpen((prev) => !prev)}
-                      className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="rounded-ui bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                     >
                       Parolni o&apos;zgartirish
                     </button>
@@ -565,7 +565,7 @@ export const ProfilePage = () => {
             {profileError ? <p className="text-sm text-daladan-accentDark">{profileError}</p> : null}
             {passwordMessage ? <p className="text-sm text-daladan-primary">{passwordMessage}</p> : null}
             {isPasswordEditorOpen ? (
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+              <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
                 <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Parolni o&apos;zgartirish</h3>
                 <div className="grid gap-3 md:grid-cols-3">
                   <input
@@ -573,21 +573,21 @@ export const ProfilePage = () => {
                     value={passwordFields.current}
                     onChange={(event) => setPasswordFields((prev) => ({ ...prev, current: event.target.value }))}
                     placeholder="Joriy parol"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                   <input
                     type="password"
                     value={passwordFields.next}
                     onChange={(event) => setPasswordFields((prev) => ({ ...prev, next: event.target.value }))}
                     placeholder="Yangi parol"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                   <input
                     type="password"
                     value={passwordFields.confirmation}
                     onChange={(event) => setPasswordFields((prev) => ({ ...prev, confirmation: event.target.value }))}
                     placeholder="Yangi parol tasdig&apos;i"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                 </div>
                 {passwordError ? <p className="mt-3 text-sm text-daladan-accentDark">{passwordError}</p> : null}
@@ -598,7 +598,7 @@ export const ProfilePage = () => {
                       void handlePasswordUpdate()
                     }}
                     disabled={isUpdatingPassword}
-                    className="rounded-xl bg-daladan-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-70"
+                    className="rounded-ui bg-daladan-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-70"
                   >
                     {isUpdatingPassword ? 'Yangilanmoqda...' : 'Parolni saqlash'}
                   </button>
@@ -606,51 +606,51 @@ export const ProfilePage = () => {
               </div>
             ) : null}
             {isEditingProfile ? (
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+              <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
                 <h3 className="mb-4 text-xl font-semibold text-slate-900 dark:text-slate-100">Profil ma&apos;lumotlari</h3>
                 <div className="grid gap-3 md:grid-cols-2">
                   <input
                     value={editableProfile.firstName}
                     onChange={(event) => onProfileFieldChange('firstName', event.target.value)}
                     placeholder="Ism"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                   <input
                     value={editableProfile.lastName}
                     onChange={(event) => onProfileFieldChange('lastName', event.target.value)}
                     placeholder="Familiya"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                   <input
                     value={editableProfile.phone}
                     placeholder="Telefon"
                     readOnly
                     disabled
-                    className="rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400"
+                    className="rounded-ui border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400"
                   />
                   <input
                     value={editableProfile.region}
                     onChange={(event) => onProfileFieldChange('region', event.target.value)}
                     placeholder="Hudud"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
                   />
                   <input
                     value={editableProfile.avatarUrl}
                     onChange={(event) => onProfileFieldChange('avatarUrl', event.target.value)}
                     placeholder="Avatar URL"
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
                   />
                   <input
                     type="file"
                     accept="image/*"
                     onChange={(event) => setAvatarFile(event.target.files?.[0] ?? null)}
-                    className="rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
+                    className="rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
                   />
                   <textarea
                     value={editableProfile.aboutMe}
                     onChange={(event) => onProfileFieldChange('aboutMe', event.target.value)}
                     placeholder="O'zim haqimda"
-                    className="min-h-24 rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
+                    className="min-h-24 rounded-ui border border-slate-200 px-3 py-2 text-sm outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 md:col-span-2"
                   />
                 </div>
                 <div className="mt-4 flex justify-end gap-2">
@@ -660,14 +660,14 @@ export const ProfilePage = () => {
                       void handleSaveProfile()
                     }}
                     disabled={isSavingProfile}
-                    className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                    className="rounded-ui bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300"
                   >
                     {isSavingProfile ? 'Saqlanmoqda...' : 'Saqlash'}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+              <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
                 <p className="text-sm text-slate-500 dark:text-slate-400">Ism Familiya</p>
                 <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{fullName || '-'}</p>
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Telefon</p>
@@ -685,7 +685,7 @@ export const ProfilePage = () => {
         {activeTab === 'ads' && renderAdsSection()}
 
         {activeTab === 'messages' && (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+          <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
             <div className="mb-4 flex items-center justify-between">
               <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Xabarlar</h2>
               <span className="rounded-full bg-daladan-primary/10 px-3 py-1 text-xs font-semibold text-daladan-primary">
@@ -698,7 +698,7 @@ export const ProfilePage = () => {
                 { name: 'Aziza', text: "Narxni kelishsak bo'ladimi?", time: 'Kecha' },
                 { name: 'Dilshod', text: 'Yetkazib berish mavjudmi?', time: 'Dush' },
               ].map((message) => (
-                <div key={message.name} className="rounded-xl border border-slate-200 p-3 dark:border-slate-700">
+                <div key={message.name} className="rounded-ui border border-slate-200 p-3 dark:border-slate-700">
                   <div className="flex items-center justify-between">
                     <p className="font-semibold text-slate-900 dark:text-slate-100">{message.name}</p>
                     <p className="text-xs text-slate-400">{message.time}</p>
@@ -712,13 +712,13 @@ export const ProfilePage = () => {
 
         {activeTab === 'payments' && (
           <div className="space-y-3">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
+            <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6">
               <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">To&apos;lovlar</h2>
               <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
                 E&apos;lonlarni ko&apos;tarish va reklama to&apos;lovlari tarixi.
               </p>
             </div>
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
               <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-slate-100 py-3 text-sm">
                 <p className="font-medium text-slate-900 dark:text-slate-100">Top Sotuv - Sarhil qizil olmalar</p>
                 <p className="font-semibold text-slate-700 dark:text-slate-300">{formatPrice(45000)} so&apos;m</p>

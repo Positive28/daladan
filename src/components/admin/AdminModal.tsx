@@ -16,7 +16,7 @@ export const AdminModal = ({ title, children, onClose, footer }: AdminModalProps
         aria-label="Yopish"
         onClick={onClose}
       />
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-lg flex-col rounded-t-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900 sm:rounded-2xl">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-lg flex-col rounded-t-ui border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900 sm:rounded-ui">
         <div className="flex shrink-0 items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
           <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
           <button

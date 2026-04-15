@@ -11,7 +11,7 @@ import type { ListingCardVariant } from '../model/types'
 const CARD_SHADOW =
   'shadow-md shadow-slate-900/10 dark:shadow-none dark:ring-1 dark:ring-slate-700/80'
 
-const CARD_SHELL = `overflow-hidden rounded-2xl border border-slate-200 bg-white ${CARD_SHADOW} transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900`
+const CARD_SHELL = `overflow-hidden rounded-ui border border-slate-200 bg-white ${CARD_SHADOW} transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900`
 
 interface ListingCardProps {
   listing: Listing
@@ -71,7 +71,7 @@ function ListingMedia({
   }
 
   return (
-    <div className="relative h-full min-h-0 min-w-0 w-full overflow-hidden rounded-l-2xl bg-slate-100 dark:bg-slate-800">
+    <div className="relative h-full min-h-0 min-w-0 w-full overflow-hidden rounded-l-ui bg-slate-100 dark:bg-slate-800">
       <img
         src={listing.image}
         alt={listing.title}

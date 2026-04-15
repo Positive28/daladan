@@ -9,7 +9,7 @@ interface ListingViewToggleProps {
 
 export const ListingViewToggle = ({ value, onChange }: ListingViewToggleProps) => (
   <div
-    className="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-600 dark:bg-slate-800"
+    className="inline-flex rounded-ui border border-slate-200 bg-slate-50 p-0.5 dark:border-slate-600 dark:bg-slate-800"
     role="group"
     aria-label="Ko'rinish"
   >

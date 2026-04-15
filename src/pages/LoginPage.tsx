@@ -50,7 +50,7 @@ export const LoginPage = ({ variant = 'site' }: LoginPageProps) => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-daladan-soft p-4 dark:bg-slate-950 md:p-6">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
+      <div className="relative w-full max-w-lg rounded-ui border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
         <button
           type="button"
           onClick={toggleTheme}
@@ -74,18 +74,18 @@ export const LoginPage = ({ variant = 'site' }: LoginPageProps) => {
           <input
             value={phone}
             onChange={(event) => setPhone(formatUzPhoneInput(event.target.value))}
-            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           />
           <input
             value={password}
             type="password"
             onChange={(event) => setPassword(event.target.value)}
             placeholder="Parol"
-            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           />
           <button
             disabled={isSubmitting}
-            className="w-full rounded-2xl bg-daladan-primary px-4 py-3 text-xl font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-ui bg-daladan-primary px-4 py-3 text-xl font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting ? 'Kutilmoqda...' : 'Kirish'}
           </button>

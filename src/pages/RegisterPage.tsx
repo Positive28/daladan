@@ -120,7 +120,7 @@ export const RegisterPage = () => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-daladan-soft p-4 dark:bg-slate-950 md:p-6">
-      <div className="relative w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
+      <div className="relative w-full max-w-lg rounded-ui border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
         <button
           type="button"
           onClick={toggleTheme}
@@ -140,12 +140,12 @@ export const RegisterPage = () => {
             <input
               {...formRegister('firstName', { required: "Ismni kiriting" })}
               placeholder="Ism"
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             />
             <input
               {...formRegister('lastName', { required: "Familiyani kiriting" })}
               placeholder="Familiya"
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             />
           </div>
           {(errors.firstName || errors.lastName) && (
@@ -155,7 +155,7 @@ export const RegisterPage = () => {
             <select
               {...formRegister('regionId', { required: "Viloyatni tanlang" })}
               disabled={isLoadingRegions}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             >
               <option value="">Viloyatni tanlang</option>
               {regions.map((region) => (
@@ -167,7 +167,7 @@ export const RegisterPage = () => {
             <select
               {...formRegister('cityId', { required: "Tumanni tanlang" })}
               disabled={!selectedRegionId || isLoadingCities}
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             >
               <option value="">{isLoadingCities ? 'Yuklanmoqda...' : 'Tumanni tanlang'}</option>
               {cities.map((city) => (
@@ -188,14 +188,14 @@ export const RegisterPage = () => {
             type="email"
             autoComplete="off"
             placeholder="Email (ixtiyoriy)"
-            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           />
           {errors.email && <p className="text-sm text-daladan-accentDark">{errors.email.message}</p>}
           <input
             {...formRegister('telegram')}
             autoComplete="off"
             placeholder="Telegram (ixtiyoriy)"
-            className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
           />
           <Controller
             control={control}
@@ -207,7 +207,7 @@ export const RegisterPage = () => {
               <input
                 value={field.value}
                 onChange={(event) => field.onChange(formatUzPhoneInput(event.target.value))}
-                className="w-full rounded-2xl border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               />
             )}
           />
@@ -219,7 +219,7 @@ export const RegisterPage = () => {
               type={showPassword ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="Parol"
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             />
             <button
               type="button"
@@ -240,7 +240,7 @@ export const RegisterPage = () => {
               type={showConfirmPassword ? 'text' : 'password'}
               autoComplete="new-password"
               placeholder="Parolni tasdiqlang"
-              className="w-full rounded-2xl border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+              className="w-full rounded-ui border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
             />
             <button
               type="button"
@@ -255,7 +255,7 @@ export const RegisterPage = () => {
             <p className="text-sm text-daladan-accentDark">{errors.password?.message || errors.confirmPassword?.message}</p>
           )}
 
-          <label className="flex cursor-pointer items-center gap-3 rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-700 select-none dark:border-slate-700 dark:text-slate-300">
+          <label className="flex cursor-pointer items-center gap-3 rounded-ui border border-slate-200 px-4 py-3 text-sm text-slate-700 select-none dark:border-slate-700 dark:text-slate-300">
             <input
               type="checkbox"
               {...formRegister('consent', {
@@ -269,7 +269,7 @@ export const RegisterPage = () => {
 
           <button
             disabled={!isValid || isSubmitting || isLoadingRegions}
-            className="w-full rounded-2xl bg-daladan-primary px-4 py-3 text-xl font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full rounded-ui bg-daladan-primary px-4 py-3 text-xl font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
             {isSubmitting ? 'Kutilmoqda...' : 'Davom etish'}
           </button>

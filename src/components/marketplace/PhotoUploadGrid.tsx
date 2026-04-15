@@ -66,7 +66,7 @@ const SortablePhotoSlot = ({ id, index, file, previewUrl, isCoverSlot, onReplace
         {...getRootProps({
           onClick: handleOpen,
           className: [
-            'group relative aspect-[4/3] overflow-hidden rounded-xl border transition',
+            'group relative aspect-[4/3] overflow-hidden rounded-ui border transition',
             'focus-within:ring-2 focus-within:ring-daladan-primary/30',
             file
               ? 'border-slate-200 bg-slate-100 dark:border-slate-600 dark:bg-slate-700'

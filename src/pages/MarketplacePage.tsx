@@ -218,7 +218,7 @@ export const MarketplacePage = () => {
   return (
     <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
       <aside className="space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="mb-4 flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-slate-100">
             <SlidersHorizontal size={16} />
             Filtrlar
@@ -325,7 +325,7 @@ export const MarketplacePage = () => {
       </aside>
 
       <section className="space-y-4">
-        <div className="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+        <div className="rounded-ui border border-slate-200 bg-white px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div className="mb-2 flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <span>Asosiy</span>
             <ChevronRight size={14} />
@@ -358,7 +358,7 @@ export const MarketplacePage = () => {
           ))}
         </div>
         {filtered.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
+          <div className="rounded-ui border border-slate-200 bg-white p-8 text-center text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
             Filter bo&apos;yicha e&apos;lon topilmadi.
           </div>
         ) : null}

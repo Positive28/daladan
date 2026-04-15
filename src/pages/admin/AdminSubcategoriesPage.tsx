@@ -44,19 +44,19 @@ export const AdminSubcategoriesPage = () => {
           <button
             type="button"
             onClick={openCreate}
-            className="rounded-xl bg-daladan-primary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95"
+            className="rounded-ui bg-daladan-primary px-4 py-2.5 text-sm font-semibold text-white hover:opacity-95"
           >
             Yangi subkategoriya
           </button>
         </div>
 
         {forbidden ? (
-          <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
+          <div className="mt-4 rounded-ui border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100">
             Sizda admin huquqi yo‘q yoki sessiya tugagan.
           </div>
         ) : null}
         {error && !modalOpen ? (
-          <div className="mt-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-100">
+          <div className="mt-4 rounded-ui border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-100">
             {error}
           </div>
         ) : null}
@@ -97,7 +97,7 @@ export const AdminSubcategoriesPage = () => {
           </label>
         </div>
 
-        <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+        <div className="mt-4 overflow-x-auto rounded-ui border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
           <table className="min-w-full text-left text-sm">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-800/50">
@@ -177,7 +177,7 @@ export const AdminSubcategoriesPage = () => {
               <button
                 type="button"
                 onClick={closeModal}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 dark:border-slate-600 dark:text-slate-200"
+                className="rounded-ui border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 dark:border-slate-600 dark:text-slate-200"
               >
                 Bekor qilish
               </button>
@@ -185,7 +185,7 @@ export const AdminSubcategoriesPage = () => {
                 type="submit"
                 form="subcategory-form"
                 disabled={saving}
-                className="rounded-xl bg-daladan-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
+                className="rounded-ui bg-daladan-primary px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
               >
                 {saving ? 'Saqlanmoqda...' : 'Saqlash'}
               </button>
@@ -198,7 +198,7 @@ export const AdminSubcategoriesPage = () => {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Kategoriya</label>
               <select
                 {...register('category_id', { required: true })}
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               >
                 <option value="">Tanlang</option>
                 {categories.map((c) => (
@@ -212,7 +212,7 @@ export const AdminSubcategoriesPage = () => {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Nomi</label>
               <input
                 {...register('name', { required: true })}
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <div>
@@ -223,7 +223,7 @@ export const AdminSubcategoriesPage = () => {
                   setSlugManual(true)
                   slugRegister.onChange(e)
                 }}
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <div>
@@ -231,7 +231,7 @@ export const AdminSubcategoriesPage = () => {
               <input
                 {...register('sort_order')}
                 inputMode="numeric"
-                className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+                className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
               />
             </div>
             <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">

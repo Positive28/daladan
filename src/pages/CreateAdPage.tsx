@@ -54,7 +54,7 @@ const getFieldBorderClass = (hasError: boolean) =>
     : 'border-slate-200 dark:border-slate-600'
 
 const getSelectClass = (hasError: boolean) =>
-  `w-full appearance-none rounded-xl border px-3 py-2 pr-10 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-daladan-primary/40 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+  `w-full appearance-none rounded-ui border px-3 py-2 pr-10 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-daladan-primary/40 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
     hasError,
   )}`
 
@@ -456,7 +456,7 @@ export const CreateAdPage = () => {
         </div>
         <Link
           to="/profile"
-          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-300"
+          className="rounded-ui border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:text-slate-300"
         >
           Orqaga
         </Link>
@@ -464,7 +464,7 @@ export const CreateAdPage = () => {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6"
+        className="space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-6"
       >
         <section className="space-y-3">
           <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Joylashuv va toifa</p>
@@ -567,7 +567,7 @@ export const CreateAdPage = () => {
                 })}
                 aria-invalid={Boolean(errors.price)}
                 placeholder="Narx"
-                className={`col-start-1 row-start-1 w-full rounded-xl border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+                className={`col-start-1 row-start-1 w-full rounded-ui border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
                   Boolean(errors.price),
                 )}`}
               />
@@ -643,7 +643,7 @@ export const CreateAdPage = () => {
                 }}
                 aria-invalid={Boolean(errors.unit)}
                 placeholder="Birlik tanlang yoki kiriting"
-                className={`w-full rounded-xl border px-3 py-2 pr-10 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-daladan-primary/40 dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+                className={`w-full rounded-ui border px-3 py-2 pr-10 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-daladan-primary/40 dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
                   Boolean(errors.unit),
                 )}`}
               />
@@ -663,7 +663,7 @@ export const CreateAdPage = () => {
                 />
               </button>
               {isUnitDropdownOpen ? (
-                <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+                <div className="absolute z-30 mt-2 w-full overflow-hidden rounded-ui border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
                   {unitSuggestions.length > 0 ? (
                     <ul className="max-h-56 overflow-y-auto py-1">
                       {unitSuggestions.map((unit, index) => (
@@ -696,7 +696,7 @@ export const CreateAdPage = () => {
             <p className={ERROR_TEXT_CLASS}>{errors.price?.message || errors.unit?.message}</p>
           ) : null}
 
-          <div className="rounded-xl border border-slate-200 px-3 py-3 dark:border-slate-600 dark:bg-slate-800">
+          <div className="rounded-ui border border-slate-200 px-3 py-3 dark:border-slate-600 dark:bg-slate-800">
             <label className="flex cursor-pointer items-center justify-between gap-4 select-none">
               <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
                 {deliveryAvailable ? 'Yetkazib berish mavjud' : "Yetkazib berish yo'q"}
@@ -722,7 +722,7 @@ export const CreateAdPage = () => {
             })}
             aria-invalid={Boolean(errors.title)}
             placeholder="Sarlavha"
-            className={`rounded-xl border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+            className={`rounded-ui border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
               Boolean(errors.title),
             )}`}
           />
@@ -736,7 +736,7 @@ export const CreateAdPage = () => {
                 void handleGenerateDescription()
               }}
               disabled={isGenerateDescriptionDisabled}
-              className="rounded-xl border border-daladan-primary/40 px-3 py-2 text-xs font-semibold text-daladan-primary transition-colors hover:bg-daladan-primary/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-daladan-primary/60"
+              className="rounded-ui border border-daladan-primary/40 px-3 py-2 text-xs font-semibold text-daladan-primary transition-colors hover:bg-daladan-primary/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-daladan-primary/60"
             >
               {isGeneratingDescription ? 'Yaratilmoqda...' : 'AI yordamida tavsif yaratish'}
             </button>
@@ -748,7 +748,7 @@ export const CreateAdPage = () => {
             })}
             aria-invalid={Boolean(errors.description)}
             placeholder="Tavsif"
-            className={`min-h-28 w-full rounded-xl border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+            className={`min-h-28 w-full rounded-ui border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
               Boolean(errors.description),
             )}`}
           />
@@ -775,7 +775,7 @@ export const CreateAdPage = () => {
         <button
           type="submit"
           disabled={isSubmitting || !isValid || isLoadingCategories || isLoadingRegions}
-          className="w-full rounded-xl bg-daladan-primary px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
+          className="w-full rounded-ui bg-daladan-primary px-4 py-3 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
         >
           {isSubmitting ? 'Yuborilmoqda...' : "E'lonni joylash"}
         </button>

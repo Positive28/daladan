@@ -38,7 +38,7 @@ export const ItemDetailsPage = () => {
   }, [id])
 
   if (!listing) {
-    return <p className="rounded-xl bg-white p-6 dark:bg-slate-900 dark:text-slate-200">Mahsulot topilmadi.</p>
+    return <p className="rounded-ui bg-white p-6 dark:bg-slate-900 dark:text-slate-200">Mahsulot topilmadi.</p>
   }
 
   const canSeePhone = Boolean(user)
@@ -54,7 +54,7 @@ export const ItemDetailsPage = () => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-4">
-      <section className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <section className="relative overflow-hidden rounded-ui border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="relative h-80 w-full bg-slate-100 dark:bg-slate-800">
           <button
             type="button"
@@ -143,7 +143,7 @@ export const ItemDetailsPage = () => {
         onImageError={onImageError}
       />
 
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
+      <section className="space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
         <div className="flex flex-wrap gap-2 text-[11px] font-semibold">
           {listing.isTopSale && (
             <span className="rounded-md bg-daladan-accent px-2 py-1 text-daladan-accentDark">TOP SOTUV</span>
@@ -167,11 +167,11 @@ export const ItemDetailsPage = () => {
         </div>
       </section>
 
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
+      <section className="space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
         <h2 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">Mahsulot haqida ma&apos;lumot</h2>
         <p className="text-lg leading-8 text-slate-700 dark:text-slate-300">{listing.description}</p>
         <div className="grid gap-3 sm:grid-cols-2">
-          <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+          <div className="rounded-ui bg-slate-50 p-4 dark:bg-slate-800">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Mavjud miqdor
             </p>
@@ -180,7 +180,7 @@ export const ItemDetailsPage = () => {
               {quantityText}
             </p>
           </div>
-          <div className="rounded-xl bg-slate-50 p-4 dark:bg-slate-800">
+          <div className="rounded-ui bg-slate-50 p-4 dark:bg-slate-800">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
               Yetkazib berish
             </p>
@@ -192,7 +192,7 @@ export const ItemDetailsPage = () => {
         </div>
       </section>
 
-      <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+      <section className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Sotuvchi</p>
@@ -218,7 +218,7 @@ export const ItemDetailsPage = () => {
             }
             window.location.href = `tel:${listing.phone}`
           }}
-          className="rounded-xl bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
+          className="rounded-ui bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
         >
           <Phone size={16} className="mr-2 inline" />
           Sotuvchi bilan bog&apos;lanish
@@ -232,7 +232,7 @@ export const ItemDetailsPage = () => {
             }
             navigate('/profile')
           }}
-          className="rounded-xl bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
+          className="rounded-ui bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
         >
           <MessageCircle size={16} className="mr-2 inline" />
           Xabar yuborish
@@ -249,7 +249,7 @@ export const ItemDetailsPage = () => {
             }
             window.open(telegramUrl, '_blank', 'noopener,noreferrer')
           }}
-          className={`rounded-xl px-4 py-3 text-base font-semibold ${
+          className={`rounded-ui px-4 py-3 text-base font-semibold ${
             canTelegramMessage ? 'bg-daladan-primary text-white' : 'bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
           }`}
         >
@@ -265,7 +265,7 @@ export const ItemDetailsPage = () => {
             <Link
               key={item.id}
               to={`/item/${item.id}`}
-              className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900"
+              className="overflow-hidden rounded-ui border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900"
             >
               <img src={item.image} alt={item.title} onError={onImageError} className="h-32 w-full object-cover" />
               <div className="p-3">

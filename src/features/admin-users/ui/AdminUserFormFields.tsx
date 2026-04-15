@@ -27,7 +27,7 @@ export const AdminUserFormFields = ({
       <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Telefon</label>
       <input
         {...register('phone', { required: true })}
-        className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+        className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
       />
     </div>
     <div>
@@ -38,7 +38,7 @@ export const AdminUserFormFields = ({
         type="password"
         autoComplete="new-password"
         {...register('password')}
-        className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+        className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
       />
     </div>
     <div className="grid gap-4 sm:grid-cols-2">
@@ -46,14 +46,14 @@ export const AdminUserFormFields = ({
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Ism</label>
         <input
           {...register('fname')}
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
       <div>
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Familiya</label>
         <input
           {...register('lname')}
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
     </div>
@@ -62,7 +62,7 @@ export const AdminUserFormFields = ({
       <input
         type="email"
         {...register('email')}
-        className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+        className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
       />
     </div>
     <div className="grid gap-4 sm:grid-cols-2">
@@ -70,7 +70,7 @@ export const AdminUserFormFields = ({
         <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Telegram</label>
         <input
           {...register('telegram')}
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
       <div>
@@ -78,7 +78,7 @@ export const AdminUserFormFields = ({
         <input
           {...register('telegram_id')}
           inputMode="numeric"
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         />
       </div>
     </div>
@@ -91,7 +91,7 @@ export const AdminUserFormFields = ({
             regionIdRegister.onChange(e)
             setValue('city_id', '')
           }}
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         >
           <option value="">Tanlang</option>
           {regions.map((r) => (
@@ -106,7 +106,7 @@ export const AdminUserFormFields = ({
         <select
           {...register('city_id')}
           disabled={!regionWatch}
-          className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 disabled:opacity-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
         >
           <option value="">Tanlang</option>
           {cities.map((c) => (
@@ -121,7 +121,7 @@ export const AdminUserFormFields = ({
       <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">Rol</label>
       <select
         {...register('role')}
-        className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+        className="mt-1 w-full rounded-ui border border-slate-300 px-3 py-2 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
       >
         <option value="user">user</option>
         <option value="admin">admin</option>

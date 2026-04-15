@@ -34,7 +34,7 @@ export const AdBoostPage = () => {
   )
 
   return (
-    <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+    <section className="space-y-5 rounded-ui border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
       <div className="border-b border-slate-200 pb-4 dark:border-slate-700">
         <h1 className="text-2xl font-semibold text-slate-900 dark:text-slate-100">E&apos;lonni reklama qilish</h1>
         <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
@@ -50,7 +50,7 @@ export const AdBoostPage = () => {
               key={plan.id}
               type="button"
               onClick={() => setSelectedPlanId(plan.id)}
-              className={`rounded-2xl border p-4 text-left ${
+              className={`rounded-ui border p-4 text-left ${
                 isActive
                   ? 'border-daladan-primary bg-daladan-primary/10'
                   : 'border-slate-200 dark:border-slate-700 dark:bg-slate-800'
@@ -73,7 +73,7 @@ export const AdBoostPage = () => {
         })}
       </div>
 
-      <div className="rounded-2xl bg-daladan-primary p-4 text-white">
+      <div className="rounded-ui bg-daladan-primary p-4 text-white">
         <p className="text-sm text-slate-100/80">To&apos;lov tafsilotlari</p>
         <p className="mt-2 text-lg font-semibold">{selectedPlan?.name ?? '-'}</p>
         <p className="text-2xl font-bold">
@@ -81,7 +81,7 @@ export const AdBoostPage = () => {
         </p>
         <button
           type="button"
-          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-daladan-primary px-4 py-2 text-sm font-medium text-white"
+          className="mt-4 inline-flex items-center gap-2 rounded-ui bg-daladan-primary px-4 py-2 text-sm font-medium text-white"
         >
           <CheckCircle2 size={16} />
           To&apos;lovni tasdiqlash
