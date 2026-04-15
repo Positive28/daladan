@@ -1,16 +1,26 @@
-import { CheckCircle2 } from 'lucide-react'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { adBoostPeriodOptions } from '../data/adBoostPeriods'
 import { marketplaceService } from '../services'
+import { useAuth } from '../state/AuthContext'
 import type { BoostPlan, Listing } from '../types/marketplace'
+import { getBoostTotalForSelection, getWeeklyPriceForPlan } from '../utils/adBoostPricing'
 import { formatPrice } from '../utils/price'
+import { buildTelegramChatUrl } from '../utils/telegramDeepLink'
+
+const TELEGRAM_PAYMENT_USERNAME =
+  import.meta.env.VITE_TELEGRAM_AD_PAYMENT_USERNAME?.trim() || 'Positive28'
+
+const MAX_TELEGRAM_PREFILL_LENGTH = 2000
 
 export const AdBoostPage = () => {
   const { id } = useParams()
   const [searchParams] = useSearchParams()
+  const { user } = useAuth()
   const [listing, setListing] = useState<Listing>()
   const [plans, setPlans] = useState<BoostPlan[]>([])
   const [selectedPlanId, setSelectedPlanId] = useState<string>()
+  const [selectedPeriodId, setSelectedPeriodId] = useState(() => adBoostPeriodOptions[0]?.id ?? '')
 
   useEffect(() => {
     if (!id) return
@@ -32,6 +42,44 @@ export const AdBoostPage = () => {
     () => plans.find((plan) => plan.id === selectedPlanId),
     [plans, selectedPlanId],
   )
+
+  const selectedPeriod = useMemo(
+    () => adBoostPeriodOptions.find((p) => p.id === selectedPeriodId),
+    [selectedPeriodId],
+  )
+
+  const totalPriceUzs = useMemo(() => {
+    if (!selectedPlan || !selectedPeriod) return null
+    return getBoostTotalForSelection(selectedPlan, selectedPeriod)
+  }, [selectedPlan, selectedPeriod])
+
+  const canConfirmPayment = Boolean(selectedPlan && selectedPeriod && plans.length > 0)
+
+  const handleConfirmPayment = useCallback(() => {
+    if (!selectedPlan || !selectedPeriod || !id || totalPriceUzs == null) return
+
+    const adUrl = `${window.location.origin}/item/${id}`
+
+    const lines = [
+      "Salom! E'lonni reklama qilish uchun to'lovni tasdiqlashni xohlayman.",
+      '',
+      `E'lon: ${listing?.title ?? '—'} (ID: ${id})`,
+      `E'lon havolasi: ${adUrl}`,
+      `Tarif: ${selectedPlan.name} — ${formatPrice(totalPriceUzs)} so'm`,
+      `Davr: ${selectedPeriod.label}`,
+    ]
+    if (user) {
+      lines.push(`Aloqa: ${user.fullName}, ${user.phone}`)
+    }
+
+    let text = lines.join('\n')
+    if (text.length > MAX_TELEGRAM_PREFILL_LENGTH) {
+      text = text.slice(0, MAX_TELEGRAM_PREFILL_LENGTH)
+    }
+
+    const url = buildTelegramChatUrl(TELEGRAM_PAYMENT_USERNAME, text)
+    window.open(url, '_blank', 'noopener,noreferrer')
+  }, [id, listing?.title, selectedPeriod, selectedPlan, totalPriceUzs, user])
 
   return (
     <section className="space-y-5 rounded-ui border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -65,7 +113,7 @@ export const AdBoostPage = () => {
                 )}
               </div>
               <p className="mt-2 text-xl font-bold text-daladan-primary">
-                {formatPrice(plan.price)} so&apos;m
+                {formatPrice(getWeeklyPriceForPlan(plan))} so&apos;m / hafta
               </p>
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">{plan.description}</p>
             </button>
@@ -73,20 +121,45 @@ export const AdBoostPage = () => {
         })}
       </div>
 
-      <div className="rounded-ui bg-daladan-primary p-4 text-white">
+      <div>
+        <p className="mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Davrni tanlang</p>
+        <div className="flex flex-wrap gap-2">
+          {adBoostPeriodOptions.map((period) => {
+            const isActive = selectedPeriodId === period.id
+            return (
+              <button
+                key={period.id}
+                type="button"
+                onClick={() => setSelectedPeriodId(period.id)}
+                className={`rounded-ui border px-3 py-2 text-sm font-medium ${
+                  isActive
+                    ? 'border-daladan-primary bg-daladan-primary/10 text-slate-900 dark:text-slate-100'
+                    : 'border-slate-200 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                }`}
+              >
+                {period.label}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <button
+        type="button"
+        disabled={!canConfirmPayment}
+        onClick={handleConfirmPayment}
+        aria-label="To'lovni tasdiqlash va Telegram orqali bog'lanish"
+        className="w-full rounded-ui border-0 bg-daladan-primary p-4 text-left text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 enabled:cursor-pointer enabled:hover:brightness-105 enabled:active:brightness-95 disabled:cursor-not-allowed disabled:opacity-50"
+      >
         <p className="text-sm text-slate-100/80">To&apos;lov tafsilotlari</p>
         <p className="mt-2 text-lg font-semibold">{selectedPlan?.name ?? '-'}</p>
         <p className="text-2xl font-bold">
-          {selectedPlan ? `${formatPrice(selectedPlan.price)} so'm` : "0 so'm"}
+          {totalPriceUzs != null ? `${formatPrice(totalPriceUzs)} so'm` : "0 so'm"}
         </p>
-        <button
-          type="button"
-          className="mt-4 inline-flex items-center gap-2 rounded-ui bg-daladan-primary px-4 py-2 text-sm font-medium text-white"
-        >
-          <CheckCircle2 size={16} />
-          To&apos;lovni tasdiqlash
-        </button>
-      </div>
+        <p className="mt-1 text-sm text-slate-100/90">
+          Davr: <span className="font-medium">{selectedPeriod?.label ?? '—'}</span>
+        </p>
+      </button>
     </section>
   )
 }
