@@ -57,18 +57,18 @@ export const ItemDetailsPage = () => {
   return (
     <div className="mx-auto max-w-4xl space-y-4">
       <section className="relative overflow-hidden rounded-ui border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
-        <div className="relative h-80 w-full bg-slate-100 dark:bg-slate-800">
+        <div className="relative aspect-[4/3] w-full bg-slate-100 dark:bg-slate-800">
           <button
             type="button"
             onClick={() => setImagePreview({ urls: slides, index: safeIdx })}
-            className="relative block h-full w-full"
+            className="absolute inset-0 block h-full w-full"
             aria-label="Rasmni kattalashtirish"
           >
             <img
               src={slides[safeIdx]}
               alt={listing.title}
               onError={onImageError}
-              className="h-full w-full object-cover"
+              className="h-full w-full object-contain object-center"
             />
           </button>
           {slides.length > 1 ? (
