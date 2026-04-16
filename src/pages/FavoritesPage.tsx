@@ -50,6 +50,7 @@ export const FavoritesPage = () => {
                 variant={listingView}
                 canFavorite
                 onFavoriteBlocked={() => undefined}
+                showPostedDate
               />
             </div>
           ))}

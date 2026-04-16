@@ -18,6 +18,8 @@ interface ListingCardProps {
   canFavorite: boolean
   onFavoriteBlocked: () => void
   variant?: ListingCardVariant
+  /** When true, shows relative posted time (e.g. on favorites). Home and search omit dates. */
+  showPostedDate?: boolean
 }
 
 function PromoBadges({ listing }: { listing: Listing }) {
@@ -88,11 +90,13 @@ function ListingMedia({
 function ListingMeta({
   listing,
   variant,
+  showPostedDate,
 }: {
   listing: Listing
   variant: ListingCardVariant
+  showPostedDate: boolean
 }) {
-  const createdLabel = formatListingCreatedAt(listing.createdAt)
+  const createdLabel = showPostedDate ? formatListingCreatedAt(listing.createdAt) : null
   return (
     <>
       <h3 className="line-clamp-2 font-semibold text-daladan-heading dark:text-slate-100">
@@ -125,6 +129,7 @@ export const ListingCard = ({
   canFavorite,
   onFavoriteBlocked,
   variant = 'grid',
+  showPostedDate = false,
 }: ListingCardProps) => {
   const { isFavorite, toggleFavorite } = useFavorites()
   const favorite = isFavorite(listing.id)
@@ -159,14 +164,14 @@ export const ListingCard = ({
           <>
             <ListingMedia listing={listing} variant="grid" onImageError={onImageError} />
             <div className="flex flex-col space-y-2.5 p-4">
-              <ListingMeta listing={listing} variant="grid" />
+              <ListingMeta listing={listing} variant="grid" showPostedDate={showPostedDate} />
             </div>
           </>
         ) : (
           <>
             <ListingMedia listing={listing} variant="list" onImageError={onImageError} />
             <div className="flex min-h-0 min-w-0 flex-col justify-start space-y-1.5 p-3 pr-11 sm:space-y-2 sm:p-4 sm:pr-12">
-              <ListingMeta listing={listing} variant="list" />
+              <ListingMeta listing={listing} variant="list" showPostedDate={showPostedDate} />
             </div>
           </>
         )}
