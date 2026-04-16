@@ -3,6 +3,10 @@ import type { SubcategoryOption } from '../../../types/marketplace'
 
 export interface CategoryNode {
   label: string
+  /** Present on root nodes loaded from API — used for static tile assets */
+  id?: number
+  /** API slug (e.g. fruit, poultry, animal) — tile images */
+  slug?: string
   children?: CategoryNode[]
 }
 
@@ -84,7 +88,9 @@ export const loadCategoryTree = (): Promise<CategoryNode[]> => {
     return categories
       .filter((category) => Boolean(category.name))
       .map((category) => ({
+        id: category.id,
         label: category.name,
+        ...(category.slug ? { slug: category.slug } : {}),
         children: (subcategoriesByCategoryId.get(category.id) ?? [])
           .filter((subcategory) => Boolean(subcategory.name))
           .map((subcategory) => ({ label: subcategory.name })),

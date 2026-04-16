@@ -64,10 +64,14 @@ const mapUiUnitToApi = (raw: string) => {
   )
 }
 
-const mapCategory = (item: UnknownRecord): CategoryOption => ({
-  id: getNumber(item, 'id', 'category_id'),
-  name: getString(item, 'name_uz', 'name_oz', 'name', 'title'),
-})
+const mapCategory = (item: UnknownRecord): CategoryOption => {
+  const slugRaw = getString(item, 'slug', 'slug_en', 'slug_uz')
+  return {
+    id: getNumber(item, 'id', 'category_id'),
+    name: getString(item, 'name_uz', 'name_oz', 'name', 'title'),
+    ...(slugRaw ? { slug: slugRaw } : {}),
+  }
+}
 
 const mapSubcategory = (item: UnknownRecord): SubcategoryOption => ({
   id: getNumber(item, 'id', 'subcategory_id'),

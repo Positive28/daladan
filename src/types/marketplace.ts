@@ -50,6 +50,8 @@ export interface BoostPlan {
 export interface CategoryOption {
   id: number
   name: string
+  /** API slug for URLs and tile imagery, e.g. fruit / poultry / animal */
+  slug?: string
 }
 
 export interface SubcategoryOption {

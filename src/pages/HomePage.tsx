@@ -1,6 +1,7 @@
 import { ChevronRight } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
+import { DEFAULT_CATEGORY_TILE_IMAGE, getCategoryTileImage } from '../constants/categoryTileImages'
 import { ListingCard } from '../features/marketplace'
 import { fallbackCategoryTree, loadCategoryTree, type CategoryNode } from '../features/marketplace/model/categoryTree'
 import { marketplaceService } from '../services'
@@ -8,17 +9,35 @@ import { useAuth } from '../state/AuthContext'
 import type { Listing } from '../types/marketplace'
 
 const FEATURED_LIMIT = 8
+const POPULAR_CATEGORY_LIMIT = 8
 
-const TILE_GRADIENTS = [
-  'from-daladan-primary/85 to-emerald-800/75',
-  'from-slate-600/90 to-daladan-primary/70',
-  'from-green-800/80 to-lime-700/75',
-  'from-teal-800/85 to-daladan-primary/65',
-  'from-emerald-900/80 to-green-700/70',
-  'from-neutral-700/85 to-daladan-primary/75',
-  'from-lime-900/75 to-daladan-primary/80',
-  'from-stone-700/85 to-emerald-900/75',
-]
+const categoryTileKey = (cat: CategoryNode) => (cat.id != null ? `id-${cat.id}` : `lbl-${cat.label}`)
+
+function CategoryTileLink({ cat }: { cat: CategoryNode }) {
+  const [imgSrc, setImgSrc] = useState(() => getCategoryTileImage(cat))
+
+  return (
+    <Link
+      to={`/search?cat=${encodeURIComponent(cat.label)}`}
+      aria-label={cat.label}
+      className="group overflow-hidden rounded-ui border border-daladan-border bg-daladan-surfaceElevated shadow-sm dark:border-slate-700 dark:bg-slate-900"
+    >
+      <div className="relative aspect-[4/3] overflow-hidden bg-daladan-soft dark:bg-slate-800">
+        <img
+          src={imgSrc}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={() => setImgSrc(DEFAULT_CATEGORY_TILE_IMAGE)}
+          className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.03]"
+        />
+      </div>
+      <div className="border-t border-daladan-border bg-daladan-surface px-1.5 py-1.5 text-center text-xs font-medium leading-tight text-daladan-heading dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 sm:px-2 sm:py-2">
+        {cat.label}
+      </div>
+    </Link>
+  )
+}
 
 export const HomePage = () => {
   const [listings, setListings] = useState<Listing[]>([])
@@ -56,6 +75,7 @@ export const HomePage = () => {
   }, [])
 
   const featured = listings.slice(0, FEATURED_LIMIT)
+  const popularCategories = categoryTree.slice(0, POPULAR_CATEGORY_LIMIT)
 
   if (searchParams.get('q')?.trim()) {
     return <Navigate to={{ pathname: '/search', search: `?${searchParams.toString()}` }} replace />
@@ -66,33 +86,18 @@ export const HomePage = () => {
       <section className="space-y-4">
         <h2 className="text-xl font-semibold text-daladan-heading dark:text-slate-100 sm:text-2xl">Mashhur kategoriyalar</h2>
         {loadingTree ? (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
             {Array.from({ length: 8 }, (_, i) => (
               <div key={i} className="overflow-hidden rounded-ui border border-daladan-border bg-daladan-surfaceElevated shadow-sm dark:border-slate-700 dark:bg-slate-900">
-                <div className="aspect-square animate-pulse bg-daladan-border dark:bg-slate-800" />
-                <div className="h-11 animate-pulse bg-daladan-soft dark:bg-slate-800/80" />
+                <div className="aspect-[4/3] animate-pulse bg-daladan-border dark:bg-slate-800" />
+                <div className="h-9 animate-pulse bg-daladan-soft dark:bg-slate-800/80" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {categoryTree.map((cat, index) => (
-              <Link
-                key={cat.label}
-                to={`/search?cat=${encodeURIComponent(cat.label)}`}
-                className="group overflow-hidden rounded-ui border border-daladan-border bg-daladan-surfaceElevated shadow-sm transition hover:border-daladan-primary/35 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:hover:border-daladan-primary/40"
-              >
-                <div
-                  className={`relative flex aspect-square items-center justify-center bg-gradient-to-br ${TILE_GRADIENTS[index % TILE_GRADIENTS.length]}`}
-                >
-                  <span className="text-4xl font-bold text-white/95 drop-shadow-sm transition group-hover:scale-105 sm:text-5xl">
-                    {cat.label.slice(0, 1).toUpperCase()}
-                  </span>
-                </div>
-                <div className="border-t border-daladan-border bg-daladan-surface px-2 py-2.5 text-center text-sm font-medium text-daladan-heading dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100">
-                  {cat.label}
-                </div>
-              </Link>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+            {popularCategories.map((cat) => (
+              <CategoryTileLink key={categoryTileKey(cat)} cat={cat} />
             ))}
           </div>
         )}
