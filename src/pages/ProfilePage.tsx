@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
@@ -66,8 +66,21 @@ export const ProfilePage = () => {
   const loadProfileAds = async () => {
     try {
       setAdsError('')
-      const ads = await marketplaceService.getProfileAds(15)
-      setMyListings(ads)
+      const perPage = 100
+      const maxPages = 50
+      const aggregated: Listing[] = []
+      const seenIds = new Set<string>()
+      for (let page = 1; page <= maxPages; page += 1) {
+        const batch = await marketplaceService.getProfileAds(perPage, page)
+        const fresh = batch.filter((listing) => !seenIds.has(listing.id))
+        if (fresh.length === 0) break
+        for (const listing of fresh) {
+          seenIds.add(listing.id)
+        }
+        aggregated.push(...fresh)
+        if (batch.length < perPage) break
+      }
+      setMyListings(aggregated)
     } catch (error) {
       setAdsError(error instanceof Error ? error.message : "E'lonlarni yuklab bo'lmadi")
     }
@@ -105,6 +118,11 @@ export const ProfilePage = () => {
   }, [user])
 
   const fullName = `${editableProfile.firstName} ${editableProfile.lastName}`.trim()
+
+  const totalAdViews = useMemo(
+    () => myListings.reduce((sum, listing) => sum + (listing.viewsCount ?? 0), 0),
+    [myListings],
+  )
 
   const getAdSlides = (listing: Listing) =>
     listing.images && listing.images.length > 0 ? listing.images : [listing.image]
@@ -433,13 +451,15 @@ export const ProfilePage = () => {
         />
       </div>
 
-      <div className="grid gap-3 md:grid-cols-3">
+      <div className="grid gap-3 md:grid-cols-2">
         <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
             <Eye size={16} />
             Ko&apos;rishlar soni
           </p>
-          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">1,240</p>
+          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">
+            {formatPrice(totalAdViews)}
+          </p>
         </div>
         <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
@@ -447,13 +467,6 @@ export const ProfilePage = () => {
             Saqlanganlar
           </p>
           <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">45</p>
-        </div>
-        <div className="rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <p className="flex items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-            <CreditCard size={16} />
-            Hisob balansi
-          </p>
-          <p className="mt-2 text-3xl font-bold text-slate-900 dark:text-slate-100">{formatPrice(85000)} so&apos;m</p>
         </div>
       </div>
     </>
@@ -723,7 +736,7 @@ export const ProfilePage = () => {
               >
                 <div className="max-w-md rounded-ui border border-daladan-primary/35 bg-white/95 px-6 py-5 text-center shadow-md dark:border-daladan-primary/40 dark:bg-slate-900/95">
                   <p className="text-lg font-bold tracking-tight text-daladan-heading dark:text-slate-100">
-                    Under work
+                    Ish jarayonida
                   </p>
                   <p className="mt-1.5 text-sm text-daladan-muted dark:text-slate-400">
                     Bu bo&apos;lim tez orada ishga tushadi.

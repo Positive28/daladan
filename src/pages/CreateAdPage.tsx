@@ -746,9 +746,10 @@ export const CreateAdPage = () => {
               required: "Tavsif kiriting",
               minLength: { value: 10, message: "Tavsif kamida 10 ta belgidan iborat bo'lsin" },
             })}
+            rows={14}
             aria-invalid={Boolean(errors.description)}
             placeholder="Tavsif"
-            className={`min-h-28 w-full rounded-ui border px-3 py-2 text-sm outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+            className={`min-h-[min(28rem,70vh)] w-full resize-y rounded-ui border px-3 py-3 text-base leading-relaxed outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
               Boolean(errors.description),
             )}`}
           />

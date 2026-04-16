@@ -15,7 +15,7 @@ import type {
 export interface MarketplaceService {
   getPublicAds(filters?: PublicAdsFilters): Promise<Listing[]>
   getPublicAdById(id: string | number): Promise<Listing | undefined>
-  getProfileAds(perPage?: number): Promise<Listing[]>
+  getProfileAds(perPage?: number, page?: number): Promise<Listing[]>
   getProfileAdById(adId: number): Promise<Listing | undefined>
   updateProfileAd(adId: number, payload: UpdateProfileAdPayload): Promise<ProfileAd>
   deleteProfileAd(adId: number): Promise<void>

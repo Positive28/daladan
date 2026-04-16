@@ -18,10 +18,12 @@ VITE_API_BASE_URL=https://api.daladan.uz/api/v1
 # VITE_ADMIN_APP_HOSTS=admin.daladan.uz,localhost
 ```
 
-For AI description generation on Vercel, add this server-side environment variable in the Vercel project settings (Preview + Production):
+For AI description generation on Vercel, add a server-side API key in the Vercel project settings (Preview + Production). Prefer `DEEPSEEK_API_SECRET`; `API_SECRET` still works as a fallback:
 
 ```bash
-API_SECRET=your_deepseek_api_key
+DEEPSEEK_API_SECRET=your_deepseek_api_key
+# optional legacy name:
+# API_SECRET=your_deepseek_api_key
 ```
 
 Do not expose this value in frontend env files with `VITE_` prefix.

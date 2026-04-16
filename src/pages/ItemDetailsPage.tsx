@@ -727,7 +727,7 @@ export const ItemDetailsPage = () => {
             <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
               Mahsulot haqida ma&apos;lumot
             </h2>
-            <p className="text-base leading-7 text-slate-700 dark:text-slate-300 sm:text-lg sm:leading-8">
+            <p className="whitespace-pre-line text-base leading-7 text-slate-700 dark:text-slate-300 sm:text-lg sm:leading-8">
               {listing.description}
             </p>
             <div className="grid gap-3 sm:grid-cols-2">

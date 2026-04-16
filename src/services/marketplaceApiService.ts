@@ -386,8 +386,11 @@ export const marketplaceApiService: MarketplaceService = {
     return ad ? mapListing(ad) : undefined
   },
 
-  async getProfileAds(perPage = 15) {
-    const query = buildQuery({ per_page: perPage })
+  async getProfileAds(perPage = 15, page?: number) {
+    const query = buildQuery({
+      per_page: perPage,
+      ...(page !== undefined ? { page } : {}),
+    })
     const response = await requestJson<unknown>(`/profile/ads${query}`)
     return mapListingCollection(response)
   },
