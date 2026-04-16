@@ -31,6 +31,22 @@ const TITLE_MAX_LEN = 56
 /** Flip to `true` when seller DMs / in-app chat is shipped. */
 const IN_APP_MESSAGING_AVAILABLE = false
 
+function TelegramShareIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.95 1.24-5.5 3.66-.52.35-.99.52-1.41.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.88.03-.24.37-.48 1.02-.73 4.02-1.75 6.7-2.9 8.03-3.45 1.9-.76 2.3-.89 2.56-.89.06 0 .21.01.30.11.10.10.12.23.11.29-.01.06-.01.12-.02.18z" />
+    </svg>
+  )
+}
+
+function InstagramShareIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6m8.4 1.8a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4M12 7a5 5 0 110 10 5 5 0 010-10m0 2a3 3 0 100 6 3 3 0 000-6z" />
+    </svg>
+  )
+}
+
 function ListingBreadcrumbs({ listing }: { listing: Listing }) {
   const path = listing.categoryPath?.filter(Boolean) ?? []
   const titleShort =
@@ -99,6 +115,9 @@ function ItemDetailSidebar({
   onTelegram,
   onCopyLink,
   linkCopied,
+  onShareListingTelegram,
+  onShareListingInstagram,
+  instagramShareCopied,
   inAppMessagingAvailable,
   className = '',
 }: {
@@ -113,6 +132,9 @@ function ItemDetailSidebar({
   onTelegram: () => void
   onCopyLink: () => void
   linkCopied: boolean
+  onShareListingTelegram: () => void
+  onShareListingInstagram: () => void
+  instagramShareCopied: boolean
   inAppMessagingAvailable: boolean
   className?: string
 }) {
@@ -148,6 +170,27 @@ function ItemDetailSidebar({
         >
           <Link2 size={18} className="shrink-0" aria-hidden />
           <span className="hidden sm:inline">{linkCopied ? 'Nusxa olindi' : 'Havolani nusxalash'}</span>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+        <button
+          type="button"
+          onClick={onShareListingTelegram}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-[#229ED9]/40 bg-[#229ED9]/10 px-3 text-sm font-semibold text-[#1682b6] hover:bg-[#229ED9]/15 dark:border-[#229ED9]/35 dark:text-[#5ab4e6]"
+          aria-label="Telegramda ulashish"
+        >
+          <TelegramShareIcon className="h-5 w-5 shrink-0" />
+          <span>Telegramda ulashish</span>
+        </button>
+        <button
+          type="button"
+          onClick={onShareListingInstagram}
+          className="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-pink-500/30 bg-pink-500/10 px-3 text-sm font-semibold text-pink-700 hover:bg-pink-500/15 dark:text-pink-400"
+          aria-label="Instagramda ulashish"
+        >
+          <InstagramShareIcon className="h-5 w-5 shrink-0" />
+          <span>{instagramShareCopied ? 'Havola nusxalandi' : 'Instagramda ulashish'}</span>
         </button>
       </div>
 
@@ -217,6 +260,7 @@ export const ItemDetailsPage = () => {
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [imagePreview, setImagePreview] = useState<{ urls: string[]; index: number } | null>(null)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [instagramShareCopied, setInstagramShareCopied] = useState(false)
   const { user } = useAuth()
   const navigate = useNavigate()
   const { isFavorite, toggleFavorite } = useFavorites()
@@ -256,6 +300,12 @@ export const ItemDetailsPage = () => {
     const t = window.setTimeout(() => setLinkCopied(false), 2000)
     return () => window.clearTimeout(t)
   }, [linkCopied])
+
+  useEffect(() => {
+    if (!instagramShareCopied) return
+    const t = window.setTimeout(() => setInstagramShareCopied(false), 2500)
+    return () => window.clearTimeout(t)
+  }, [instagramShareCopied])
 
   if (!id) {
     return <p className="rounded-ui bg-white p-6 dark:bg-slate-900 dark:text-slate-200">Mahsulot topilmadi.</p>
@@ -300,6 +350,31 @@ export const ItemDetailsPage = () => {
     void navigator.clipboard.writeText(url).then(() => setLinkCopied(true))
   }
 
+  const onShareListingTelegram = () => {
+    const url = encodeURIComponent(window.location.href)
+    const text = encodeURIComponent(`${listing.title} — Daladan`)
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank', 'noopener,noreferrer')
+  }
+
+  const onShareListingInstagram = async () => {
+    const url = window.location.href
+    const payload = { title: listing.title, text: `${listing.title} — Daladan`, url }
+    try {
+      if (typeof navigator.share === 'function') {
+        await navigator.share(payload)
+        return
+      }
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return
+    }
+    try {
+      await navigator.clipboard.writeText(url)
+      setInstagramShareCopied(true)
+    } catch {
+      window.prompt('Havolani nusxalang:', url)
+    }
+  }
+
   const onCall = () => {
     if (!canSeePhone) {
       redirectToLogin()
@@ -337,6 +412,9 @@ export const ItemDetailsPage = () => {
     onTelegram,
     onCopyLink,
     linkCopied,
+    onShareListingTelegram,
+    onShareListingInstagram,
+    instagramShareCopied,
     inAppMessagingAvailable: IN_APP_MESSAGING_AVAILABLE,
   }
 
