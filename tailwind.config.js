@@ -8,12 +8,19 @@ export default {
         ui: '8px',
       },
       colors: {
+        // Light theme: soft greys + muted green accents (reference: marketplace screenshots)
         daladan: {
           primary: '#2f6d3f',
           accent: '#ffde82',
           accentMuted: '#caa74e',
           accentDark: '#907319',
-          soft: '#f0fdf2',
+          soft: '#ffffff',
+          surface: '#ffffff',
+          surfaceElevated: '#ffffff',
+          border: '#e8e8e8',
+          muted: '#707070',
+          heading: '#3d3b4d',
+          price: '#3d8b47',
           ink: '#1f2937',
         },
       },

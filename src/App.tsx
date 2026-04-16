@@ -6,7 +6,8 @@ import { FavoritesPage } from './pages/FavoritesPage'
 import { ItemDetailsPage } from './pages/ItemDetailsPage'
 import { LoginPage } from './pages/LoginPage'
 import { CreateAdPage } from './pages/CreateAdPage'
-import { MarketplacePage } from './pages/MarketplacePage'
+import { HomePage } from './pages/HomePage'
+import { SearchPage } from './pages/SearchPage'
 import { ProfilePage } from './pages/ProfilePage'
 import { RegisterPage } from './pages/RegisterPage'
 import { AdminAppRoutes } from './routes/AdminAppRoutes'
@@ -20,7 +21,8 @@ function App() {
   return (
     <Routes>
       <Route element={<SiteLayout />}>
-        <Route path="/" element={<MarketplacePage />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/item/:id" element={<ItemDetailsPage />} />
       </Route>
       <Route path="/login" element={<LoginPage />} />

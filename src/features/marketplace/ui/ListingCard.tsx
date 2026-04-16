@@ -11,7 +11,7 @@ import type { ListingCardVariant } from '../model/types'
 const CARD_SHADOW =
   'shadow-md shadow-slate-900/10 dark:shadow-none dark:ring-1 dark:ring-slate-700/80'
 
-const CARD_SHELL = `overflow-hidden rounded-ui border border-slate-200 bg-white ${CARD_SHADOW} transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900`
+const CARD_SHELL = `overflow-hidden rounded-ui border border-daladan-border bg-daladan-surfaceElevated ${CARD_SHADOW} transition-colors hover:border-daladan-primary/40 dark:border-slate-700 dark:bg-slate-900`
 
 interface ListingCardProps {
   listing: Listing
@@ -56,7 +56,7 @@ function ListingMedia({
 
   if (variant === 'grid') {
     return (
-      <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-slate-100 leading-none dark:bg-slate-800">
+      <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-daladan-soft leading-none dark:bg-slate-800">
         <img
           src={listing.image}
           alt={listing.title}
@@ -71,7 +71,7 @@ function ListingMedia({
   }
 
   return (
-    <div className="relative h-full min-h-0 min-w-0 w-full overflow-hidden rounded-l-ui bg-slate-100 dark:bg-slate-800">
+    <div className="relative h-full min-h-0 min-w-0 w-full overflow-hidden rounded-l-ui bg-daladan-soft dark:bg-slate-800">
       <img
         src={listing.image}
         alt={listing.title}
@@ -95,23 +95,23 @@ function ListingMeta({
   const createdLabel = formatListingCreatedAt(listing.createdAt)
   return (
     <>
-      <h3 className="line-clamp-2 font-semibold text-slate-900 dark:text-slate-100">
+      <h3 className="line-clamp-2 font-semibold text-daladan-heading dark:text-slate-100">
         {variant === 'grid' ? (
           <span className="text-lg">{listing.title}</span>
         ) : (
           <span className="text-base sm:text-lg">{listing.title}</span>
         )}
       </h3>
-      <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-400">{listing.description}</p>
-      <p className="flex items-center gap-1 text-sm text-slate-500 dark:text-slate-400">
+      <p className="line-clamp-2 text-sm text-daladan-muted dark:text-slate-400">{listing.description}</p>
+      <p className="flex items-center gap-1 text-sm text-daladan-muted dark:text-slate-400">
         <MapPin size={14} className="shrink-0" />
         <span className="min-w-0 truncate">{listing.location}</span>
       </p>
-      <p className="text-xl font-bold text-daladan-primary">
+      <p className="text-xl font-bold text-daladan-price dark:text-daladan-primary">
         {formatPrice(listing.price)} <span className="text-sm">{listing.unit}</span>
       </p>
       {createdLabel ? (
-        <p className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
+        <p className="flex items-center gap-1 text-xs text-daladan-muted/90 dark:text-slate-500">
           <Calendar size={12} className="shrink-0" aria-hidden />
           <span>{createdLabel}</span>
         </p>
@@ -178,7 +178,7 @@ export const ListingCard = ({
         className={`absolute right-3 top-3 z-10 inline-flex h-8 w-8 items-center justify-center rounded-full shadow-sm ${
           favorite
             ? 'bg-daladan-accent text-daladan-accentDark'
-            : 'bg-white/95 text-slate-600 dark:bg-slate-800 dark:text-slate-300'
+            : 'bg-daladan-surfaceElevated/95 text-daladan-muted dark:bg-slate-800 dark:text-slate-300'
         }`}
       >
         <Heart size={16} fill={favorite ? 'currentColor' : 'none'} />
