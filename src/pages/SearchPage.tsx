@@ -151,9 +151,9 @@ export const SearchPage = () => {
   }
 
   return (
-    <div className="mx-auto w-full max-w-6xl">
-      <div className="grid gap-5 lg:grid-cols-[280px_1fr]">
-        <aside className="space-y-4">
+    <div className="w-full">
+      <div className="relative mx-auto w-full max-w-[42rem]">
+        <aside className="mb-6 w-full max-w-lg space-y-4 max-xl:mx-auto xl:absolute xl:right-full xl:top-0 xl:z-10 xl:mb-0 xl:mr-6 xl:w-[280px] xl:max-w-none">
           <div className="rounded-ui border border-daladan-border bg-daladan-surfaceElevated p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <p className="mb-4 flex items-center gap-2 text-base font-semibold text-daladan-heading dark:text-slate-100">
               <SlidersHorizontal size={16} />
@@ -260,7 +260,7 @@ export const SearchPage = () => {
           </div>
         </aside>
 
-        <section className="space-y-4">
+        <section className="relative min-w-0 space-y-4">
           <div className="rounded-ui border border-daladan-border bg-daladan-surfaceElevated px-5 py-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
             <div className="mb-2 flex items-center gap-2 text-sm text-daladan-muted dark:text-slate-400">
               <span>Asosiy</span>
