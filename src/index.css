@@ -63,7 +63,7 @@
 
 body {
   margin: 0;
-  font-family: Geomanist, sans-serif;
+  font-family: 'Readex Pro', sans-serif;
   font-size: 18px;
   line-height: 1.6;
   background: #ffffff;
@@ -81,7 +81,7 @@ button,
 input,
 select,
 textarea {
-  font-family: Geomanist, sans-serif;
+  font-family: 'Readex Pro', sans-serif;
   font-size: 1rem;
 }
 

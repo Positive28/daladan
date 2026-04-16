@@ -4,6 +4,9 @@ export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['"Readex Pro"', 'sans-serif'],
+      },
       borderRadius: {
         ui: '4px',
       },
