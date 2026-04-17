@@ -7,13 +7,14 @@ const variantClass: Record<'error' | 'warning', string> = {
     'border-amber-200 bg-amber-50 text-amber-950 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-100',
 }
 
-type PromotionsAlertProps = {
+type InlineAlertProps = {
   variant: keyof typeof variantClass
   children: ReactNode
   className?: string
 }
 
-export function PromotionsAlert({ variant, children, className = '' }: PromotionsAlertProps) {
+/** Inline status banner (errors, warnings) for profile-ad and admin flows. */
+export function InlineAlert({ variant, children, className = '' }: InlineAlertProps) {
   return (
     <div
       className={`rounded-ui border px-4 py-3 text-sm ${variantClass[variant]} ${className}`.trim()}

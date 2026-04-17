@@ -1,21 +1,20 @@
 import { useCallback, useEffect, useState } from 'react'
-import { isValidAdId } from '../../profile-ad/model/adId'
+import { isValidAdId, profileAdCopy } from '../../profile-ad'
 import { marketplaceService } from '../../../services'
 import { ApiError } from '../../../services/apiClient'
-import type { AdPromotion, Listing } from '../../../types/marketplace'
-import { adPromotionMessages } from './adPromotionMessages'
+import type { AdStats, Listing } from '../../../types/marketplace'
 
-type ProfileAdPromotionsState = {
+type ProfileAdStatsState = {
   listing: Listing | undefined
-  rows: AdPromotion[]
+  stats: AdStats | null
   loading: boolean
   error: string
 }
 
-export function useProfileAdPromotionsPage(adId: number) {
-  const [state, setState] = useState<ProfileAdPromotionsState>({
+export function useProfileAdStatsPage(adId: number) {
+  const [state, setState] = useState<ProfileAdStatsState>({
     listing: undefined,
-    rows: [],
+    stats: null,
     loading: true,
     error: '',
   })
@@ -24,9 +23,9 @@ export function useProfileAdPromotionsPage(adId: number) {
     if (!isValidAdId(adId)) {
       setState({
         listing: undefined,
-        rows: [],
+        stats: null,
         loading: false,
-        error: adPromotionMessages.invalidAdId,
+        error: profileAdCopy.invalidAdId,
       })
       return
     }
@@ -34,33 +33,33 @@ export function useProfileAdPromotionsPage(adId: number) {
     setState((prev) => ({ ...prev, error: '', loading: true }))
 
     try {
-      const [adRow, promoRows] = await Promise.all([
+      const [adRow, statsRow] = await Promise.all([
         marketplaceService.getProfileAdById(adId),
-        marketplaceService.getProfileAdPromotions(adId),
+        marketplaceService.getProfileAdStats(adId),
       ])
       if (!adRow) {
         setState({
           listing: undefined,
-          rows: [],
+          stats: null,
           loading: false,
-          error: adPromotionMessages.profileNotOwner,
+          error: profileAdCopy.profileNotOwner,
         })
         return
       }
       setState({
         listing: adRow,
-        rows: promoRows,
+        stats: statsRow,
         loading: false,
         error: '',
       })
     } catch (e) {
       const message =
         e instanceof ApiError && e.status === 404
-          ? adPromotionMessages.notFoundShort
-          : adPromotionMessages.profileLoadFailed
+          ? profileAdCopy.statsNotFound
+          : profileAdCopy.profileLoadFailed
       setState({
         listing: undefined,
-        rows: [],
+        stats: null,
         loading: false,
         error: message,
       })

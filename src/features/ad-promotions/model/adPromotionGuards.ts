@@ -1,7 +1,5 @@
-/** Shared route param validation for profile + admin promotion flows. */
-export function isValidAdId(adId: number): boolean {
-  return Number.isFinite(adId) && adId >= 1
-}
+/** Admin promotion routes: user id segment validation. */
+export { isValidAdId } from '../../profile-ad/model/adId'
 
 export function isValidUserId(userId: number): boolean {
   return Number.isFinite(userId) && userId >= 1

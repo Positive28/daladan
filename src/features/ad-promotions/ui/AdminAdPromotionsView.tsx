@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { useAdminAdPromotionsPage } from '../model/useAdminAdPromotionsPage'
+import { InlineAlert } from '../../profile-ad'
 import { AdPromotionsTable } from './AdPromotionsTable'
-import { PromotionsAlert } from './PromotionsAlert'
 import { PromotionsEmptyState } from './PromotionsEmptyState'
 import { adPromotionMessages } from '../model/adPromotionMessages'
 
@@ -45,9 +45,9 @@ export function AdminAdPromotionsView({
       </div>
 
       {forbidden ? (
-        <PromotionsAlert variant="warning" className="mb-4">
+        <InlineAlert variant="warning" className="mb-4">
           Sizda admin huquqi yo‘q yoki sessiya tugagan.
-        </PromotionsAlert>
+        </InlineAlert>
       ) : null}
 
       <div className="rounded-ui border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900">
@@ -66,9 +66,9 @@ export function AdminAdPromotionsView({
         </p>
 
         {error ? (
-          <PromotionsAlert variant="error" className="mt-4">
+          <InlineAlert variant="error" className="mt-4">
             {error}
-          </PromotionsAlert>
+          </InlineAlert>
         ) : null}
 
         {loading ? (
