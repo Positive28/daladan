@@ -61,6 +61,8 @@ export const mapSubcategory = (item: UnknownRecord): AdminSubcategory => {
     is_active: getBoolean(item, 'is_active'),
     created_at: getString(item, 'created_at'),
     updated_at: getString(item, 'updated_at'),
+    image_url: nullableStringField(item.image_url),
+    media: Array.isArray(item.media) ? item.media : [],
     category,
   }
 }

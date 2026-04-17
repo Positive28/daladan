@@ -62,6 +62,13 @@ export interface SubcategoryOption {
   id: number
   categoryId: number
   name: string
+  slug?: string
+  /** Primary image when API returns `image_url` */
+  image_url?: string | null
+  /** Resolved gallery URLs when API returns `media` */
+  media?: string[]
+  /** Public list should omit inactive rows when false */
+  is_active?: boolean
 }
 
 export interface CreateProfileAdPayload {

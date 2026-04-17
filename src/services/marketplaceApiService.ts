@@ -73,11 +73,34 @@ const mapCategory = (item: UnknownRecord): CategoryOption => {
   }
 }
 
-const mapSubcategory = (item: UnknownRecord): SubcategoryOption => ({
-  id: getNumber(item, 'id', 'subcategory_id'),
-  categoryId: getNumber(item, 'category_id', 'parent_id'),
-  name: getString(item, 'name_uz', 'name_oz', 'name', 'title'),
-})
+const mapSubcategory =
+  (fallbackCategoryId: number) =>
+  (item: UnknownRecord): SubcategoryOption => {
+    const id = getNumber(item, 'id', 'subcategory_id')
+    const categoryIdFromApi = getNumber(item, 'category_id', 'parent_id')
+    const categoryId = categoryIdFromApi > 0 ? categoryIdFromApi : fallbackCategoryId
+    const slugRaw = getString(item, 'slug', 'slug_en', 'slug_uz')
+    const rawImage = item.image_url
+    const image_url =
+      rawImage === null || rawImage === undefined
+        ? null
+        : typeof rawImage === 'string' && rawImage.trim()
+          ? rawImage.trim()
+          : null
+    const mediaUrls = getMediaUrls(item.media)
+    const isActiveRaw = item.is_active
+    const is_active = isActiveRaw === undefined ? true : Boolean(isActiveRaw)
+
+    return {
+      id,
+      categoryId,
+      name: getString(item, 'name_uz', 'name_oz', 'name', 'title'),
+      ...(slugRaw ? { slug: slugRaw } : {}),
+      image_url,
+      ...(mediaUrls.length ? { media: mediaUrls } : {}),
+      is_active,
+    }
+  }
 
 const getIdString = (item: UnknownRecord) => {
   const numericId = getNumber(item, 'id', 'ad_id')
@@ -429,8 +452,9 @@ export const marketplaceApiService: MarketplaceService = {
   async getSubcategories(categoryId: number) {
     const response = await requestJson<unknown>(`/resources/subcategories?category_id=${categoryId}`)
     return extractCollection(response)
-      .map(mapSubcategory)
+      .map(mapSubcategory(categoryId))
       .filter((item) => item.id > 0 && item.categoryId > 0 && Boolean(item.name))
+      .filter((item) => item.is_active !== false)
   },
 
   createProfileAd,

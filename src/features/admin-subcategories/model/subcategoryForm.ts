@@ -6,6 +6,7 @@ export type AdminSubcategoryFormValues = {
   slug: string
   sort_order: string
   is_active: boolean
+  image_url: string
 }
 
 export const emptySubcategoryForm: AdminSubcategoryFormValues = {
@@ -14,17 +15,20 @@ export const emptySubcategoryForm: AdminSubcategoryFormValues = {
   slug: '',
   sort_order: '',
   is_active: true,
+  image_url: '',
 }
 
 export const subcategoryToPayload = (values: AdminSubcategoryFormValues): AdminSubcategoryPayload => {
   const sortRaw = values.sort_order.trim()
   const sortNum = sortRaw === '' ? null : Number(sortRaw)
+  const img = values.image_url.trim()
   return {
     category_id: Number(values.category_id),
     name: values.name.trim(),
     slug: values.slug.trim(),
     sort_order: sortNum === null || Number.isNaN(sortNum) ? null : sortNum,
     is_active: values.is_active,
+    image_url: img === '' ? null : img,
   }
 }
 
@@ -34,4 +38,5 @@ export const subcategoryToForm = (s: AdminSubcategory): AdminSubcategoryFormValu
   slug: s.slug,
   sort_order: s.sort_order === null ? '' : String(s.sort_order),
   is_active: s.is_active,
+  image_url: s.image_url ?? '',
 })

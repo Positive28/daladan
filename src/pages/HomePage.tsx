@@ -72,17 +72,17 @@ export const HomePage = () => {
 
   useEffect(() => {
     let mounted = true
-    ;(async () => {
-      setLoadingTree(true)
-      try {
-        const tree = await loadCategoryTree()
-        if (mounted) setCategoryTree(tree.length > 0 ? tree : fallbackCategoryTree)
-      } catch {
-        if (mounted) setCategoryTree(fallbackCategoryTree)
-      } finally {
-        if (mounted) setLoadingTree(false)
-      }
-    })()
+      ; (async () => {
+        setLoadingTree(true)
+        try {
+          const tree = await loadCategoryTree()
+          if (mounted) setCategoryTree(tree.length > 0 ? tree : fallbackCategoryTree)
+        } catch {
+          if (mounted) setCategoryTree(fallbackCategoryTree)
+        } finally {
+          if (mounted) setLoadingTree(false)
+        }
+      })()
     return () => {
       mounted = false
     }

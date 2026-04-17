@@ -37,7 +37,15 @@ export const CATEGORY_TILE_IMAGE_BY_LABEL_KEY: Record<string, string> = {
 
 export const normalizeCategoryLabel = (label: string) => label.trim().toLowerCase().replace(/\s+/g, ' ')
 
-export function getCategoryTileImage(category: { id?: number; label: string; slug?: string }): string {
+export function getCategoryTileImage(category: {
+  id?: number
+  label: string
+  slug?: string
+  imageUrl?: string
+}): string {
+  const fromApi = category.imageUrl?.trim()
+  if (fromApi) return fromApi
+
   if (category.id != null) {
     const byId = CATEGORY_TILE_IMAGE_BY_ID[category.id]
     if (byId) return byId

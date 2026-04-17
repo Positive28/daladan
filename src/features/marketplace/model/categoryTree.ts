@@ -7,6 +7,8 @@ export interface CategoryNode {
   id?: number
   /** API slug (e.g. fruit, poultry, animal) — tile images */
   slug?: string
+  /** When API provides subcategory `image_url` or first gallery URL */
+  imageUrl?: string
   children?: CategoryNode[]
 }
 
@@ -105,7 +107,16 @@ export const loadCategoryTree = (): Promise<CategoryNode[]> => {
         ...(category.slug ? { slug: category.slug } : {}),
         children: (subcategoriesByCategoryId.get(category.id) ?? [])
           .filter((subcategory) => Boolean(subcategory.name))
-          .map((subcategory) => ({ label: subcategory.name })),
+          .map((subcategory) => {
+            const imageUrl =
+              (subcategory.image_url && subcategory.image_url.trim()) || subcategory.media?.[0]
+            return {
+              label: subcategory.name,
+              ...(subcategory.id ? { id: subcategory.id } : {}),
+              ...(subcategory.slug ? { slug: subcategory.slug } : {}),
+              ...(imageUrl ? { imageUrl } : {}),
+            }
+          }),
       }))
   })().catch((error) => {
     categoryTreePromise = null

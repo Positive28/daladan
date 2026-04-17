@@ -109,9 +109,9 @@ export const SearchPage = () => {
     selectedCategory === 'Barchasi'
       ? null
       : (() => {
-          const matches = gatherDescendants(selectedCategory, categoryTree)
-          return matches.size > 0 ? matches : null
-        })()
+        const matches = gatherDescendants(selectedCategory, categoryTree)
+        return matches.size > 0 ? matches : null
+      })()
 
   const filtered = useMemo(() => {
     const min = minPrice ? Number(minPrice) : null
@@ -183,11 +183,10 @@ export const SearchPage = () => {
               type="button"
               onClick={() => selectCategory('Barchasi')}
               disabled={isLoadingCategoryTree}
-              className={`mb-3 w-full rounded-lg px-3 py-2 text-left text-sm ${
-                selectedCategory === 'Barchasi'
+              className={`mb-3 w-full rounded-lg px-3 py-2 text-left text-sm ${selectedCategory === 'Barchasi'
                   ? 'bg-daladan-primary/10 text-daladan-primary'
                   : 'bg-daladan-soft dark:bg-slate-800 dark:text-slate-300'
-              }`}
+                }`}
             >
               Barchasi
             </button>
@@ -209,54 +208,52 @@ export const SearchPage = () => {
                     expandedCategories,
                   )
                   return (
-                  <div key={category.label}>
-                    <div className="flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => toggleCategory(category.label)}
-                        disabled={isLoadingCategoryTree}
-                        className="rounded p-1 text-daladan-muted hover:bg-daladan-soft dark:text-slate-400 dark:hover:bg-slate-800"
-                        aria-label={`${category.label} ni ochish yopish`}
-                      >
-                        {rowExpanded ? (
-                          <ChevronDown size={14} />
-                        ) : (
-                          <ChevronRight size={14} />
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => selectCategory(category.label)}
-                        disabled={isLoadingCategoryTree}
-                        className={`w-full rounded-lg px-2 py-2 text-left text-sm font-medium ${
-                          selectedCategory === category.label
-                            ? 'bg-daladan-primary/10 text-daladan-primary'
-                            : 'text-daladan-heading hover:bg-daladan-soft dark:text-slate-300 dark:hover:bg-slate-800'
-                        }`}
-                      >
-                        {category.label}
-                      </button>
-                    </div>
-                    {category.children?.length && rowExpanded ? (
-                      <div className="mt-1 border-l border-daladan-border pl-3 dark:border-slate-700">
-                        {category.children.map((sub) => (
-                          <button
-                            key={sub.label}
-                            type="button"
-                            onClick={() => selectCategory(sub.label)}
-                            disabled={isLoadingCategoryTree}
-                            className={`mt-1 block w-full rounded-lg px-2 py-1.5 text-left text-sm ${
-                              selectedCategory === sub.label
-                                ? 'bg-daladan-primary/10 font-medium text-daladan-primary'
-                                : 'text-daladan-muted hover:bg-daladan-soft dark:text-slate-400 dark:hover:bg-slate-800'
+                    <div key={category.label}>
+                      <div className="flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => toggleCategory(category.label)}
+                          disabled={isLoadingCategoryTree}
+                          className="rounded p-1 text-daladan-muted hover:bg-daladan-soft dark:text-slate-400 dark:hover:bg-slate-800"
+                          aria-label={`${category.label} ni ochish yopish`}
+                        >
+                          {rowExpanded ? (
+                            <ChevronDown size={14} />
+                          ) : (
+                            <ChevronRight size={14} />
+                          )}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => selectCategory(category.label)}
+                          disabled={isLoadingCategoryTree}
+                          className={`w-full rounded-lg px-2 py-2 text-left text-sm font-medium ${selectedCategory === category.label
+                              ? 'bg-daladan-primary/10 text-daladan-primary'
+                              : 'text-daladan-heading hover:bg-daladan-soft dark:text-slate-300 dark:hover:bg-slate-800'
                             }`}
-                          >
-                            {sub.label}
-                          </button>
-                        ))}
+                        >
+                          {category.label}
+                        </button>
                       </div>
-                    ) : null}
-                  </div>
+                      {category.children?.length && rowExpanded ? (
+                        <div className="mt-1 border-l border-daladan-border pl-3 dark:border-slate-700">
+                          {category.children.map((sub) => (
+                            <button
+                              key={sub.label}
+                              type="button"
+                              onClick={() => selectCategory(sub.label)}
+                              disabled={isLoadingCategoryTree}
+                              className={`mt-1 block w-full rounded-lg px-2 py-1.5 text-left text-sm ${selectedCategory === sub.label
+                                  ? 'bg-daladan-primary/10 font-medium text-daladan-primary'
+                                  : 'text-daladan-muted hover:bg-daladan-soft dark:text-slate-400 dark:hover:bg-slate-800'
+                                }`}
+                            >
+                              {sub.label}
+                            </button>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
                   )
                 })
               )}
@@ -345,11 +342,10 @@ export const SearchPage = () => {
                   key={page}
                   type="button"
                   onClick={() => setCurrentPage(page)}
-                  className={`h-9 w-9 rounded-lg border text-sm font-semibold ${
-                    page === safePage
+                  className={`h-9 w-9 rounded-lg border text-sm font-semibold ${page === safePage
                       ? 'border-daladan-primary bg-daladan-primary text-white'
                       : 'border-daladan-border bg-daladan-surfaceElevated text-daladan-heading dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300'
-                  }`}
+                    }`}
                 >
                   {page}
                 </button>

@@ -38,6 +38,8 @@ export interface AdminSubcategory {
   is_active: boolean
   created_at: string
   updated_at: string
+  image_url: string | null
+  media: readonly unknown[]
   category?: AdminSubcategoryNestedCategory
 }
 
@@ -47,6 +49,8 @@ export interface AdminSubcategoryPayload {
   slug: string
   sort_order?: number | null
   is_active: boolean
+  /** `null` clears the stored URL when the API accepts it */
+  image_url: string | null
 }
 
 export type AdminUserRole = 'user' | 'admin'

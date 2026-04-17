@@ -19,6 +19,21 @@ import {
   unwrapRecord,
 } from './adminApiMappers'
 
+const buildSubcategoryFormData = (payload: AdminSubcategoryPayload) => {
+  const fd = new FormData()
+  fd.append('category_id', String(payload.category_id))
+  fd.append('name', payload.name)
+  fd.append('slug', payload.slug)
+  if (payload.sort_order !== undefined && payload.sort_order !== null) {
+    fd.append('sort_order', String(payload.sort_order))
+  }
+  fd.append('is_active', payload.is_active ? '1' : '0')
+  if (payload.image_url !== null && payload.image_url !== '') {
+    fd.append('image_url', payload.image_url)
+  }
+  return fd
+}
+
 export const adminApiService = {
   async listModerationAds(params?: {
     status?: 'pending' | 'active' | 'rejected' | 'sold' | 'deleted'
@@ -107,7 +122,16 @@ export const adminApiService = {
     return mapSubcategory(unwrapRecord(raw))
   },
 
-  async createSubcategory(payload: AdminSubcategoryPayload) {
+  async createSubcategory(payload: AdminSubcategoryPayload, imageFile?: File | null) {
+    if (imageFile) {
+      const body = buildSubcategoryFormData(payload)
+      body.append('image', imageFile)
+      const raw = await requestJson<unknown>('/admin/subcategories', {
+        method: 'POST',
+        body,
+      })
+      return mapSubcategory(unwrapRecord(raw))
+    }
     const raw = await requestJson<unknown>('/admin/subcategories', {
       method: 'POST',
       body: JSON.stringify(payload),
@@ -115,7 +139,17 @@ export const adminApiService = {
     return mapSubcategory(unwrapRecord(raw))
   },
 
-  async updateSubcategory(id: number, payload: AdminSubcategoryPayload) {
+  async updateSubcategory(id: number, payload: AdminSubcategoryPayload, imageFile?: File | null) {
+    if (imageFile) {
+      const body = buildSubcategoryFormData(payload)
+      body.append('image', imageFile)
+      body.append('_method', 'PUT')
+      const raw = await requestJson<unknown>(`/admin/subcategories/${id}`, {
+        method: 'POST',
+        body,
+      })
+      return mapSubcategory(unwrapRecord(raw))
+    }
     const raw = await requestJson<unknown>(`/admin/subcategories/${id}`, {
       method: 'PUT',
       body: JSON.stringify(payload),

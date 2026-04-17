@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { adminApiService } from '../../../services'
 import type { AdminCategory, AdminSubcategory } from '../../../types/admin'
@@ -27,6 +27,8 @@ export const useAdminSubcategoriesPage = () => {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [slugManual, setSlugManual] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const imageFileInputRef = useRef<HTMLInputElement | null>(null)
 
   const { register, handleSubmit, reset, watch, setValue } = useForm<AdminSubcategoryFormValues>({
     defaultValues: emptySubcategoryForm,
@@ -82,6 +84,8 @@ export const useAdminSubcategoriesPage = () => {
   const openCreate = () => {
     setEditingId(null)
     setSlugManual(false)
+    setImageFile(null)
+    if (imageFileInputRef.current) imageFileInputRef.current.value = ''
     reset(emptySubcategoryForm)
     setModalOpen(true)
   }
@@ -90,6 +94,8 @@ export const useAdminSubcategoriesPage = () => {
     setSlugManual(true)
     setEditingId(id)
     setError('')
+    setImageFile(null)
+    if (imageFileInputRef.current) imageFileInputRef.current.value = ''
     try {
       const s = await adminApiService.getSubcategory(id)
       reset(subcategoryToForm(s))
@@ -102,6 +108,8 @@ export const useAdminSubcategoriesPage = () => {
   const closeModal = () => {
     setModalOpen(false)
     setEditingId(null)
+    setImageFile(null)
+    if (imageFileInputRef.current) imageFileInputRef.current.value = ''
   }
 
   const onSubmit = async (values: AdminSubcategoryFormValues) => {
@@ -114,9 +122,9 @@ export const useAdminSubcategoriesPage = () => {
     try {
       const payload = subcategoryToPayload(values)
       if (editingId === null) {
-        await adminApiService.createSubcategory(payload)
+        await adminApiService.createSubcategory(payload, imageFile)
       } else {
-        await adminApiService.updateSubcategory(editingId, payload)
+        await adminApiService.updateSubcategory(editingId, payload, imageFile)
       }
       closeModal()
       await load()
@@ -168,6 +176,7 @@ export const useAdminSubcategoriesPage = () => {
     saving,
     register,
     handleSubmit,
+    watch,
     slugRegister,
     openCreate,
     openEdit,
@@ -175,5 +184,8 @@ export const useAdminSubcategoriesPage = () => {
     onSubmit,
     onDelete,
     onPerPageChange,
+    imageFile,
+    setImageFile,
+    imageFileInputRef,
   }
 }
