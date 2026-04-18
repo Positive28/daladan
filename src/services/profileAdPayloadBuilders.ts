@@ -34,7 +34,7 @@ const UI_TO_API_UNIT: Record<string, string> = {
   m3: 'cubic_meter',
 }
 
-/** Uzbek display names for unit pickers (same order as previous `UNIT_OPTIONS` in CreateAdPage). */
+/** Uzbek display names for unit pickers (same order as previous `UNIT_OPTIONS`; used by `features/create-ad`). */
 export const PROFILE_AD_UNIT_OPTIONS = [
   'kilogramm',
   'gramm',
