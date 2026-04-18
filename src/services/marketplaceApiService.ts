@@ -7,11 +7,12 @@ import type {
   CreateProfileAdPayload,
   Listing,
   ProfileAd,
+  PromotionPlanResource,
   PublicAdsFilters,
   SubcategoryOption,
   UpdateProfileAdPayload,
 } from '../types/marketplace'
-import { requestJson } from './apiClient'
+import { ApiError, requestJson } from './apiClient'
 import {
   asRecord,
   extractCollection,
@@ -30,6 +31,38 @@ import {
   createMultipartBody,
   toBasePayload,
 } from './profileAdPayloadBuilders'
+import { buildPromotionPlanFallbacks } from '../utils/promotionPlanFallbacks'
+
+const pickNullablePrice = (item: UnknownRecord): number | null => {
+  for (const key of ['price', 'amount', 'total']) {
+    const v = item[key]
+    if (v === null || v === undefined) continue
+    if (typeof v === 'number' && !Number.isNaN(v)) return v
+    if (typeof v === 'string') {
+      const n = Number(v)
+      if (!Number.isNaN(n)) return n
+    }
+  }
+  return null
+}
+
+const mapPromotionPlanResource = (item: UnknownRecord, index: number): PromotionPlanResource | null => {
+  const numericId = getNumber(item, 'id')
+  const slug = getString(item, 'slug', 'code').trim()
+  const id = numericId > 0 ? String(numericId) : slug || `plan-${index}`
+  const label = getString(item, 'name_uz', 'name_oz', 'name', 'title', 'label').trim()
+  const durationDaysRaw = getNumber(item, 'duration_days', 'duration_in_days', 'days', 'duration')
+  const durationDays = durationDaysRaw > 0 ? durationDaysRaw : 7
+  if (!label) return null
+  const kindRaw = getString(item, 'kind', 'type', 'promotion_type', 'plan_kind', 'promotion_kind')
+  return {
+    id,
+    label,
+    durationDays,
+    ...(kindRaw ? { kind: kindRaw } : {}),
+    price: pickNullablePrice(item),
+  }
+}
 
 const mapCategory = (item: UnknownRecord): CategoryOption => {
   const slugRaw = getString(item, 'slug', 'slug_en', 'slug_uz')
@@ -68,6 +101,25 @@ const mapSubcategory =
       is_active,
     }
   }
+
+const mapBoostPlanRow = (item: UnknownRecord): BoostPlan => {
+  const numericId = getNumber(item, 'id', 'plan_id')
+  const id =
+    numericId > 0
+      ? String(numericId)
+      : getString(item, 'slug', 'code', 'key', 'plan_key', 'type') || 'plan'
+  const price = getNumber(item, 'price', 'amount', 'cost', 'sum', 'price_uzs')
+  const name = getString(item, 'name_uz', 'name_oz', 'name', 'title', 'label')
+  const description = getString(item, 'description_uz', 'description', 'description_oz', 'summary')
+  const badgeRaw = getString(item, 'badge', 'badge_label', 'label')
+  return {
+    id,
+    name: name || id,
+    price,
+    description: description || '',
+    ...(badgeRaw ? { badge: badgeRaw } : {}),
+  }
+}
 
 const getIdString = (item: UnknownRecord) => {
   const numericId = getNumber(item, 'id', 'ad_id')
@@ -323,8 +375,15 @@ export const marketplaceApiService: MarketplaceService = {
   },
 
   async getProfileAdPromotions(adId: number): Promise<AdPromotion[]> {
-    const response = await requestJson<unknown>(`/profile/ads/${adId}/promotions`)
-    return extractPromotionRows(response).map(mapAdPromotion)
+    try {
+      const response = await requestJson<unknown>(`/profile/ads/${adId}/promotions`)
+      return extractPromotionRows(response).map(mapAdPromotion)
+    } catch (e) {
+      if (e instanceof ApiError && (e.status === 405 || e.status === 404 || e.status === 501)) {
+        return []
+      }
+      throw e
+    }
   },
 
   async updateProfileAd(adId: number, payload: UpdateProfileAdPayload) {
@@ -344,7 +403,29 @@ export const marketplaceApiService: MarketplaceService = {
   },
 
   async getBoostPlans(): Promise<BoostPlan[]> {
+    try {
+      const response = await requestJson<unknown>('/resources/promotion-plans')
+      const mapped = extractCollection(response)
+        .map((raw) => mapBoostPlanRow(asRecord(raw)))
+        .filter((plan) => Boolean(plan.id && plan.name))
+      if (mapped.length > 0) return mapped
+    } catch {
+      // Public catalog unavailable — keep checkout usable.
+    }
     return boostPlans
+  },
+
+  async getPromotionPlans(): Promise<PromotionPlanResource[]> {
+    try {
+      const response = await requestJson<unknown>('/resources/promotion-plans')
+      const mapped = extractCollection(response)
+        .map((raw, i) => mapPromotionPlanResource(asRecord(raw), i))
+        .filter((r): r is PromotionPlanResource => r !== null)
+      if (mapped.length > 0) return mapped
+    } catch {
+      // fall through to static catalog
+    }
+    return buildPromotionPlanFallbacks()
   },
 
   async getCategories() {

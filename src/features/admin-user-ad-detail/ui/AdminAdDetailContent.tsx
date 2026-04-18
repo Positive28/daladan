@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getAdminAdPromotionsListPath } from '../../ad-promotions'
 import { AdminModal } from '../../../components/admin/AdminModal'
@@ -7,9 +7,7 @@ import { adminApiService } from '../../../services'
 import type { AdminUserListItem, AdminUserNestedAd } from '../../../types/admin'
 import { getAdminErrorMessage } from '../../../utils/adminApiError'
 import {
-  ADMIN_PROMO_PERIOD_OPTIONS,
-  type AdminPromoPeriodId,
-  getPromoEndDateFromTomorrow,
+  getPromoEndFromStartAndDays,
   getTomorrowLocalStart,
 } from '../../../utils/adminPromoPeriod'
 import { isPendingModerationStatus } from '../../../utils/adminModeration'
@@ -18,6 +16,9 @@ import {
   formatUzbekDateTimeFromDate,
 } from '../../../utils/uzbekDateFormat'
 import { AdminAdEditSection } from './AdminAdEditSection'
+import { derivePromoKindFromAd } from '../model/promoKindFromAd'
+import { buildPromoKindOptionsFromPlans, selectPlansForPromoKind } from '../model/promotionPlanKinds'
+import { usePromotionPlans } from '../model/usePromotionPlans'
 
 const fmtBool = (v: boolean) => (v ? 'Ha' : 'Yo‘q')
 
@@ -107,8 +108,9 @@ export const AdminAdDetailContent = ({ ad, user, onModerationComplete }: AdminAd
   const [moderationError, setModerationError] = useState('')
   const [rejectOpen, setRejectOpen] = useState(false)
   const [rejectReason, setRejectReason] = useState('')
-  const [promoKind, setPromoKind] = useState<'none' | 'top' | 'boost'>('none')
-  const [promoPeriodId, setPromoPeriodId] = useState<AdminPromoPeriodId>('1w')
+  const { plans: promotionPlans, loading: promotionPlansLoading } = usePromotionPlans()
+  const [promoKind, setPromoKind] = useState<'none' | 'top' | 'boost'>(() => derivePromoKindFromAd(ad))
+  const [promoPlanId, setPromoPlanId] = useState('1w')
   const [sellerAvatarBroken, setSellerAvatarBroken] = useState(false)
 
   const pending = isPendingModerationStatus(ad.status)
@@ -128,6 +130,51 @@ export const AdminAdDetailContent = ({ ad, user, onModerationComplete }: AdminAd
   useEffect(() => {
     setSellerAvatarBroken(false)
   }, [user.id, user.avatar_url])
+
+  const promoKindOptions = useMemo(
+    () => buildPromoKindOptionsFromPlans(promotionPlans),
+    [promotionPlans],
+  )
+
+  const plansForDuration = useMemo(
+    () => selectPlansForPromoKind(promotionPlans, promoKind),
+    [promotionPlans, promoKind],
+  )
+
+  useEffect(() => {
+    const derived = derivePromoKindFromAd(ad)
+    const allowed = new Set(promoKindOptions.map((o) => o.id))
+    if (allowed.has(derived)) {
+      setPromoKind(derived)
+      return
+    }
+    setPromoKind(promoKindOptions.find((o) => o.id !== 'none')?.id ?? 'none')
+  }, [ad.id, ad.is_boosted, ad.is_top_sale, promoKindOptions])
+
+  useEffect(() => {
+    const allowed = new Set(promoKindOptions.map((o) => o.id))
+    if (!allowed.has(promoKind)) {
+      setPromoKind(promoKindOptions.find((o) => o.id !== 'none')?.id ?? 'none')
+    }
+  }, [promoKindOptions, promoKind])
+
+  useEffect(() => {
+    if (plansForDuration.length === 0) return
+    setPromoPlanId((prev) =>
+      plansForDuration.some((p) => p.id === prev) ? prev : plansForDuration[0].id,
+    )
+  }, [plansForDuration])
+
+  const selectedPromotionPlan = useMemo(() => {
+    if (plansForDuration.length === 0) return undefined
+    return plansForDuration.find((p) => p.id === promoPlanId) ?? plansForDuration[0]
+  }, [plansForDuration, promoPlanId])
+
+  const estimatedNewPromoEnd = useMemo(() => {
+    const start = getTomorrowLocalStart()
+    if (!selectedPromotionPlan) return getPromoEndFromStartAndDays(start, 7)
+    return getPromoEndFromStartAndDays(start, selectedPromotionPlan.durationDays)
+  }, [selectedPromotionPlan])
 
   const runAfterModeration = useCallback(async () => {
     await onModerationComplete?.()
@@ -438,68 +485,95 @@ export const AdminAdDetailContent = ({ ad, user, onModerationComplete }: AdminAd
         <section className="col-span-1 rounded-ui border border-slate-200 bg-slate-100/80 p-4 dark:border-slate-800 dark:bg-slate-900/80 md:col-span-10">
           <h2 className="text-base font-semibold text-slate-900 dark:text-slate-100">Reklama (admin)</h2>
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-            Top sotuv yoki Boosted muddatini belgilash — backend API tayyor bo‘lganda yoqiladi.
+            Muddatlar serverdagi tariflar katalogidan yuklanadi. E‘londagi joriy holat yuqoridagi “Top sotuv”
+            va “Boosted” qatoridan keladi. O‘zgarishlarni saqlash keyinroq qo‘shiladi.
           </p>
+          {promotionPlansLoading ? (
+            <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">Tariflar yuklanmoqda…</p>
+          ) : null}
           <div className="mt-3 space-y-3">
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Promo turi</p>
-          <div className="flex flex-wrap gap-2">
-            {(
-              [
-                ['none', 'Oddiy (promo yo‘q)'],
-                ['top', 'Top sotuv'],
-                ['boost', 'Boosted'],
-              ] as const
-            ).map(([id, label]) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => setPromoKind(id)}
-                className={`rounded-ui border px-3 py-2 text-sm font-medium ${
-                  promoKind === id
-                    ? 'border-daladan-primary bg-daladan-primary/10 text-slate-900 dark:text-slate-100'
-                    : 'border-slate-200 dark:border-slate-700'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <div>
-            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Muddat (ertadan boshlab)</p>
+            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Promo turi</p>
             <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
-              Promosiya ertaga (mahalliy vaqt bo‘yicha) boshlanadi; tugash sanasi tanlangan davrga qarab hisoblanadi.
+              Tur va muddatlar serverdagi tariflar ro‘yxatidan: har bir qatorda tur (masalan, top sotuv yoki
+              boost) va muddat ko‘rsatiladi.
             </p>
             <div className="mt-2 flex flex-wrap gap-2">
-              {ADMIN_PROMO_PERIOD_OPTIONS.map((opt) => (
+              {promoKindOptions.map(({ id, label }) => (
                 <button
-                  key={opt.id}
+                  key={id}
                   type="button"
-                  onClick={() => setPromoPeriodId(opt.id)}
+                  onClick={() => setPromoKind(id)}
                   className={`rounded-ui border px-3 py-2 text-sm font-medium ${
-                    promoPeriodId === opt.id
+                    promoKind === id
                       ? 'border-daladan-primary bg-daladan-primary/10 text-slate-900 dark:text-slate-100'
                       : 'border-slate-200 dark:border-slate-700'
                   }`}
                 >
-                  {opt.label}
+                  {label}
                 </button>
               ))}
             </div>
-            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-              <span className="font-medium text-slate-800 dark:text-slate-200">Boshlanish:</span>{' '}
-              {formatUzbekDateTimeFromDate(getTomorrowLocalStart())}
-            </p>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              <span className="font-medium text-slate-800 dark:text-slate-200">Tugash (taxminiy):</span>{' '}
-              {formatUzbekDateTimeFromDate(getPromoEndDateFromTomorrow(promoPeriodId))}
-            </p>
-          </div>
+            <div>
+              <p className="text-sm font-medium text-slate-700 dark:text-slate-300">Muddat (ertadan boshlab)</p>
+              <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                Yangi reklama ertaga (mahalliy vaqt bo‘yicha) boshlanadi; tugash tanlangan tarif qatorining
+                davomiyligiga qarab hisoblanadi.
+              </p>
+              {promoKind === 'none' ? (
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  Muddatni ko‘rish uchun promo turini tanlang.
+                </p>
+              ) : plansForDuration.length === 0 ? (
+                <p className="mt-2 text-sm text-amber-800 dark:text-amber-200/90">
+                  Bu tur uchun katalogda tarif topilmadi. Backend javobida tur maydoni (kind / type) va muddat
+                  mos kelishini tekshiring.
+                </p>
+              ) : (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {plansForDuration.map((opt) => (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => setPromoPlanId(opt.id)}
+                      className={`rounded-ui border px-3 py-2 text-sm font-medium ${
+                        promoPlanId === opt.id
+                          ? 'border-daladan-primary bg-daladan-primary/10 text-slate-900 dark:text-slate-100'
+                          : 'border-slate-200 dark:border-slate-700'
+                      }`}
+                    >
+                      {opt.label}
+                      {opt.price != null
+                        ? ` · ${opt.price.toLocaleString('uz-UZ')} so'm`
+                        : ''}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {promoKind === 'boost' && ad.boost_expires_at ? (
+                <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                  <span className="font-medium text-slate-800 dark:text-slate-200">Joriy boost tugashi:</span>{' '}
+                  {formatUzbekDateTime(ad.boost_expires_at)}
+                </p>
+              ) : null}
+              {promoKind !== 'none' && plansForDuration.length > 0 ? (
+                <>
+                  <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
+                    <span className="font-medium text-slate-800 dark:text-slate-200">Boshlanish (yangi reklama):</span>{' '}
+                    {formatUzbekDateTimeFromDate(getTomorrowLocalStart())}
+                  </p>
+                  <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                    <span className="font-medium text-slate-800 dark:text-slate-200">Tugash (taxminiy):</span>{' '}
+                    {formatUzbekDateTimeFromDate(estimatedNewPromoEnd)}
+                  </p>
+                </>
+              ) : null}
+            </div>
             <button
               type="button"
               disabled
               className="rounded-ui bg-daladan-primary px-4 py-2 text-sm font-semibold text-white opacity-50"
             >
-              Saqlash (API keyinroq)
+              Saqlash (admin yozuvi keyinroq)
             </button>
           </div>
         </section>

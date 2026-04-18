@@ -58,6 +58,17 @@ export interface CategoryOption {
   slug?: string
 }
 
+/** Row from `GET /resources/promotion-plans` (public tariff catalog). */
+export interface PromotionPlanResource {
+  /** Stable selection key (API `id` as string, or fallback slug e.g. `1w`). */
+  id: string
+  label: string
+  durationDays: number
+  /** e.g. top_sale, boosted — when API sends it */
+  kind?: string
+  price: number | null
+}
+
 export interface SubcategoryOption {
   id: number
   categoryId: number

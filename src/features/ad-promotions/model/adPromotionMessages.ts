@@ -8,6 +8,8 @@ export const adPromotionMessages = {
   adminAdNotFound: 'E‘lon topilmadi.',
   adminLoadFailed: "Ma'lumotlarni yuklashda xatolik",
   promoListFailed: 'Reklama ro‘yxatini yuklashda xatolik',
+  promoHistoryUnavailable:
+    'Reklama tarixini serverdan yuklab bo‘lmadi. Tariflar va boshqa bo‘limlar ishlaydi.',
   confirmPromoTitle: 'To‘lovni tasdiqlash',
   confirmPromoHint:
     'Click yoki Payme tranzaksiya ID sini kiriting (ixtiyoriy). Tasdiqlashdan keyin promo faollashadi.',

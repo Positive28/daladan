@@ -20,6 +20,12 @@ export function getTomorrowLocalStart(): Date {
 /** End of promo window: from tomorrow’s start, add week or calendar months. */
 export function getPromoEndDateFromTomorrow(periodId: AdminPromoPeriodId): Date {
   const start = getTomorrowLocalStart()
+  return getPromoEndFromStartAndDays(start, durationDaysForAdminPeriodId(periodId))
+}
+
+/** Calendar length between tomorrow 00:00 and the end date for a static period id. */
+export function durationDaysForAdminPeriodId(periodId: AdminPromoPeriodId): number {
+  const start = getTomorrowLocalStart()
   const end = new Date(start)
   switch (periodId) {
     case '1w':
@@ -35,5 +41,12 @@ export function getPromoEndDateFromTomorrow(periodId: AdminPromoPeriodId): Date 
       end.setMonth(end.getMonth() + 3)
       break
   }
+  return Math.max(1, Math.round((end.getTime() - start.getTime()) / 86400000))
+}
+
+/** Add whole days to `start` (local). */
+export function getPromoEndFromStartAndDays(start: Date, durationDays: number): Date {
+  const end = new Date(start)
+  end.setDate(end.getDate() + durationDays)
   return end
 }

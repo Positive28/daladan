@@ -7,6 +7,7 @@ import type {
   Listing,
   Profile,
   ProfileAd,
+  PromotionPlanResource,
   PublicAdsFilters,
   SubcategoryOption,
   UpdatePasswordPayload,
@@ -26,6 +27,7 @@ export interface MarketplaceService {
   getListings(): Promise<Listing[]>
   getListingById(id: string): Promise<Listing | undefined>
   getBoostPlans(): Promise<BoostPlan[]>
+  getPromotionPlans(): Promise<PromotionPlanResource[]>
   getCategories(): Promise<CategoryOption[]>
   getSubcategories(categoryId: number): Promise<SubcategoryOption[]>
   createProfileAd(payload: CreateProfileAdPayload): Promise<ProfileAd>

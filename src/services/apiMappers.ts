@@ -22,6 +22,8 @@ export const extractCollection = (value: unknown): UnknownRecord[] => {
     root.rows,
     root.categories,
     root.subcategories,
+    root.promotion_plans,
+    root.promotionPlans,
   ]
   for (const candidate of topLevelCandidates) {
     const list = asArray(candidate)
@@ -36,6 +38,8 @@ export const extractCollection = (value: unknown): UnknownRecord[] => {
     nested.rows,
     nested.categories,
     nested.subcategories,
+    nested.promotion_plans,
+    nested.promotionPlans,
   ]
   for (const candidate of nestedCandidates) {
     const list = asArray(candidate)

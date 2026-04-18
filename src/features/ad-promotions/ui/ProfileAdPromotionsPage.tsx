@@ -13,7 +13,7 @@ export function ProfileAdPromotionsPage() {
   const { ad } = useParams()
   const adId = ad ? Number(ad) : NaN
   const [searchParams] = useSearchParams()
-  const { listing, rows, loading, error } = useProfileAdPromotionsPage(adId)
+  const { listing, rows, plans, promoHistoryNote, loading, error } = useProfileAdPromotionsPage(adId)
   const planFromUrl = searchParams.get('plan')
 
   const highlightedPlan = useMemo(
@@ -27,9 +27,10 @@ export function ProfileAdPromotionsPage() {
     <ProfileAdSectionShell
       title="Reklama va tariflar"
       subtitle={<ProfileAdListingSubtitle listing={listing} loading={loading} adIdStr={adIdStr} />}
-      trailing={<AdBoostPlanLinks adIdStr={adIdStr} highlightedPlan={highlightedPlan} />}
+      trailing={<AdBoostPlanLinks adIdStr={adIdStr} highlightedPlan={highlightedPlan} plans={plans} />}
     >
       {error ? <InlineAlert variant="error">{error}</InlineAlert> : null}
+      {promoHistoryNote && !error ? <InlineAlert variant="warning">{promoHistoryNote}</InlineAlert> : null}
 
       {loading ? (
         <p className="text-slate-600 dark:text-slate-400">{adPromotionMessages.loading}</p>
