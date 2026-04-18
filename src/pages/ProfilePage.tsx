@@ -7,12 +7,15 @@ import {
   Heart,
   LogOut,
   MessageSquare,
+  Moon,
   Pencil,
+  Sun,
   Wallet,
 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { marketplaceService, profileService } from '../services'
 import { useAuth } from '../state/AuthContext'
+import { useTheme } from '../state/ThemeContext'
 import type { Listing } from '../types/marketplace'
 import { formatUzPhoneInput } from '../utils/phone'
 import { formatPrice } from '../utils/price'
@@ -82,6 +85,7 @@ export const ProfilePage = () => {
     region: '',
   })
   const { user, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
   const [adGalleryIndex, setAdGalleryIndex] = useState<Record<string, number>>({})
@@ -454,7 +458,19 @@ export const ProfilePage = () => {
   )
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
+    <>
+      <div className="mb-4 flex items-center justify-between rounded-ui border border-slate-200 bg-white px-4 py-3 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:hidden">
+        <span className="text-sm font-medium text-slate-700 dark:text-slate-200">Mavzu</span>
+        <button
+          type="button"
+          onClick={toggleTheme}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
+          aria-label={theme === 'dark' ? "Yorug' rejimga o'tish" : "Qorong'i rejimga o'tish"}
+        >
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
+      </div>
+      <div className="grid gap-5 lg:grid-cols-[220px_1fr]">
       <aside className="h-fit rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
         <div className="space-y-1 text-sm">
           <button
@@ -743,5 +759,6 @@ export const ProfilePage = () => {
         )}
       </section>
     </div>
+    </>
   )
 }
