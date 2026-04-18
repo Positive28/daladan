@@ -6,7 +6,7 @@
   "scripts": {
     "prepare": "husky",
     "typecheck": "tsc -b",
-    "react-doctor": "npx -y react-doctor@latest . -y --no-dead-code",
+    "react-doctor": "npx -y react-doctor@latest . -y --verbose --lint --offline --no-dead-code --fail-on error --annotations",
     "check": "yarn typecheck && yarn react-doctor",
     "dev": "vercel pull --yes --environment=development && concurrently -n site,admin -c cyan,magenta \"vite --port 5173\" \"vite --mode admin --port 5174\"",
     "dev:vite": "concurrently -n site,admin -c cyan,magenta \"vite --port 5173\" \"vite --mode admin --port 5174\"",

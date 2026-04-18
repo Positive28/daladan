@@ -76,7 +76,7 @@ In local Vite mode, `/api/generate-description` is served by a dev middleware th
 ## Quality checks
 
 - **`yarn typecheck`** — TypeScript project references (`tsc -b`), same check as the first step of `yarn build`.
-- **`yarn react-doctor`** — [React Doctor](https://www.react.doctor/) against the whole repo; dead-code detection is disabled (`--no-dead-code`) because current CLI builds can throw when that step runs.
+- **`yarn react-doctor`** — [React Doctor](https://www.react.doctor/) with `--verbose`, `--lint`, `--offline`, `--no-dead-code`, `--fail-on error`, `--annotations`. Dead-code is off because that step can throw on this CLI. For stricter gates, change `--fail-on error` to `--fail-on warning` in [`package.json`](package.json). Not used here: `--score` (report only), `--diff`, `--staged` (subset scans), `--no-lint`.
 - **`yarn check`** — runs `typecheck` then a full `react-doctor` scan.
 
 **Git hooks:** After `yarn install`, Husky runs **`yarn typecheck`** and a full **`react-doctor`** scan on **`git push`** (pre-push). To skip hooks once, use `HUSKY=0 git push` (see [Husky docs](https://typicode.github.io/husky/how-to.html)).
