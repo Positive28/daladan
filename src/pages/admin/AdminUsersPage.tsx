@@ -67,19 +67,20 @@ export const AdminUsersPage = () => {
                 <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Ism</th>
                 <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Telefon</th>
                 <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">Rol</th>
+                <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200">E&apos;lonlar soni</th>
                 <th className="px-4 py-3 font-semibold text-slate-700 dark:text-slate-200" />
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
                     Yuklanmoqda...
                   </td>
                 </tr>
               ) : rows.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-12 text-center text-slate-500">
+                  <td colSpan={6} className="px-4 py-12 text-center text-slate-500">
                     Ma&apos;lumot yo‘q
                   </td>
                 </tr>
@@ -104,6 +105,9 @@ export const AdminUsersPage = () => {
                     </td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.phone}</td>
                     <td className="px-4 py-3 text-slate-600 dark:text-slate-300">{row.role}</td>
+                    <td className="px-4 py-3 text-slate-600 dark:text-slate-300 tabular-nums">
+                      {row.ads_count ?? '—'}
+                    </td>
                     <td className="px-4 py-3 text-right">
                       <button
                         type="button"
