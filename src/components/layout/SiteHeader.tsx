@@ -1,4 +1,4 @@
-import { Heart, Moon, Search, Sun, User } from 'lucide-react'
+import { Heart, LogIn, Moon, Search, Sun, User, UserPlus } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../state/AuthContext'
@@ -48,78 +48,113 @@ export const SiteHeader = () => {
   }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-daladan-border bg-daladan-surfaceElevated/95 backdrop-blur dark:border-slate-700 dark:bg-slate-950/95">
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-3 px-4 py-3 lg:px-6">
-        <Link to="/" className="shrink-0">
-          <img src="/daladan-icon.png" alt="Daladan" className="h-16 w-16 rounded-lg object-contain sm:hidden" />
+    <header className="sticky top-0 z-20 bg-slate-800 shadow-xl dark:bg-slate-950">
+      <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-1.5 lg:px-6">
+
+        <Link to="/" className="-my-3 shrink-0">
+          <img
+            src="/daladan-icon.png"
+            alt="Daladan"
+            className="h-16 w-16 rounded-lg object-contain sm:hidden"
+          />
           <img
             src="/daladan-logo-full-transparent.png"
             alt="Daladan"
-            className="hidden h-24 object-contain sm:block"
+            className="hidden h-20 object-contain sm:block"
           />
         </Link>
+
         <form
           onSubmit={commitSearch}
-          className="site-header-search-form hidden min-w-0 flex-1 items-center gap-1 rounded-ui border border-daladan-border/80 bg-daladan-soft px-2 py-1.5 transition-shadow focus-within:border-daladan-primary/35 focus-within:shadow-sm focus-within:ring-2 focus-within:ring-daladan-primary/20 md:flex dark:border-slate-600 dark:bg-slate-800 dark:focus-within:border-daladan-primary/50 dark:focus-within:ring-daladan-primary/25"
+          className="hidden min-w-0 flex-1 overflow-hidden rounded-lg border border-slate-600 bg-slate-700 transition-all focus-within:border-daladan-primary/60 focus-within:bg-slate-700 focus-within:ring-2 focus-within:ring-daladan-primary/30 md:flex"
         >
-          <button
-            type="submit"
-            className="site-header-search-submit inline-flex h-9 shrink-0 items-center justify-center rounded-md text-daladan-muted transition-colors hover:bg-daladan-border/40 hover:text-daladan-heading dark:text-slate-500 dark:hover:bg-slate-700 dark:hover:text-slate-200"
-            aria-label="Qidiruv"
-          >
-            <Search size={18} />
-          </button>
+          <Search
+            size={18}
+            className="ml-4 shrink-0 self-center text-slate-400"
+          />
           <input
             id="site-search"
             name="q"
             value={inputValue}
             onChange={(event) => setInputValue(event.target.value)}
-            className="site-header-search min-w-0 flex-1 rounded-md border-0 bg-transparent py-1 text-sm text-daladan-heading dark:text-slate-100"
-            placeholder="Yozing, tushib qolmasin — har ikkalamiz qidiramiz"
+            className="min-w-0 flex-1 border-0 bg-transparent px-3 py-3 text-sm text-white placeholder:text-slate-400 focus:outline-none"
+            placeholder="Daladan izlang..."
             autoComplete="off"
           />
+          <button
+            type="submit"
+            className="inline-flex shrink-0 items-center gap-2 bg-daladan-primary px-5 text-sm font-semibold text-white transition-colors hover:bg-daladan-primary/90"
+            aria-label="Qidiruv"
+          >
+            <Search size={17} />
+            <span className="hidden lg:inline">Qidirish</span>
+          </button>
         </form>
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-daladan-soft text-daladan-muted dark:bg-slate-800 dark:text-slate-300"
-          aria-label={theme === 'dark' ? "Yorug' rejimga o'tish" : "Qorong'i rejimga o'tish"}
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-        <button
-          type="button"
-          onClick={toFavorites}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-daladan-soft text-daladan-muted dark:bg-slate-800 dark:text-slate-300"
-        >
-          <Heart size={18} />
-        </button>
-        {user ? (
-          <div className="flex shrink-0 items-center gap-2">
-            <button
-              type="button"
-              onClick={() => navigate('/profile')}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-ui bg-daladan-primary/10 text-daladan-primary"
-              aria-label="Profil"
-            >
-              <User size={18} />
-            </button>
-            <Link
-              to="/profile/ads/new"
-              className="rounded-ui bg-daladan-primary px-2.5 py-2 text-center text-sm font-medium text-white sm:px-3"
-            >
-              reklama ornatish
-            </Link>
-          </div>
-        ) : (
+
+        <div className="flex shrink-0 items-center gap-1">
           <button
             type="button"
-            onClick={toLogin}
-            className="rounded-ui bg-daladan-primary px-4 py-2 text-sm font-medium text-white"
+            onClick={toggleTheme}
+            className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+            aria-label={theme === 'dark' ? "Yorug' rejim" : "Qorong'i rejim"}
           >
-            Kirish
+            {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
+            <span className="hidden text-[10px] font-medium leading-none lg:block">
+              {theme === 'dark' ? "Yorug'" : "Qorong'i"}
+            </span>
           </button>
-        )}
+
+          <button
+            type="button"
+            onClick={toFavorites}
+            className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+            aria-label="Sevimlilar"
+          >
+            <Heart size={22} />
+            <span className="hidden text-[10px] font-medium leading-none lg:block">Sevimlilar</span>
+          </button>
+
+          {user ? (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/profile')}
+                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                aria-label="Profil"
+              >
+                <User size={22} />
+                <span className="hidden text-[10px] font-medium leading-none lg:block">Profil</span>
+              </button>
+              <Link
+                to="/profile/ads/new"
+                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-daladan-primary transition-colors hover:bg-slate-700"
+              >
+                <LogIn size={22} />
+                <span className="hidden text-[10px] font-medium leading-none lg:block">E'lon</span>
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={() => navigate('/register')}
+                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                <UserPlus size={22} />
+                <span className="hidden text-[10px] font-medium leading-none lg:block">Ro'yxat</span>
+              </button>
+              <button
+                type="button"
+                onClick={toLogin}
+                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                <User size={22} />
+                <span className="hidden text-[10px] font-medium leading-none lg:block">Kirish</span>
+              </button>
+            </>
+          )}
+        </div>
+
       </div>
     </header>
   )
