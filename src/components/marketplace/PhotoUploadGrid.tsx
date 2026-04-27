@@ -2,7 +2,7 @@ import { type CSSProperties, type MouseEvent, useEffect, useMemo } from 'react'
 import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors, type DragEndEvent } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Camera, GripVertical, RefreshCcw, Trash2 } from 'lucide-react'
+import { Camera, RefreshCcw, Trash2 } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 
 export type PhotoUploadSlot = File | { remoteUrl: string } | null
@@ -86,17 +86,12 @@ const SortablePhotoSlot = ({ id, index, slot, previewUrl, isCoverSlot, onReplace
           </span>
         ) : null}
 
-        <button
-          type="button"
+        <div
           ref={setActivatorNodeRef}
           {...attributes}
           {...listeners}
-          onClick={(event) => event.stopPropagation()}
-          className="absolute right-2 top-2 z-10 inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-200 bg-white/90 text-slate-500 shadow-sm backdrop-blur transition hover:bg-white hover:text-slate-700 dark:border-slate-500 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-slate-100"
-          aria-label={`Rasm joylashuvini o'zgartirish ${index + 1}`}
-        >
-          <GripVertical size={14} />
-        </button>
+          className="absolute inset-0 z-0 cursor-grab active:cursor-grabbing"
+        />
 
         {slot && previewUrl ? (
           <>
@@ -122,12 +117,8 @@ const SortablePhotoSlot = ({ id, index, slot, previewUrl, isCoverSlot, onReplace
             </div>
           </>
         ) : (
-          <div className="flex h-full w-full flex-col items-center justify-center gap-2 px-3 text-center text-slate-500 dark:text-slate-300">
-            <Camera size={24} />
-            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-              {isCoverSlot ? 'Muqova fotosini qo&apos;shing' : 'Foto qo&apos;shing'}
-            </p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Bosing yoki faylni shu yerga tashlang</p>
+          <div className="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
+            <Camera size={22} />
           </div>
         )}
       </div>

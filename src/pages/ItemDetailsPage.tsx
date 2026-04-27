@@ -5,11 +5,9 @@ import {
   Clock,
   Eye,
   Heart,
-  Link2,
   MapPin,
   MessageCircle,
   Phone,
-  Send,
   Truck,
 } from 'lucide-react'
 import {
@@ -180,21 +178,6 @@ function RelatedSuggestionsCarousel({
   )
 }
 
-function TelegramShareIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.02-1.95 1.24-5.5 3.66-.52.35-.99.52-1.41.51-.46-.01-1.35-.26-2.01-.48-.81-.27-1.45-.42-1.39-.88.03-.24.37-.48 1.02-.73 4.02-1.75 6.7-2.9 8.03-3.45 1.9-.76 2.3-.89 2.56-.89.06 0 .21.01.30.11.10.10.12.23.11.29-.01.06-.01.12-.02.18z" />
-    </svg>
-  )
-}
-
-function InstagramShareIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-      <path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 01-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 017.8 2m-.2 2A3.6 3.6 0 004 7.6v8.8A3.6 3.6 0 007.6 20h8.8a3.6 3.6 0 003.6-3.6V7.6A3.6 3.6 0 0016.4 4H7.6m8.4 1.8a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4M12 7a5 5 0 110 10 5 5 0 010-10m0 2a3 3 0 100 6 3 3 0 000-6z" />
-    </svg>
-  )
-}
 
 function ListingBreadcrumbs({ listing }: { listing: Listing }) {
   const path = listing.categoryPath?.filter(Boolean) ?? []
@@ -288,34 +271,20 @@ function ItemDetailSidebar({
   listing,
   sellerName,
   canSeePhone,
-  canTelegramMessage,
   isFavorite,
   onFavoriteClick,
   onCall,
   onMessage,
-  onTelegram,
-  onCopyLink,
-  linkCopied,
-  onShareListingTelegram,
-  onShareListingInstagram,
-  instagramShareCopied,
   inAppMessagingAvailable,
   className = '',
 }: {
   listing: Listing
   sellerName: string
   canSeePhone: boolean
-  canTelegramMessage: boolean
   isFavorite: boolean
   onFavoriteClick: (e: MouseEvent<HTMLButtonElement>) => void
   onCall: () => void
   onMessage: () => void
-  onTelegram: () => void
-  onCopyLink: () => void
-  linkCopied: boolean
-  onShareListingTelegram: () => void
-  onShareListingInstagram: () => void
-  instagramShareCopied: boolean
   inAppMessagingAvailable: boolean
   className?: string
 }) {
@@ -323,66 +292,51 @@ function ItemDetailSidebar({
     <div
       className={`space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5 ${className}`}
     >
+      <div className="flex items-center gap-3">
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-daladan-primary text-lg font-bold text-white">
+          {sellerName.charAt(0).toUpperCase()}
+        </div>
+        <div className="min-w-0">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Sotuvchi</p>
+          <p className="truncate text-lg font-semibold text-slate-900 dark:text-slate-100">{sellerName}</p>
+        </div>
+      </div>
+
+      <hr className="border-slate-200 dark:border-slate-700" />
+
       <button
         type="button"
-        onClick={onCopyLink}
-        className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border border-slate-200 bg-daladan-soft px-3 text-sm font-semibold text-daladan-heading hover:border-daladan-primary/40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
+        aria-label={isFavorite ? 'Sevimlidan olib tashlash' : "Sevimlilariga qo'shish"}
+        onClick={onFavoriteClick}
+        className={`inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg border px-3 text-sm font-semibold transition-colors ${
+          isFavorite
+            ? 'border-daladan-accent bg-daladan-accent/15 text-daladan-accentDark'
+            : 'border-slate-200 bg-daladan-soft text-daladan-heading hover:border-daladan-primary/40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200'
+        }`}
       >
-        <Link2 size={18} className="shrink-0" aria-hidden />
-        <span>{linkCopied ? 'Nusxa olindi' : 'Havolani nusxalash'}</span>
+        <Heart size={18} className="shrink-0" fill={isFavorite ? 'currentColor' : 'none'} />
+        <span>{isFavorite ? 'Sevimlida' : 'Sevimli'}</span>
       </button>
 
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_1fr] sm:items-stretch">
-        <button
-          type="button"
-          onClick={onShareListingTelegram}
-          className="inline-flex h-10 min-h-[2.5rem] min-w-0 items-center justify-center gap-2 rounded-lg border border-[#229ED9]/40 bg-[#229ED9]/10 px-2 text-sm font-semibold text-[#1682b6] hover:bg-[#229ED9]/15 dark:border-[#229ED9]/35 dark:text-[#5ab4e6] sm:px-3"
-          aria-label="Telegramda ulashish"
-        >
-          <TelegramShareIcon className="h-5 w-5 shrink-0" />
-          <span className="min-w-0 truncate">Telegramda ulashish</span>
-        </button>
-        <button
-          type="button"
-          aria-label={isFavorite ? 'Sevimlidan olib tashlash' : "Sevimlilariga qo'shish"}
-          onClick={onFavoriteClick}
-          className={`inline-flex h-10 min-h-[2.5rem] min-w-[2.75rem] shrink-0 items-center justify-center gap-2 rounded-lg border px-3 text-sm font-semibold transition-colors ${
-            isFavorite
-              ? 'border-daladan-accent bg-daladan-accent/15 text-daladan-accentDark'
-              : 'border-slate-200 bg-daladan-soft text-daladan-heading hover:border-daladan-primary/40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200'
-          }`}
-        >
-          <Heart size={18} className="shrink-0" fill={isFavorite ? 'currentColor' : 'none'} />
-          <span className="hidden min-[380px]:inline">{isFavorite ? 'Sevimlida' : 'Sevimli'}</span>
-        </button>
-        <button
-          type="button"
-          onClick={onShareListingInstagram}
-          className="inline-flex h-10 min-h-[2.5rem] min-w-0 items-center justify-center gap-2 rounded-lg border border-pink-500/30 bg-pink-500/10 px-2 text-sm font-semibold text-pink-700 hover:bg-pink-500/15 dark:text-pink-400 sm:px-3"
-          aria-label="Instagramda ulashish"
-        >
-          <InstagramShareIcon className="h-5 w-5 shrink-0" />
-          <span className="min-w-0 truncate">{instagramShareCopied ? 'Havola nusxalandi' : 'Instagramda ulashish'}</span>
-        </button>
-      </div>
-
-      <div className="border-t border-slate-200 pt-4 dark:border-slate-700">
-        <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Sotuvchi</p>
-        <p className="mt-1 text-xl font-semibold text-slate-900 dark:text-slate-100">{sellerName}</p>
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          {canSeePhone ? listing.phone : 'Telefon raqami uchun kirish talab qilinadi'}
-        </p>
-      </div>
-
       <div className="grid gap-2">
-        <button
-          type="button"
-          onClick={onCall}
-          className="flex w-full items-center justify-center gap-2 rounded-ui bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
-        >
-          <Phone size={18} />
-          Sotuvchi bilan bog&apos;lanish
-        </button>
+        {canSeePhone ? (
+          <a
+            href={`tel:${listing.phone}`}
+            className="flex w-full items-center justify-center gap-2 rounded-ui border border-slate-200 bg-daladan-soft px-4 py-3 text-base font-semibold text-daladan-heading hover:border-daladan-primary/40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
+          >
+            <Phone size={18} className="shrink-0 text-daladan-primary" />
+            {listing.phone}
+          </a>
+        ) : (
+          <button
+            type="button"
+            onClick={onCall}
+            className="flex w-full items-center justify-center gap-2 rounded-ui bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
+          >
+            <Phone size={18} />
+            Sotuvchi bilan bog&apos;lanish
+          </button>
+        )}
         <button
           type="button"
           onClick={inAppMessagingAvailable ? onMessage : undefined}
@@ -404,19 +358,6 @@ function ItemDetailSidebar({
             </span>
           )}
         </button>
-        <button
-          type="button"
-          onClick={onTelegram}
-          disabled={!canTelegramMessage}
-          className={`flex w-full items-center justify-center gap-2 rounded-ui px-4 py-3 text-base font-semibold ${
-            canTelegramMessage
-              ? 'bg-daladan-primary text-white'
-              : 'cursor-not-allowed bg-slate-200 text-slate-500 dark:bg-slate-700 dark:text-slate-300'
-          }`}
-        >
-          <Send size={18} />
-          Telegram orqali yozish
-        </button>
       </div>
     </div>
   )
@@ -431,8 +372,6 @@ export const ItemDetailsPage = () => {
   const [isLoadingRelated, setIsLoadingRelated] = useState(() => Boolean(id))
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [imagePreview, setImagePreview] = useState<{ urls: string[]; index: number } | null>(null)
-  const [linkCopied, setLinkCopied] = useState(false)
-  const [instagramShareCopied, setInstagramShareCopied] = useState(false)
   const { user } = useAuth()
   const navigate = useNavigate()
   const { isFavorite, toggleFavorite } = useFavorites()
@@ -498,17 +437,6 @@ export const ItemDetailsPage = () => {
     }
   }, [id, listing, isLoadingDetail])
 
-  useEffect(() => {
-    if (!linkCopied) return
-    const t = window.setTimeout(() => setLinkCopied(false), 2000)
-    return () => window.clearTimeout(t)
-  }, [linkCopied])
-
-  useEffect(() => {
-    if (!instagramShareCopied) return
-    const t = window.setTimeout(() => setInstagramShareCopied(false), 2500)
-    return () => window.clearTimeout(t)
-  }, [instagramShareCopied])
 
   if (!id) {
     return <p className="rounded-ui bg-white p-6 dark:bg-slate-900 dark:text-slate-200">Mahsulot topilmadi.</p>
@@ -523,10 +451,6 @@ export const ItemDetailsPage = () => {
   }
 
   const canSeePhone = Boolean(user)
-  const hasTelegram = Boolean(listing.sellerTelegram)
-  const canTelegramMessage = user?.authMethod === 'otp' && hasTelegram
-  const telegramUsername = listing.sellerTelegram?.replace(/^@/, '')
-  const telegramUrl = telegramUsername ? `https://t.me/${telegramUsername}` : 'https://t.me/'
   const quantityText = listing.quantity || "Miqdor ko'rsatilmagan"
   const deliveryInfoText = listing.deliveryInfo || "Ma'lumot berilmagan"
   const sellerName = listing.sellerName || 'Sotuvchi'
@@ -548,36 +472,6 @@ export const ItemDetailsPage = () => {
     toggleFavorite(listing.id)
   }
 
-  const onCopyLink = () => {
-    const url = window.location.href
-    void navigator.clipboard.writeText(url).then(() => setLinkCopied(true))
-  }
-
-  const onShareListingTelegram = () => {
-    const url = encodeURIComponent(window.location.href)
-    const text = encodeURIComponent(`${listing.title} — Daladan`)
-    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank', 'noopener,noreferrer')
-  }
-
-  const onShareListingInstagram = async () => {
-    const url = window.location.href
-    const payload = { title: listing.title, text: `${listing.title} — Daladan`, url }
-    try {
-      if (typeof navigator.share === 'function') {
-        await navigator.share(payload)
-        return
-      }
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return
-    }
-    try {
-      await navigator.clipboard.writeText(url)
-      setInstagramShareCopied(true)
-    } catch {
-      window.prompt('Havolani nusxalang:', url)
-    }
-  }
-
   const onCall = () => {
     if (!canSeePhone) {
       redirectToLogin()
@@ -594,30 +488,14 @@ export const ItemDetailsPage = () => {
     navigate('/profile')
   }
 
-  const onTelegram = () => {
-    if (!user) {
-      redirectToLogin()
-      return
-    }
-    if (!canTelegramMessage) return
-    window.open(telegramUrl, '_blank', 'noopener,noreferrer')
-  }
-
   const sidebarProps = {
     listing,
     sellerName,
     canSeePhone,
-    canTelegramMessage,
     isFavorite: favorite,
     onFavoriteClick,
     onCall,
     onMessage,
-    onTelegram,
-    onCopyLink,
-    linkCopied,
-    onShareListingTelegram,
-    onShareListingInstagram,
-    instagramShareCopied,
     inAppMessagingAvailable: IN_APP_MESSAGING_AVAILABLE,
   }
 
@@ -641,7 +519,7 @@ export const ItemDetailsPage = () => {
             <ListingBreadcrumbs listing={listing} />
             <ListingDetailHeader listing={listing} />
             <section className="relative overflow-hidden rounded-ui border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
-              <div className="relative aspect-[4/3] w-full bg-slate-100 dark:bg-slate-800">
+              <div className="relative aspect-[880/559] w-full bg-slate-100 dark:bg-slate-800">
                 <button
                   type="button"
                   onClick={() => setImagePreview({ urls: slides, index: safeIdx })}
@@ -722,13 +600,28 @@ export const ItemDetailsPage = () => {
             <ItemDetailSidebar {...sidebarProps} />
           </div>
 
-          <section className="space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
-            <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100 sm:text-2xl">
-              Mahsulot haqida ma&apos;lumot
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 sm:text-2xl">
+              Tavsif
             </h2>
-            <p className="whitespace-pre-line text-base leading-7 text-slate-700 dark:text-slate-300 sm:text-lg sm:leading-8">
-              {listing.description}
+            <p className="whitespace-pre-line text-base leading-6 text-slate-700 dark:text-slate-300">
+              {listing.description.replace(/\n{2,}/g, '\n')}
             </p>
+            <div className="pt-2 text-sm text-slate-500 dark:text-slate-400">
+              {createdLabel ? (
+                <p>
+                  Joylashtirilgan:{' '}
+                  <span className="font-semibold text-slate-700 dark:text-slate-300">{createdLabel}</span>
+                </p>
+              ) : null}
+              <p className={createdLabel ? 'mt-1' : undefined}>
+                E&apos;lon ID:{' '}
+                <span className="font-mono font-semibold text-slate-600 dark:text-slate-400">{listing.id}</span>
+              </p>
+            </div>
+          </section>
+
+          <section className="space-y-4 rounded-ui border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-5">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-ui bg-slate-50 p-4 dark:bg-slate-800">
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
@@ -749,30 +642,18 @@ export const ItemDetailsPage = () => {
                 </p>
               </div>
             </div>
-            <div className="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4 dark:border-slate-700 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
-              <div className="min-w-0 text-sm text-slate-500 dark:text-slate-400">
-                {createdLabel ? (
-                  <p>
-                    Joylashtirilgan:{' '}
-                    <span className="text-slate-700 dark:text-slate-300">{createdLabel}</span>
-                  </p>
-                ) : null}
-                <p className={createdLabel ? 'mt-1' : undefined}>
-                  E&apos;lon ID:{' '}
-                  <span className="font-mono text-slate-600 dark:text-slate-400">{listing.id}</span>
-                </p>
-              </div>
-              {listing.viewsCount !== undefined ? (
+            {listing.viewsCount !== undefined ? (
+              <div className="flex justify-end border-t border-slate-200 pt-3 dark:border-slate-700">
                 <div
-                  className="inline-flex shrink-0 items-center gap-1.5 self-end rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm font-medium text-slate-600 dark:border-slate-600 dark:bg-slate-800/80 dark:text-slate-300 sm:self-auto"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-sm font-medium text-slate-600 dark:border-slate-600 dark:bg-slate-800/80 dark:text-slate-300"
                   title="Ko'rishlar soni"
                   aria-label={`Ko'rishlar soni: ${listing.viewsCount}`}
                 >
                   <Eye size={16} className="shrink-0 text-daladan-primary" aria-hidden />
                   <span aria-hidden>{listing.viewsCount}</span>
                 </div>
-              ) : null}
-            </div>
+              </div>
+            ) : null}
           </section>
         </div>
 

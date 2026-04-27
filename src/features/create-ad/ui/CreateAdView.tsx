@@ -11,6 +11,7 @@ export function CreateAdView() {
   const model = useCreateAdPage()
   const {
     register,
+    setValue,
     handleSubmit,
     errors,
     isValid,
@@ -54,6 +55,7 @@ export function CreateAdView() {
       >
         <CreateAdLocationSection
           register={register}
+          setValue={setValue}
           errors={errors}
           categories={categories}
           subcategories={subcategories}

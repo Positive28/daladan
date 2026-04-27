@@ -397,6 +397,7 @@ export function useCreateAdPage() {
 
   return {
     register,
+    setValue,
     handleSubmit,
     errors,
     isValid,
