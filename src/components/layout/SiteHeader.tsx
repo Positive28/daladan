@@ -1,4 +1,4 @@
-import { Heart, LogIn, Moon, Search, Sun, User, UserPlus } from 'lucide-react'
+import { CirclePlus, Heart, Moon, Search, Sun, User, UserPlus } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../state/AuthContext'
@@ -49,9 +49,9 @@ export const SiteHeader = () => {
 
   return (
     <header className="sticky top-0 z-20 bg-slate-800 shadow-xl dark:bg-slate-950">
-      <div className="mx-auto flex w-full max-w-7xl items-center gap-4 px-4 py-1.5 lg:px-6">
+      <div className="mx-auto flex w-full max-w-7xl items-center gap-4 py-1.5 pl-2 pr-0.5 lg:pl-4 lg:pr-1">
 
-        <Link to="/" className="-my-3 shrink-0">
+        <Link to="/" className="-my-3 -ml-12 shrink-0 lg:-ml-10">
           <img
             src="/daladan-icon.png"
             alt="Daladan"
@@ -91,15 +91,15 @@ export const SiteHeader = () => {
           </button>
         </form>
 
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="-ml-3 mr-[-8px] flex shrink-0 items-center gap-0 lg:-ml-2 lg:mr-[-10px]">
           <button
             type="button"
             onClick={toggleTheme}
-            className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+            className="-ml-4 flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white lg:-ml-2"
             aria-label={theme === 'dark' ? "Yorug' rejim" : "Qorong'i rejim"}
           >
-            {theme === 'dark' ? <Sun size={22} /> : <Moon size={22} />}
-            <span className="hidden text-[10px] font-medium leading-none lg:block">
+            {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+            <span className="hidden text-[11px] font-medium leading-none lg:block">
               {theme === 'dark' ? "Yorug'" : "Qorong'i"}
             </span>
           </button>
@@ -107,51 +107,59 @@ export const SiteHeader = () => {
           <button
             type="button"
             onClick={toFavorites}
-            className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+            className="-ml-1 flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
             aria-label="Sevimlilar"
           >
-            <Heart size={22} />
-            <span className="hidden text-[10px] font-medium leading-none lg:block">Sevimlilar</span>
+            <Heart size={24} />
+            <span className="hidden text-[11px] font-medium leading-none lg:block">Sevimlilar</span>
           </button>
 
           {user ? (
             <>
+              <Link
+                to="/profile/ads/new"
+                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                <CirclePlus size={24} />
+                <span className="hidden text-[11px] font-medium leading-none lg:block">E'lon</span>
+              </Link>
               <button
                 type="button"
                 onClick={() => navigate('/profile')}
                 className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
                 aria-label="Profil"
               >
-                <User size={22} />
-                <span className="hidden text-[10px] font-medium leading-none lg:block">Profil</span>
+                <User size={24} />
+                <span className="hidden text-[11px] font-medium leading-none lg:block">Profil</span>
               </button>
-              <Link
-                to="/profile/ads/new"
-                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-daladan-primary transition-colors hover:bg-slate-700"
-              >
-                <LogIn size={22} />
-                <span className="hidden text-[10px] font-medium leading-none lg:block">E'lon</span>
-              </Link>
             </>
           ) : (
-            <>
+            <div className="ml-4 flex items-center gap-0 lg:ml-5">
+              <button
+                type="button"
+                onClick={toLogin}
+                className="flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+              >
+                <CirclePlus size={24} />
+                <span className="hidden text-[11px] font-medium leading-none lg:block">E'lon</span>
+              </button>
               <button
                 type="button"
                 onClick={() => navigate('/register')}
-                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                className="flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
               >
-                <UserPlus size={22} />
-                <span className="hidden text-[10px] font-medium leading-none lg:block">Ro'yxat</span>
+                <UserPlus size={24} />
+                <span className="hidden text-[11px] font-medium leading-none lg:block">Ro'yxat</span>
               </button>
               <button
                 type="button"
                 onClick={toLogin}
-                className="flex flex-col items-center gap-0.5 rounded-lg px-3 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
+                className="flex flex-col items-center gap-0.5 rounded-lg px-2.5 py-1.5 text-slate-300 transition-colors hover:bg-slate-700 hover:text-white"
               >
-                <User size={22} />
-                <span className="hidden text-[10px] font-medium leading-none lg:block">Kirish</span>
+                <User size={24} />
+                <span className="hidden text-[11px] font-medium leading-none lg:block">Kirish</span>
               </button>
-            </>
+            </div>
           )}
         </div>
 

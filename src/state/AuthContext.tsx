@@ -5,13 +5,13 @@ import { authService } from '../services'
 import type { AuthResult, AuthUser } from '../services/contracts'
 
 interface RegisterPayload {
-  fname: string
-  lname: string
-  phone: string
-  password: string
-  regionId: number
-  cityId: number
+  phone?: string
   email?: string
+  password: string
+  fname?: string
+  lname?: string
+  regionId?: number
+  cityId?: number
   telegram?: string
 }
 
@@ -137,7 +137,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         city_id: payload.cityId,
         email: payload.email,
         telegram: payload.telegram,
-      },
+      } as Parameters<typeof authService.register>[0],
       'password',
     )
     setAuthMethod('password')

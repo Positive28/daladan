@@ -55,19 +55,25 @@ export function CreateAdTitleDescriptionSection({
           )}`}
         />
         {titleFocused && (
-          <div className="pointer-events-none absolute left-0 top-full z-20 mt-2 w-72 rounded-xl bg-slate-800 px-4 py-3 text-sm text-white shadow-xl dark:bg-slate-700 sm:left-auto sm:right-0">
-            <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
-              Maslahat
+          <>
+            <span className="pointer-events-none absolute top-3 right-0 z-20 hidden translate-x-[calc(100%+4px)] items-center gap-0.5 text-slate-700 dark:text-slate-300 lg:flex">
+              <span className="h-px w-3 bg-slate-700 dark:bg-slate-300" />
+              <span className="text-sm font-bold">➡</span>
+            </span>
+            <div className="pointer-events-none absolute right-0 top-0 z-20 w-72 translate-x-[calc(100%+14px)] rounded-xl bg-slate-800 px-4 py-3 text-sm text-white shadow-xl dark:bg-slate-700 max-lg:hidden">
+              <div className="mb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">
+                Maslahat
+              </div>
+              <ul className="space-y-2">
+                {TITLE_TIPS.map((tip, i) => (
+                  <li key={i} className="flex items-start gap-2 leading-snug">
+                    <span className="mt-0.5 text-base">{tip.icon}</span>
+                    <span>{tip.text}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <ul className="space-y-2">
-              {TITLE_TIPS.map((tip, i) => (
-                <li key={i} className="flex items-start gap-2 leading-snug">
-                  <span className="mt-0.5 text-base">{tip.icon}</span>
-                  <span>{tip.text}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          </>
         )}
       </div>
 
@@ -99,12 +105,17 @@ export function CreateAdTitleDescriptionSection({
           placeholder="O'zingizni shu e'lonni ko'rayotgan odam o'rniga qo'ying va tavsif yozing"
           onFocus={() => setDescFocused(true)}
           onBlur={() => setDescFocused(false)}
-          className={`w-full max-w-2xl resize-y rounded-ui border px-3 py-3 text-sm leading-relaxed outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
+          className={`w-full resize-y rounded-ui border px-3 py-3 text-sm leading-relaxed outline-none dark:bg-slate-800 dark:text-slate-100 ${getFieldBorderClass(
             Boolean(errors.description),
           )}`}
         />
         {descFocused && (
-          <div className="pointer-events-none absolute right-0 top-0 z-20 ml-3 w-64 translate-x-[calc(100%+12px)] rounded-xl bg-slate-800 px-4 py-3 text-sm text-white shadow-xl dark:bg-slate-700 max-lg:hidden">
+          <>
+            <span className="pointer-events-none absolute top-4 right-0 z-20 hidden translate-x-[calc(100%+4px)] items-center gap-0.5 text-slate-700 dark:text-slate-300 lg:flex">
+              <span className="h-px w-3 bg-slate-700 dark:bg-slate-300" />
+              <span className="text-sm font-bold">➡</span>
+            </span>
+            <div className="pointer-events-none absolute right-0 top-0 z-20 ml-2 w-64 translate-x-[calc(100%+14px)] rounded-xl bg-slate-800 px-4 py-3 text-sm text-white shadow-xl dark:bg-slate-700 max-lg:hidden">
             <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
               Tavsif yozish bo&apos;yicha maslahat
             </div>
@@ -116,7 +127,8 @@ export function CreateAdTitleDescriptionSection({
                 </li>
               ))}
             </ul>
-          </div>
+            </div>
+          </>
         )}
       </div>
 

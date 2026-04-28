@@ -6,12 +6,11 @@ import { AdBoostPage } from './pages/AdBoostPage'
 import { AdStatsPage } from './pages/AdStatsPage'
 import { FavoritesPage } from './pages/FavoritesPage'
 import { ItemDetailsPage } from './pages/ItemDetailsPage'
-import { LoginPage } from './pages/LoginPage'
+import { AuthPage } from './pages/AuthPage'
 import { CreateAdPage } from './pages/CreateAdPage'
 import { HomePage } from './pages/HomePage'
 import { SearchPage } from './pages/SearchPage'
 import { ProfilePage } from './pages/ProfilePage'
-import { RegisterPage } from './pages/RegisterPage'
 import { RefreshPage } from './pages/RefreshPage'
 import { AdminAppRoutes } from './routes/AdminAppRoutes'
 import { isAdminApp } from './utils/adminHost'
@@ -29,8 +28,8 @@ function App() {
         <Route path="/search" element={<SearchPage />} />
         <Route path="/item/:id" element={<ItemDetailsPage />} />
       </Route>
-      <Route path={LOGIN_PATH} element={<LoginPage />} />
-      <Route path="/register" element={<RegisterPage />} />
+      <Route path={LOGIN_PATH} element={<AuthPage defaultTab="login" />} />
+      <Route path="/register" element={<AuthPage defaultTab="register" />} />
       <Route path={SESSION_REFRESH_PATH} element={<RefreshPage />} />
       <Route
         path="/favorites"

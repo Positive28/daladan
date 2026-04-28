@@ -1,21 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Eye, EyeOff, Moon, Sun } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Controller, useForm } from 'react-hook-form'
-import { authService } from '../services'
-import type { CityOption, RegionOption } from '../services/contracts'
 import { useAuth } from '../state/AuthContext'
 import { useTheme } from '../state/ThemeContext'
 import { LOGIN_PATH } from '../utils/appPaths'
 import { formatUzPhoneInput, isUzPhoneComplete, normalizeUzPhone } from '../utils/phone'
 
 interface RegisterFormValues {
-  firstName: string
-  lastName: string
-  regionId: string
-  cityId: string
-  email: string
-  telegram: string
   phone: string
   password: string
   confirmPassword: string
@@ -24,11 +16,7 @@ interface RegisterFormValues {
 
 export const RegisterPage = () => {
   const { theme, toggleTheme } = useTheme()
-  const [regions, setRegions] = useState<RegionOption[]>([])
-  const [cities, setCities] = useState<CityOption[]>([])
   const [apiError, setApiError] = useState('')
-  const [isLoadingRegions, setIsLoadingRegions] = useState(true)
-  const [isLoadingCities, setIsLoadingCities] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const { register } = useAuth()
@@ -39,17 +27,10 @@ export const RegisterPage = () => {
     control,
     handleSubmit,
     watch,
-    setValue,
     formState: { errors, isValid, isSubmitting },
   } = useForm<RegisterFormValues>({
     mode: 'onChange',
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      regionId: '',
-      cityId: '',
-      email: '',
-      telegram: '',
       phone: formatUzPhoneInput(''),
       password: '',
       confirmPassword: '',
@@ -57,231 +38,217 @@ export const RegisterPage = () => {
     },
   })
 
-  const selectedRegionId = watch('regionId')
   const passwordValue = watch('password')
-
-  useEffect(() => {
-    const loadRegions = async () => {
-      setIsLoadingRegions(true)
-      try {
-        const response = await authService.getRegions()
-        setRegions(response)
-        const buxoro = response.find((region) => region.name.toLowerCase().includes('buxoro'))
-        if (buxoro) {
-          setValue('regionId', String(buxoro.id), { shouldValidate: true })
-        }
-      } catch (loadError) {
-        setApiError(loadError instanceof Error ? loadError.message : "Viloyatlar ro'yxatini yuklab bo'lmadi")
-      } finally {
-        setIsLoadingRegions(false)
-      }
-    }
-    void loadRegions()
-  }, [setValue])
-
-  useEffect(() => {
-    if (!selectedRegionId) {
-      setCities([])
-      setValue('cityId', '', { shouldValidate: true })
-      return
-    }
-    const loadCities = async () => {
-      setIsLoadingCities(true)
-      try {
-        const response = await authService.getCities(Number(selectedRegionId))
-        setCities(response)
-        setValue('cityId', '', { shouldValidate: true })
-      } catch (loadError) {
-        setApiError(loadError instanceof Error ? loadError.message : "Tumanlar ro'yxatini yuklab bo'lmadi")
-      } finally {
-        setIsLoadingCities(false)
-      }
-    }
-    void loadCities()
-  }, [selectedRegionId, setValue])
 
   const onSubmit = async (values: RegisterFormValues) => {
     setApiError('')
     try {
       await register({
-        fname: values.firstName.trim(),
-        lname: values.lastName.trim(),
         phone: normalizeUzPhone(values.phone),
         password: values.password.trim(),
-        regionId: Number(values.regionId),
-        cityId: Number(values.cityId),
-        email: values.email.trim() || undefined,
-        telegram: values.telegram.trim() || undefined,
       })
       navigate('/profile')
     } catch (submissionError) {
-      setApiError(submissionError instanceof Error ? submissionError.message : "Ro'yxatdan o'tishda xatolik yuz berdi")
+      setApiError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : "Ro'yxatdan o'tishda xatolik yuz berdi",
+      )
     }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-daladan-soft p-4 dark:bg-slate-950 md:p-6">
-      <div className="relative w-full max-w-lg rounded-ui border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className="absolute top-5 right-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-          aria-label={theme === 'dark' ? "Yorug' rejimga o'tish" : "Qorong'i rejimga o'tish"}
-        >
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
-        <Link to="/" className="mb-6 flex justify-center">
-          <img src="/daladan-logo-full-transparent.png" alt="Daladan" className="h-14 object-contain" />
-        </Link>
-        <h1 className="text-4xl font-semibold text-slate-900 dark:text-slate-100">Ro&apos;yxatdan o&apos;tish</h1>
-        <p className="mt-2 text-base text-slate-600 dark:text-slate-400">Kerakli ma&apos;lumotlarni kiriting.</p>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 p-4 dark:bg-slate-950">
+      <div className="w-full max-w-md">
 
-        <form className="mt-5 space-y-3" onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid gap-3 md:grid-cols-2">
-            <input
-              {...formRegister('firstName', { required: "Ismni kiriting" })}
-              placeholder="Ism"
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            />
-            <input
-              {...formRegister('lastName', { required: "Familiyani kiriting" })}
-              placeholder="Familiya"
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            />
-          </div>
-          {(errors.firstName || errors.lastName) && (
-            <p className="text-sm text-daladan-accentDark">{errors.firstName?.message || errors.lastName?.message}</p>
-          )}
-          <div className="grid gap-3 md:grid-cols-2">
-            <select
-              {...formRegister('regionId', { required: "Viloyatni tanlang" })}
-              disabled={isLoadingRegions}
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            >
-              <option value="">Viloyatni tanlang</option>
-              {regions.map((region) => (
-                <option key={region.id} value={region.id}>
-                  {region.name}
-                </option>
-              ))}
-            </select>
-            <select
-              {...formRegister('cityId', { required: "Tumanni tanlang" })}
-              disabled={!selectedRegionId || isLoadingCities}
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            >
-              <option value="">{isLoadingCities ? 'Yuklanmoqda...' : 'Tumanni tanlang'}</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
-          </div>
-          {(errors.regionId || errors.cityId) && (
-            <p className="text-sm text-daladan-accentDark">{errors.regionId?.message || errors.cityId?.message}</p>
-          )}
-          <input
-            {...formRegister('email', {
-              validate: (value) =>
-                !value.trim() || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim()) || "Email manzili noto'g'ri",
-            })}
-            type="email"
-            autoComplete="off"
-            placeholder="Email (ixtiyoriy)"
-            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-          />
-          {errors.email && <p className="text-sm text-daladan-accentDark">{errors.email.message}</p>}
-          <input
-            {...formRegister('telegram')}
-            autoComplete="off"
-            placeholder="Telegram (ixtiyoriy)"
-            className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-          />
-          <Controller
-            control={control}
-            name="phone"
-            rules={{
-              validate: (value) => isUzPhoneComplete(value) || "Telefon raqamini to'liq kiriting",
-            }}
-            render={({ field }) => (
-              <input
-                value={field.value}
-                onChange={(event) => field.onChange(formatUzPhoneInput(event.target.value))}
-                className="w-full rounded-ui border border-slate-300 px-4 py-3 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-              />
-            )}
-          />
-          {errors.phone && <p className="text-sm text-daladan-accentDark">{errors.phone.message}</p>}
-
-          <div className="relative">
-            <input
-              {...formRegister('password', { required: "Parolni kiriting" })}
-              type={showPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              placeholder="Parol"
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            />
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
-              aria-label={showPassword ? 'Parolni yashirish' : "Parolni ko'rsatish"}
-            >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-
-          <div className="relative">
-            <input
-              {...formRegister('confirmPassword', {
-                required: "Parolni tasdiqlang",
-                validate: (value) => value === passwordValue || 'Parollar bir xil emas',
-              })}
-              type={showConfirmPassword ? 'text' : 'password'}
-              autoComplete="new-password"
-              placeholder="Parolni tasdiqlang"
-              className="w-full rounded-ui border border-slate-300 px-4 py-3 pr-12 text-slate-900 outline-none dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
-            />
-            <button
-              type="button"
-              onClick={() => setShowConfirmPassword((prev) => !prev)}
-              className="absolute top-1/2 right-4 -translate-y-1/2 text-slate-500 dark:text-slate-400"
-              aria-label={showConfirmPassword ? 'Tasdiq parolini yashirish' : "Tasdiq parolini ko'rsatish"}
-            >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-            </button>
-          </div>
-          {(errors.password || errors.confirmPassword) && (
-            <p className="text-sm text-daladan-accentDark">{errors.password?.message || errors.confirmPassword?.message}</p>
-          )}
-
-          <label className="flex cursor-pointer items-center gap-3 rounded-ui border border-slate-200 px-4 py-3 text-sm text-slate-700 select-none dark:border-slate-700 dark:text-slate-300">
-            <input
-              type="checkbox"
-              {...formRegister('consent', {
-                validate: (value) => value || "Davom etish uchun shartlarga rozilik bering",
-              })}
-              className="h-5 w-5 shrink-0 accent-daladan-primary"
-            />
-            <span>Foydalanish shartlari va maxfiylik siyosatiga roziman.</span>
-          </label>
-          {errors.consent && <p className="text-sm text-daladan-accentDark">{errors.consent.message}</p>}
-
+        {/* Theme toggle */}
+        <div className="mb-6 flex justify-end">
           <button
-            disabled={!isValid || isSubmitting || isLoadingRegions}
-            className="w-full rounded-ui bg-daladan-primary px-4 py-3 text-xl font-semibold text-white disabled:cursor-not-allowed disabled:opacity-70"
+            type="button"
+            onClick={toggleTheme}
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+            aria-label={theme === 'dark' ? "Yorug' rejim" : "Qorong'i rejim"}
           >
-            {isSubmitting ? 'Kutilmoqda...' : 'Davom etish'}
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-        </form>
-        {apiError && <p className="mt-3 text-base text-daladan-accentDark">{apiError}</p>}
-        <p className="mt-5 text-lg text-slate-700 dark:text-slate-300">
+        </div>
+
+        {/* Card */}
+        <div className="rounded-2xl border border-slate-200 bg-white px-8 py-10 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+
+          {/* Logo */}
+          <Link to="/" className="mb-8 flex justify-center">
+            <img
+              src="/daladan-logo-full-transparent.png"
+              alt="Daladan"
+              className="h-11 object-contain dark:brightness-0 dark:invert"
+            />
+          </Link>
+
+          <div className="mb-7 text-center">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+              Hisob yaratish
+            </h1>
+            <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">
+              Quyidagi ma&apos;lumotlarni kiriting
+            </p>
+          </div>
+
+          <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+
+            {/* Phone */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Telefon raqam
+              </label>
+              <Controller
+                control={control}
+                name="phone"
+                rules={{
+                  validate: (v) => isUzPhoneComplete(v) || "Telefon raqamini to'liq kiriting",
+                }}
+                render={({ field }) => (
+                  <input
+                    value={field.value}
+                    onChange={(e) => field.onChange(formatUzPhoneInput(e.target.value))}
+                    inputMode="tel"
+                    className={`w-full rounded-lg border px-3.5 py-2.5 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-600 ${
+                      errors.phone
+                        ? 'border-red-400 bg-red-50/40 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 dark:border-red-500 dark:bg-red-900/10'
+                        : 'border-slate-300 bg-white focus:border-[#2f6d3f] focus:ring-2 focus:ring-[#2f6d3f]/15 dark:border-slate-700'
+                    }`}
+                  />
+                )}
+              />
+              {errors.phone && (
+                <p className="text-xs text-red-500">{errors.phone.message}</p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Parol
+              </label>
+              <div className="relative">
+                <input
+                  {...formRegister('password', { required: 'Parolni kiriting' })}
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  placeholder="Kamida 6 ta belgi"
+                  className={`w-full rounded-lg border px-3.5 py-2.5 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-600 ${
+                    errors.password
+                      ? 'border-red-400 bg-red-50/40 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 dark:border-red-500 dark:bg-red-900/10'
+                      : 'border-slate-300 bg-white focus:border-[#2f6d3f] focus:ring-2 focus:ring-[#2f6d3f]/15 dark:border-slate-700'
+                  }`}
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowPassword((p) => !p)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
+                >
+                  {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+              {errors.password && (
+                <p className="text-xs text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+
+            {/* Confirm password */}
+            <div className="space-y-1.5">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                Parolni tasdiqlang
+              </label>
+              <div className="relative">
+                <input
+                  {...formRegister('confirmPassword', {
+                    required: 'Parolni tasdiqlang',
+                    validate: (v) => v === passwordValue || 'Parollar mos kelmadi',
+                  })}
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  placeholder="Parolni qayta kiriting"
+                  className={`w-full rounded-lg border px-3.5 py-2.5 pr-10 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-600 ${
+                    errors.confirmPassword
+                      ? 'border-red-400 bg-red-50/40 focus:border-red-400 focus:ring-2 focus:ring-red-400/20 dark:border-red-500 dark:bg-red-900/10'
+                      : 'border-slate-300 bg-white focus:border-[#2f6d3f] focus:ring-2 focus:ring-[#2f6d3f]/15 dark:border-slate-700'
+                  }`}
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  onClick={() => setShowConfirmPassword((p) => !p)}
+                  className="absolute top-1/2 right-3 -translate-y-1/2 text-slate-400 transition hover:text-slate-600 dark:hover:text-slate-300"
+                >
+                  {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                </button>
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-500">{errors.confirmPassword.message}</p>
+              )}
+            </div>
+
+            {/* Consent */}
+            <label className="flex cursor-pointer items-start gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3 select-none dark:border-slate-700 dark:bg-slate-800/50">
+              <input
+                type="checkbox"
+                {...formRegister('consent', {
+                  validate: (v) => v || 'Shartlarga rozilik bering',
+                })}
+                className="mt-0.5 h-4 w-4 shrink-0 rounded accent-[#2f6d3f]"
+              />
+              <span className="text-sm leading-relaxed text-slate-600 dark:text-slate-400">
+                <Link to="/terms" className="font-medium text-[#2f6d3f] hover:underline">
+                  Foydalanish shartlari
+                </Link>{' '}
+                va{' '}
+                <Link to="/privacy" className="font-medium text-[#2f6d3f] hover:underline">
+                  maxfiylik siyosati
+                </Link>
+                ga roziman
+              </span>
+            </label>
+            {errors.consent && (
+              <p className="text-xs text-red-500">{errors.consent.message}</p>
+            )}
+
+            {apiError && (
+              <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+                {apiError}
+              </div>
+            )}
+
+            <button
+              disabled={!isValid || isSubmitting}
+              className="mt-1 w-full rounded-lg bg-[#2f6d3f] py-2.5 text-sm font-semibold text-white transition hover:bg-[#265c35] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                  </svg>
+                  Yuklanmoqda…
+                </span>
+              ) : (
+                "Ro'yxatdan o'tish"
+              )}
+            </button>
+          </form>
+        </div>
+
+        <p className="mt-5 text-center text-sm text-slate-500 dark:text-slate-500">
           Hisobingiz bormi?{' '}
-          <Link to={LOGIN_PATH} className="font-semibold text-daladan-primary">
+          <Link
+            to={LOGIN_PATH}
+            className="font-semibold text-[#2f6d3f] hover:underline dark:text-[#4a9a5f]"
+          >
             Kirish
           </Link>
         </p>
+
       </div>
     </div>
   )

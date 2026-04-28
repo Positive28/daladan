@@ -106,3 +106,9 @@ a:focus-visible {
   outline: none;
   outline-offset: 0;
 }
+
+/* Auth page inputs use custom focus visuals without global green outline. */
+.auth-page input:focus-visible {
+  outline: none;
+  outline-offset: 0;
+}

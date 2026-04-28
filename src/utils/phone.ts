@@ -8,6 +8,7 @@ const getLocalDigits = (input: string) => {
 
 export const formatUzPhoneInput = (input: string) => {
   const local = getLocalDigits(input)
+  if (!local) return ''
   const p1 = local.slice(0, 2)
   const p2 = local.slice(2, 5)
   const p3 = local.slice(5, 7)

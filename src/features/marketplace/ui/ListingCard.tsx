@@ -253,7 +253,7 @@ export const ListingCard = ({
           </div>
         </div>
       ) : (
-        <div className={`grid min-h-0 grid-cols-[11rem_1fr] items-stretch sm:grid-cols-[14rem_1fr] ${CARD_SHELL}`}>
+        <div className={`relative grid min-h-0 grid-cols-[11rem_1fr] items-stretch sm:grid-cols-[14rem_1fr] ${CARD_SHELL}`}>
           <div className="relative min-h-0 min-w-0">
             <Link
               to={itemPath}
@@ -261,12 +261,12 @@ export const ListingCard = ({
             >
               <ListingMedia listing={listing} variant="list" onImageError={onImageError} />
             </Link>
-            <FavoriteIconButton
-              favorite={favorite}
-              onClick={onFavoriteClick}
-              className="absolute right-0 top-1/2 z-20 -translate-y-1/2 translate-x-1/2"
-            />
           </div>
+          <FavoriteIconButton
+            favorite={favorite}
+            onClick={onFavoriteClick}
+            className="absolute right-3 top-3 z-20"
+          />
           <div className="flex min-h-0 min-w-0 flex-col gap-1.5 pl-5 pr-3 pt-3 sm:gap-2 sm:pl-6 sm:pr-4 sm:pt-4">
             <Link
               to={itemPath}
