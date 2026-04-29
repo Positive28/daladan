@@ -52,7 +52,14 @@ export const HomePage = () => {
   const [searchParams] = useSearchParams()
 
   const redirectToLogin = () => {
-    navigate(LOGIN_PATH, loginReturnState(location))
+    const returnState = loginReturnState(location)
+    navigate(LOGIN_PATH, {
+      ...returnState,
+      state: {
+        ...returnState.state,
+        backgroundLocation: location,
+      },
+    })
   }
 
   useEffect(() => {

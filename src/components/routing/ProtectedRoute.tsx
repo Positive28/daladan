@@ -16,7 +16,17 @@ export const ProtectedRoute = ({ children }: { children: ReactNode }) => {
   }
 
   if (!user) {
-    return <Navigate to={LOGIN_PATH} replace {...loginReturnState(location)} />
+    const returnState = loginReturnState(location)
+    return (
+      <Navigate
+        to={LOGIN_PATH}
+        replace
+        state={{
+          ...returnState.state,
+          backgroundLocation: location,
+        }}
+      />
+    )
   }
 
   return <>{children}</>

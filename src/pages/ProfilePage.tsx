@@ -12,7 +12,7 @@ import {
   Sun,
   Wallet,
 } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { marketplaceService, profileService } from '../services'
 import { useAuth } from '../state/AuthContext'
 import { useTheme } from '../state/ThemeContext'
@@ -87,9 +87,19 @@ export const ProfilePage = () => {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const navigate = useNavigate()
+  const location = useLocation()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [isTabSwitching, setIsTabSwitching] = useState(false)
   const [adGalleryIndex, setAdGalleryIndex] = useState<Record<string, number>>({})
   const [imagePreview, setImagePreview] = useState<{ urls: string[]; index: number } | null>(null)
+
+  useEffect(() => {
+    const nextTab = (location.state as { tab?: ProfileTab } | null)?.tab
+    if (nextTab && ['profile', 'ads', 'messages', 'payments'].includes(nextTab)) {
+      setActiveTab(nextTab)
+      navigate(location.pathname, { replace: true, state: null })
+    }
+  }, [location.pathname, location.state, navigate])
 
   const loadProfileAds = async () => {
     try {
@@ -262,6 +272,15 @@ export const ProfilePage = () => {
     } finally {
       setIsUpdatingPassword(false)
     }
+  }
+
+  const handleTabChange = (nextTab: ProfileTab) => {
+    if (nextTab === activeTab || isTabSwitching) return
+    setIsTabSwitching(true)
+    window.setTimeout(() => {
+      setActiveTab(nextTab)
+      setIsTabSwitching(false)
+    }, 140)
   }
 
   const renderAdsSection = () => (
@@ -475,7 +494,7 @@ export const ProfilePage = () => {
         <div className="space-y-1 text-sm">
           <button
             type="button"
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleTabChange('profile')}
             className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-medium ${
               activeTab === 'profile'
                 ? 'bg-daladan-primary/10 text-daladan-primary'
@@ -487,7 +506,7 @@ export const ProfilePage = () => {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('ads')}
+            onClick={() => handleTabChange('ads')}
             className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-medium ${
               activeTab === 'ads' ? 'bg-daladan-primary/10 text-daladan-primary' : 'text-slate-600 dark:text-slate-400'
             }`}
@@ -497,7 +516,7 @@ export const ProfilePage = () => {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('messages')}
+            onClick={() => handleTabChange('messages')}
             className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-medium ${
               activeTab === 'messages'
                 ? 'bg-daladan-primary/10 text-daladan-primary'
@@ -509,7 +528,7 @@ export const ProfilePage = () => {
           </button>
           <button
             type="button"
-            onClick={() => setActiveTab('payments')}
+            onClick={() => handleTabChange('payments')}
             className={`flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left font-medium ${
               activeTab === 'payments'
                 ? 'bg-daladan-primary/10 text-daladan-primary'

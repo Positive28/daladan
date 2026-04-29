@@ -271,9 +271,10 @@ function ItemDetailSidebar({
   listing,
   sellerName,
   canSeePhone,
+  phoneRevealed,
   isFavorite,
   onFavoriteClick,
-  onCall,
+  onRevealPhone,
   onMessage,
   inAppMessagingAvailable,
   className = '',
@@ -281,9 +282,10 @@ function ItemDetailSidebar({
   listing: Listing
   sellerName: string
   canSeePhone: boolean
+  phoneRevealed: boolean
   isFavorite: boolean
   onFavoriteClick: (e: MouseEvent<HTMLButtonElement>) => void
-  onCall: () => void
+  onRevealPhone: () => void
   onMessage: () => void
   inAppMessagingAvailable: boolean
   className?: string
@@ -319,7 +321,7 @@ function ItemDetailSidebar({
       </button>
 
       <div className="grid gap-2">
-        {canSeePhone ? (
+        {phoneRevealed ? (
           <a
             href={`tel:${listing.phone}`}
             className="flex w-full items-center justify-center gap-2 rounded-ui border border-slate-200 bg-daladan-soft px-4 py-3 text-base font-semibold text-daladan-heading hover:border-daladan-primary/40 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100"
@@ -330,11 +332,11 @@ function ItemDetailSidebar({
         ) : (
           <button
             type="button"
-            onClick={onCall}
+            onClick={onRevealPhone}
             className="flex w-full items-center justify-center gap-2 rounded-ui bg-daladan-primary px-4 py-3 text-base font-semibold text-white"
           >
             <Phone size={18} />
-            Sotuvchi bilan bog&apos;lanish
+            Telefon nomer ko&apos;rish
           </button>
         )}
         <button
@@ -372,6 +374,7 @@ export const ItemDetailsPage = () => {
   const [isLoadingRelated, setIsLoadingRelated] = useState(() => Boolean(id))
   const [galleryIndex, setGalleryIndex] = useState(0)
   const [imagePreview, setImagePreview] = useState<{ urls: string[]; index: number } | null>(null)
+  const [phoneRevealed, setPhoneRevealed] = useState(false)
   const { user } = useAuth()
   const navigate = useNavigate()
   const { isFavorite, toggleFavorite } = useFavorites()
@@ -385,6 +388,7 @@ export const ItemDetailsPage = () => {
 
   useEffect(() => {
     setGalleryIndex(0)
+    setPhoneRevealed(false)
     setListing(undefined)
     setRelatedListings([])
     if (!id) {
@@ -460,7 +464,14 @@ export const ItemDetailsPage = () => {
   const favorite = isFavorite(listing.id)
 
   const redirectToLogin = () => {
-    navigate(LOGIN_PATH, loginReturnState(location))
+    const returnState = loginReturnState(location)
+    navigate(LOGIN_PATH, {
+      ...returnState,
+      state: {
+        ...returnState.state,
+        backgroundLocation: location,
+      },
+    })
   }
 
   const onFavoriteClick = (e: MouseEvent<HTMLButtonElement>) => {
@@ -472,12 +483,8 @@ export const ItemDetailsPage = () => {
     toggleFavorite(listing.id)
   }
 
-  const onCall = () => {
-    if (!canSeePhone) {
-      redirectToLogin()
-      return
-    }
-    window.location.href = `tel:${listing.phone}`
+  const onRevealPhone = () => {
+    setPhoneRevealed(true)
   }
 
   const onMessage = () => {
@@ -492,9 +499,10 @@ export const ItemDetailsPage = () => {
     listing,
     sellerName,
     canSeePhone,
+    phoneRevealed,
     isFavorite: favorite,
     onFavoriteClick,
-    onCall,
+    onRevealPhone,
     onMessage,
     inAppMessagingAvailable: IN_APP_MESSAGING_AVAILABLE,
   }
@@ -523,14 +531,17 @@ export const ItemDetailsPage = () => {
                 <button
                   type="button"
                   onClick={() => setImagePreview({ urls: slides, index: safeIdx })}
-                  className="absolute inset-0 block h-full w-full"
+                  className="absolute inset-0 flex h-full w-full items-center justify-center"
                   aria-label="Rasmni kattalashtirish"
                 >
                   <img
                     src={slides[safeIdx]}
                     alt={listing.title}
                     onError={onImageError}
-                    className="h-full w-full object-contain object-center"
+                    loading="eager"
+                    decoding="async"
+                    fetchPriority="high"
+                    className="h-auto w-auto max-h-full max-w-full object-contain object-center"
                   />
                 </button>
                 {slides.length > 1 ? (
@@ -588,7 +599,14 @@ export const ItemDetailsPage = () => {
                         i === safeIdx ? 'border-daladan-primary' : 'border-transparent opacity-80 hover:opacity-100'
                       }`}
                     >
-                      <img src={url} alt="" onError={onImageError} className="h-full w-full object-cover" />
+                      <img
+                        src={url}
+                        alt=""
+                        onError={onImageError}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-cover"
+                      />
                     </button>
                   ))}
                 </div>

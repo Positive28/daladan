@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { useAuth } from '../state/AuthContext'
@@ -52,15 +52,6 @@ const Spinner = () => (
   <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden>
     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-  </svg>
-)
-
-const GoogleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden>
-    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
-    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
-    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.18 1.48-4.97 2.35-8.16 2.35-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
   </svg>
 )
 
@@ -266,62 +257,17 @@ function LoginForm({ identity }: { identity: ReturnType<typeof useSmartInput> })
 type Tab = 'login' | 'register'
 
 export const AuthPage = ({ defaultTab = 'login' }: { defaultTab?: Tab }) => {
-  const navigate = useNavigate()
-  const [tab, setTab] = useState<Tab>(defaultTab)
+  const tab: Tab = defaultTab
   const identity = useSmartInput()
-
-  const switchTab = (next: Tab) => {
-    setTab(next)
-    navigate(next === 'login' ? '/login' : '/register', { replace: true })
-    identity.onChange('')
-  }
 
   return (
     <div className="auth-page min-h-screen bg-slate-100 p-4 dark:bg-slate-950">
       <div className="mx-auto flex min-h-screen w-full max-w-md items-center">
         <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
-          <div className="h-1.5 bg-[#2f6d3f]" />
-
           <div className="px-5 py-5">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
-              aria-label="Orqaga"
-            >
-              <ArrowLeft size={18} />
-            </button>
-
-            <button
-              type="button"
-              className="mt-4 flex w-full items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
-            >
-              <GoogleIcon />
-              Google orqali davom etish
-            </button>
-
-            <div className="my-4 flex items-center gap-3">
-              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-              <span className="text-xs text-slate-400">yoki</span>
-              <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
-            </div>
-
-            <div className="mb-3 grid grid-cols-2 rounded-lg border border-slate-200 p-1 dark:border-slate-700">
-              {(['login', 'register'] as Tab[]).map((t) => (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => switchTab(t)}
-                  className={`flex h-9 items-center justify-center rounded-md px-2 text-sm font-medium whitespace-nowrap transition ${
-                    tab === t
-                      ? 'bg-slate-100 text-slate-900 dark:bg-slate-700 dark:text-slate-100'
-                      : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {t === 'login' ? 'Kirish' : "Ro'yxatdan o'tish"}
-                </button>
-              ))}
-            </div>
+            <h1 className="mb-4 text-center text-xl font-semibold text-slate-900 dark:text-slate-100">
+              {tab === 'login' ? 'Kirish' : "Ro'yxatdan o'tish"}
+            </h1>
 
             <div className="mb-3">
               <label className="mb-1.5 block text-xs font-medium text-slate-600 dark:text-slate-300">

@@ -6,7 +6,6 @@ import {
   collectLabelsInTree,
   fallbackCategoryTree,
   gatherDescendants,
-  isCategoryExpandedForFilter,
   loadCategoryTree,
   type CategoryNode,
 } from '../features/marketplace/model/categoryTree'
@@ -80,11 +79,7 @@ function SearchFiltersCard({
           </div>
         ) : (
           categoryTree.map((category) => {
-            const rowExpanded = isCategoryExpandedForFilter(
-              category,
-              selectedCategory,
-              expandedCategories,
-            )
+            const rowExpanded = expandedCategories.has(category.label)
             return (
               <div key={category.label}>
                 <div className="flex items-center gap-1">
@@ -111,7 +106,7 @@ function SearchFiltersCard({
                   </button>
                 </div>
                 {category.children?.length && rowExpanded ? (
-                  <div className="mt-1 border-l border-daladan-border pl-3 dark:border-slate-700">
+                  <div className="mt-1 pl-3">
                     {category.children.map((sub) => (
                       <button
                         key={sub.label}
@@ -290,7 +285,14 @@ export const SearchPage = () => {
   const pageItems = filtered.slice(start, start + pageSize)
 
   const redirectToLogin = () => {
-    navigate(LOGIN_PATH, loginReturnState(location))
+    const returnState = loginReturnState(location)
+    navigate(LOGIN_PATH, {
+      ...returnState,
+      state: {
+        ...returnState.state,
+        backgroundLocation: location,
+      },
+    })
   }
 
   const toggleCategory = (label: string) => {

@@ -65,6 +65,7 @@ function ListingMedia({
           onError={onImageError}
           className="absolute inset-0 h-full w-full object-cover"
           loading="lazy"
+          decoding="async"
         />
         <PromoBadges listing={listing} />
         <PhotoCountBadge count={photoCount} />
@@ -80,6 +81,7 @@ function ListingMedia({
         onError={onImageError}
         className="absolute inset-0 h-full w-full object-cover"
         loading="lazy"
+        decoding="async"
       />
       <PromoBadges listing={listing} />
       <PhotoCountBadge count={photoCount} />
