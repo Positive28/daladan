@@ -270,7 +270,6 @@ function ListingDetailHeader({ listing }: { listing: Listing }) {
 function ItemDetailSidebar({
   listing,
   sellerName,
-  canSeePhone,
   phoneRevealed,
   isFavorite,
   onFavoriteClick,
@@ -281,7 +280,6 @@ function ItemDetailSidebar({
 }: {
   listing: Listing
   sellerName: string
-  canSeePhone: boolean
   phoneRevealed: boolean
   isFavorite: boolean
   onFavoriteClick: (e: MouseEvent<HTMLButtonElement>) => void
@@ -454,7 +452,6 @@ export const ItemDetailsPage = () => {
     return <p className="rounded-ui bg-white p-6 dark:bg-slate-900 dark:text-slate-200">Mahsulot topilmadi.</p>
   }
 
-  const canSeePhone = Boolean(user)
   const quantityText = listing.quantity || "Miqdor ko'rsatilmagan"
   const deliveryInfoText = listing.deliveryInfo || "Ma'lumot berilmagan"
   const sellerName = listing.sellerName || 'Sotuvchi'
@@ -498,7 +495,6 @@ export const ItemDetailsPage = () => {
   const sidebarProps = {
     listing,
     sellerName,
-    canSeePhone,
     phoneRevealed,
     isFavorite: favorite,
     onFavoriteClick,
