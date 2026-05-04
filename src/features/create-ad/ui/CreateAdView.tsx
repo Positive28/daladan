@@ -4,6 +4,7 @@ import { useCreateAdPage } from '../model/useCreateAdPage'
 import { CreateAdLocationSection } from './CreateAdLocationSection'
 import { CreateAdPhotosSection } from './CreateAdPhotosSection'
 import { CreateAdPriceDeliverySection } from './CreateAdPriceDeliverySection'
+import { CreateAdRegionCitySection } from './CreateAdRegionCitySection'
 import { CreateAdTitleDescriptionSection } from './CreateAdTitleDescriptionSection'
 
 /** Route: `/profile/ads/new` */
@@ -25,6 +26,7 @@ export function CreateAdView() {
     isLoadingRegions,
     isLoadingCities,
     selectedCategoryId,
+    selectedSubcategoryId,
     selectedRegionId,
     selectedCityId,
     files,
@@ -59,18 +61,11 @@ export function CreateAdView() {
           errors={errors}
           categories={categories}
           subcategories={subcategories}
-          regions={regions}
-          cities={cities}
           selectedCategoryId={selectedCategoryId}
-          selectedRegionId={selectedRegionId}
-          selectedCityId={selectedCityId}
+          selectedSubcategoryId={selectedSubcategoryId}
           isLoadingCategories={isLoadingCategories}
           isLoadingSubcategories={isLoadingSubcategories}
-          isLoadingRegions={isLoadingRegions}
-          isLoadingCities={isLoadingCities}
         />
-
-        <CreateAdPriceDeliverySection {...model} />
 
         <CreateAdTitleDescriptionSection
           register={register}
@@ -81,6 +76,19 @@ export function CreateAdView() {
         />
 
         <CreateAdPhotosSection photoSlots={photoSlots} setPhotoSlots={setPhotoSlots} fileCount={files.length} />
+
+        <CreateAdRegionCitySection
+          register={register}
+          errors={errors}
+          regions={regions}
+          cities={cities}
+          selectedRegionId={selectedRegionId}
+          selectedCityId={selectedCityId}
+          isLoadingRegions={isLoadingRegions}
+          isLoadingCities={isLoadingCities}
+        />
+
+        <CreateAdPriceDeliverySection {...model} />
 
         {error ? <p className={ERROR_TEXT_CLASS}>{error}</p> : null}
 

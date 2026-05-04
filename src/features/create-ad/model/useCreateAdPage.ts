@@ -51,7 +51,7 @@ export function useCreateAdPage() {
       description: '',
       price: '',
       unit: '',
-      deliveryAvailable: true,
+      deliveryAvailable: false,
     },
   })
 

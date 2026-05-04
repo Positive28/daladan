@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
-import type { CategoryOption } from '../../../types/marketplace'
+import type { CategoryOption, SubcategoryOption } from '../../../types/marketplace'
 
 const CATEGORY_COLORS: string[] = [
   'bg-orange-50 text-orange-600',
@@ -49,15 +49,27 @@ function getCategoryColor(index: number): string {
   return CATEGORY_COLORS[index % CATEGORY_COLORS.length] ?? CATEGORY_COLORS[0]!
 }
 
+type PickerOption = CategoryOption | SubcategoryOption
+
 interface CategoryPickerModalProps {
   open: boolean
-  categories: CategoryOption[]
+  categories: PickerOption[]
   selectedId: string
-  onSelect: (category: CategoryOption) => void
+  onSelect: (category: PickerOption) => void
   onClose: () => void
+  title?: string
+  emptyStateText?: string
 }
 
-export function CategoryPickerModal({ open, categories, selectedId, onSelect, onClose }: CategoryPickerModalProps) {
+export function CategoryPickerModal({
+  open,
+  categories,
+  selectedId,
+  onSelect,
+  onClose,
+  title = 'Kategoriya tanlang',
+  emptyStateText = 'Topilmadi',
+}: CategoryPickerModalProps) {
   const [search, setSearch] = useState('')
   const searchRef = useRef<HTMLInputElement | null>(null)
 
@@ -93,7 +105,7 @@ export function CategoryPickerModal({ open, categories, selectedId, onSelect, on
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-700">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Kategoriya tanlang</h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h2>
           <button
             type="button"
             onClick={onClose}
@@ -120,7 +132,7 @@ export function CategoryPickerModal({ open, categories, selectedId, onSelect, on
 
         <div className="max-h-[60vh] overflow-y-auto px-5 py-4">
           {filtered.length === 0 ? (
-            <p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">Topilmadi</p>
+            <p className="py-8 text-center text-sm text-slate-500 dark:text-slate-400">{emptyStateText}</p>
           ) : (
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
               {filtered.map((category, index) => {

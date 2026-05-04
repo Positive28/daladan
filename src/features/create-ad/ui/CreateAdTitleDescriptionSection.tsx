@@ -13,13 +13,17 @@ type Props = {
 
 const DESCRIPTION_TIPS = [
   { icon: '✏️', text: "Aniq va to'liq yozing — xaridorlar kam savol beradi." },
-  { icon: '🔍', text: "Ko'proq ma'lumot qo'shing — e'lonni osonroq topishadi." },
   { icon: '✅', text: "Rostini yozing — xaridorlar ishonadi va yaxshi baho beradi." },
+  {
+    icon: '📝',
+    text: "Namuna: Yangi uzilgan olmalar sotiladi, mahsulot toza va saralangan. Narx: 12 000 so'm / kg, Kogon shahri bo'ylab yetkazib berish mavjud.",
+  },
 ]
 
 const TITLE_TIPS = [
   { icon: '🎯', text: "Qisqa va aniq yozing — asosiy so'zlarni kiriting." },
   { icon: '🔤', text: "Mahsulot nomi, turi va asosiy xususiyatini ko'rsating." },
+  { icon: '📝', text: 'Namuna: Yangi uzilgan olma, 1 kg, Buxoro viloyati' },
 ]
 
 export function CreateAdTitleDescriptionSection({
@@ -68,7 +72,14 @@ export function CreateAdTitleDescriptionSection({
                 {TITLE_TIPS.map((tip, i) => (
                   <li key={i} className="flex items-start gap-2 leading-snug">
                     <span className="mt-0.5 text-base">{tip.icon}</span>
-                    <span>{tip.text}</span>
+                    {tip.text.startsWith('Namuna:') ? (
+                      <span>
+                        <span className="font-semibold text-emerald-300">Namuna:</span>
+                        {tip.text.replace('Namuna:', '')}
+                      </span>
+                    ) : (
+                      <span>{tip.text}</span>
+                    )}
                   </li>
                 ))}
               </ul>

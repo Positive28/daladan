@@ -261,7 +261,7 @@ export const AuthPage = ({ defaultTab = 'login' }: { defaultTab?: Tab }) => {
   const identity = useSmartInput()
 
   return (
-    <div className="auth-page min-h-screen bg-slate-100 p-4 dark:bg-slate-950">
+    <div className="auth-page min-h-screen bg-[#ebf2f7] p-4 dark:bg-slate-950">
       <div className="mx-auto flex min-h-screen w-full max-w-md items-center">
         <div className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div className="px-5 py-5">

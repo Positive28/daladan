@@ -84,7 +84,7 @@ export const AdminLayout = ({ children }: { children?: ReactNode }) => {
   )
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-slate-950">
+    <div className="min-h-screen bg-[#ebf2f7] dark:bg-slate-950">
       <div className="flex min-h-screen">
         <aside className="hidden w-60 shrink-0 flex-col border-r border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 lg:flex">
           {sidebar}

@@ -49,7 +49,7 @@ export const LoginPage = ({ variant = 'site' }: LoginPageProps) => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-daladan-soft p-4 dark:bg-slate-950 md:p-6">
+    <div className="flex min-h-screen items-center justify-center bg-[#ebf2f7] p-4 dark:bg-slate-950 md:p-6">
       <div className="relative w-full max-w-lg rounded-ui border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900 md:p-8">
         <button
           type="button"

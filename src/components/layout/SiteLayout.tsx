@@ -6,7 +6,7 @@ import { SiteHeader } from './SiteHeader'
 
 export const SiteLayout = ({ children }: { children?: ReactNode }) => {
   return (
-    <div className="min-h-screen bg-daladan-soft dark:bg-slate-950">
+    <div className="min-h-screen bg-[#ebf2f7] dark:bg-slate-950">
       <div className="hidden md:block">
         <SiteHeader />
       </div>

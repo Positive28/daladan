@@ -1,9 +1,8 @@
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import type { UseFormRegister, FieldErrors, UseFormSetValue } from 'react-hook-form'
-import type { CityOption, RegionOption } from '../../../services/contracts'
 import type { CategoryOption, SubcategoryOption } from '../../../types/marketplace'
-import { ERROR_TEXT_CLASS, SELECT_ICON_CLASS, getSelectClass } from '../model/createAdFieldStyles'
+import { ERROR_TEXT_CLASS } from '../model/createAdFieldStyles'
 import type { CreateAdFormValues } from '../model/createAdForm.types'
 import { CategoryPickerModal } from './CategoryPickerModal'
 
@@ -13,15 +12,10 @@ type Props = {
   errors: FieldErrors<CreateAdFormValues>
   categories: CategoryOption[]
   subcategories: SubcategoryOption[]
-  regions: RegionOption[]
-  cities: CityOption[]
   selectedCategoryId: string
-  selectedRegionId: string
-  selectedCityId: string
+  selectedSubcategoryId: string
   isLoadingCategories: boolean
   isLoadingSubcategories: boolean
-  isLoadingRegions: boolean
-  isLoadingCities: boolean
 }
 
 export function CreateAdLocationSection({
@@ -30,19 +24,16 @@ export function CreateAdLocationSection({
   errors,
   categories,
   subcategories,
-  regions,
-  cities,
   selectedCategoryId,
-  selectedRegionId,
-  selectedCityId,
+  selectedSubcategoryId,
   isLoadingCategories,
   isLoadingSubcategories,
-  isLoadingRegions,
-  isLoadingCities,
 }: Props) {
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
+  const [isSubcategoryModalOpen, setIsSubcategoryModalOpen] = useState(false)
 
   const selectedCategory = categories.find((c) => String(c.id) === selectedCategoryId)
+  const selectedSubcategory = subcategories.find((s) => String(s.id) === selectedSubcategoryId)
 
   return (
     <section className="space-y-3">
@@ -69,75 +60,44 @@ export function CreateAdLocationSection({
             <span className={selectedCategory ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}>
               {isLoadingCategories
                 ? 'Yuklanmoqda...'
-                : selectedCategory?.name ?? 'Kategoriya tanlang'}
+                : selectedCategory?.name ?? "Bo'limni tanlang"}
             </span>
             <ChevronDown size={16} className="shrink-0 text-slate-400 dark:text-slate-500" />
           </button>
         </div>
 
-        {/* Subcategory select */}
+        {/* Subcategory picker button */}
         <div className="relative">
-          <select
+          <input
+            type="hidden"
             {...register('subcategoryId', { required: 'Subkategoriya tanlang' })}
-            aria-invalid={Boolean(errors.subcategoryId)}
+          />
+          <button
+            type="button"
             disabled={!selectedCategoryId || isLoadingSubcategories}
-            className={getSelectClass(Boolean(errors.subcategoryId))}
+            onClick={() => setIsSubcategoryModalOpen(true)}
+            aria-invalid={Boolean(errors.subcategoryId)}
+            className={`flex w-full appearance-none items-center justify-between rounded-ui border px-3 py-2 pr-10 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-daladan-primary/40 disabled:cursor-not-allowed disabled:opacity-70 dark:bg-slate-800 dark:text-slate-100 ${
+              errors.subcategoryId
+                ? 'border-red-500 dark:border-red-400'
+                : 'border-slate-200 dark:border-slate-600'
+            }`}
           >
-            <option value="">{isLoadingSubcategories ? 'Yuklanmoqda...' : 'Subkategoriya tanlang'}</option>
-            {subcategories.map((subcategory) => (
-              <option key={subcategory.id} value={subcategory.id}>
-                {subcategory.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={16} className={SELECT_ICON_CLASS} />
+            <span className={selectedSubcategory ? 'text-slate-900 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}>
+              {isLoadingSubcategories
+                ? 'Yuklanmoqda...'
+                : selectedSubcategory?.name ?? "Mahsulot turini tanlang"}
+            </span>
+            <ChevronDown size={16} className="shrink-0 text-slate-400 dark:text-slate-500" />
+          </button>
         </div>
 
-        {/* Region select */}
-        <div className="relative">
-          <select
-            {...register('regionId', { required: 'Viloyat tanlang' })}
-            value={selectedRegionId ?? ''}
-            aria-invalid={Boolean(errors.regionId)}
-            disabled={isLoadingRegions}
-            className={getSelectClass(Boolean(errors.regionId))}
-          >
-            <option value="">{isLoadingRegions ? 'Yuklanmoqda...' : 'Viloyat tanlang'}</option>
-            {regions.map((region) => (
-              <option key={region.id} value={region.id}>
-                {region.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={16} className={SELECT_ICON_CLASS} />
-        </div>
-
-        {/* City select */}
-        <div className="relative">
-          <select
-            {...register('cityId', { required: 'Tuman tanlang' })}
-            value={selectedCityId ?? ''}
-            aria-invalid={Boolean(errors.cityId)}
-            disabled={!selectedRegionId || isLoadingCities}
-            className={getSelectClass(Boolean(errors.cityId))}
-          >
-            <option value="">{isLoadingCities ? 'Yuklanmoqda...' : 'Tuman tanlang'}</option>
-            {cities.map((city) => (
-              <option key={city.id} value={city.id}>
-                {city.name}
-              </option>
-            ))}
-          </select>
-          <ChevronDown size={16} className={SELECT_ICON_CLASS} />
-        </div>
       </div>
 
-      {errors.categoryId || errors.subcategoryId || errors.regionId || errors.cityId ? (
+      {errors.categoryId || errors.subcategoryId ? (
         <p className={ERROR_TEXT_CLASS}>
           {errors.categoryId?.message ||
-            errors.subcategoryId?.message ||
-            errors.regionId?.message ||
-            errors.cityId?.message}
+            errors.subcategoryId?.message}
         </p>
       ) : null}
 
@@ -145,11 +105,23 @@ export function CreateAdLocationSection({
         open={isCategoryModalOpen}
         categories={categories}
         selectedId={selectedCategoryId}
+        title="Bo'limni tanlang"
         onSelect={(category) => {
           setValue('categoryId', String(category.id), { shouldValidate: true, shouldDirty: true })
           setValue('subcategoryId', '', { shouldValidate: false })
         }}
         onClose={() => setIsCategoryModalOpen(false)}
+      />
+      <CategoryPickerModal
+        open={isSubcategoryModalOpen}
+        categories={subcategories}
+        selectedId={selectedSubcategoryId}
+        title="Mahsulot turini tanlang"
+        emptyStateText="Mahsulot turi topilmadi"
+        onSelect={(subcategory) => {
+          setValue('subcategoryId', String(subcategory.id), { shouldValidate: true, shouldDirty: true })
+        }}
+        onClose={() => setIsSubcategoryModalOpen(false)}
       />
     </section>
   )
